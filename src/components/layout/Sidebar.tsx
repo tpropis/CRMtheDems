@@ -14,6 +14,7 @@ import {
   CheckSquare,
   Calendar,
   Settings,
+  Upload,
   ChevronRight,
 } from 'lucide-react'
 
@@ -67,6 +68,12 @@ const navItems = [
     roles: ['admin', 'manager', 'field', 'volunteer'],
   },
   {
+    label: 'Import Data',
+    href: '/import',
+    icon: Upload,
+    roles: ['admin'],
+  },
+  {
     label: 'Admin',
     href: '/admin',
     icon: Settings,
@@ -93,14 +100,12 @@ export default function Sidebar({ mobile, onClose }: SidebarProps) {
       mobile ? 'w-full' : 'w-60'
     )}>
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-slate-700/60">
-        <div className="w-8 h-8 rounded-md bg-brand-600 flex items-center justify-center flex-shrink-0">
-          <span className="text-white text-xs font-bold">CC</span>
-        </div>
-        <div>
-          <p className="text-sm font-bold text-white leading-tight">Campaign</p>
-          <p className="text-xs text-slate-400 leading-tight">Command Center</p>
-        </div>
+      <div className="px-4 py-4 border-b border-slate-700/60">
+        <img
+          src="/logo.png"
+          alt="Keith Gettmann for Georgia House District 51"
+          className="w-full max-w-[180px] mx-auto block"
+        />
       </div>
 
       {/* Navigation */}
@@ -129,7 +134,7 @@ export default function Sidebar({ mobile, onClose }: SidebarProps) {
 
       {/* Footer */}
       <div className="px-4 py-3 border-t border-slate-700/60">
-        <p className="text-xs text-slate-500">v1.0 · District Campaign</p>
+        <p className="text-xs text-slate-500">GA House District 51</p>
       </div>
     </div>
   )

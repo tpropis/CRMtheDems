@@ -3,9 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import Input from '@/components/ui/Input'
-import Button from '@/components/ui/Button'
-import { Shield, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -46,11 +44,12 @@ export default function LoginPage() {
       <div className="relative w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-brand-600 mb-4 shadow-lg shadow-brand-900/30">
-            <Shield className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-white">Campaign Command Center</h1>
-          <p className="mt-1 text-sm text-slate-400">Authorized personnel only</p>
+          <img
+            src="/logo.png"
+            alt="Keith Gettmann for Georgia House District 51"
+            className="w-64 mx-auto mb-4"
+          />
+          <p className="mt-1 text-sm text-slate-400">Campaign Staff Portal</p>
         </div>
 
         {/* Card */}

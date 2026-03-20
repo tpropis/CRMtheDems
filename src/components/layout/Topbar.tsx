@@ -33,7 +33,7 @@ export default function Topbar() {
           </button>
           <div className="hidden lg:block">
             <span className="text-xs text-slate-500 font-medium uppercase tracking-wide">
-              Campaign Command Center
+              Keith Gettmann · GA House District 51
             </span>
           </div>
         </div>
