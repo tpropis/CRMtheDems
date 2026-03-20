@@ -67,7 +67,6 @@ export async function POST(req: NextRequest) {
       party: String(r['CalculatedParty'] || r['Party Preference'] || r['Party'] || r['party'] || r['Party Affiliation'] || '').trim() || undefined,
       voter_id: String(r['Voter ID'] || r['voter_id'] || r['VoterID'] || '').trim() || undefined,
       age: parseInt(String(r['Age'] || r['age'] || '')) || undefined,
-      support_status: 'unknown',
     })).filter((r) => r.first_name && r.last_name)
 
     await batchInsert('contacts', records)
