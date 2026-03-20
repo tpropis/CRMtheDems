@@ -36,7 +36,9 @@ export function useAuth(): AuthState {
         email: user.email ?? '',
         full_name: user.user_metadata?.full_name ?? user.email ?? '',
         role: user.user_metadata?.role ?? 'field',
+        active: true,
         created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       }
     }
 
