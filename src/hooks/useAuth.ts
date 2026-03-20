@@ -30,10 +30,20 @@ export function useAuth(): AuthState {
       return data as Profile | null
     }
 
+    function buildProfile(user: User, dbProfile: Profile | null): Profile {
+      return dbProfile ?? {
+        id: user.id,
+        email: user.email ?? '',
+        full_name: user.user_metadata?.full_name ?? user.email ?? '',
+        role: user.user_metadata?.role ?? 'field',
+        created_at: new Date().toISOString(),
+      }
+    }
+
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (user) {
-        const profile = await loadProfile(user.id)
-        setState({ user, profile, loading: false })
+        const dbProfile = await loadProfile(user.id)
+        setState({ user, profile: buildProfile(user, dbProfile), loading: false })
       } else {
         setState({ user: null, profile: null, loading: false })
       }
@@ -42,8 +52,8 @@ export function useAuth(): AuthState {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (session?.user) {
-          const profile = await loadProfile(session.user.id)
-          setState({ user: session.user, profile, loading: false })
+          const dbProfile = await loadProfile(session.user.id)
+          setState({ user: session.user, profile: buildProfile(session.user, dbProfile), loading: false })
         } else {
           setState({ user: null, profile: null, loading: false })
         }
