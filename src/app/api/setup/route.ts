@@ -2,11 +2,11 @@ import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://nacouynytrjwmfprbdpjy.supabase.co'
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!supabaseUrl || !serviceRoleKey) {
-    return NextResponse.json({ error: 'Missing env vars' }, { status: 500 })
+  if (!serviceRoleKey) {
+    return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY not set in Netlify environment variables' }, { status: 500 })
   }
 
   const supabase = createClient(supabaseUrl, serviceRoleKey, {
