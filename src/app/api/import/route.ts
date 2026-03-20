@@ -7,6 +7,10 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://nacouyntrj
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
 export async function POST(req: NextRequest) {
+  if (!SERVICE_ROLE_KEY) {
+    return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY is not set on the server' }, { status: 500 })
+  }
+
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
     auth: { autoRefreshToken: false, persistSession: false }
   })
@@ -28,10 +32,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'No data found in file' }, { status: 400 })
   }
 
+  // Return detected columns and sample row for diagnosis
+  const detectedColumns = Object.keys(rows[0])
+  const sampleRow = rows[0]
+
   let inserted = 0
   let errors: string[] = []
 
   async function batchInsert(table: string, records: Record<string, unknown>[]) {
+    if (records.length === 0) {
+      errors.push(`No valid records after filtering. Check that your columns include "First Name" and "Last Name". Detected columns: ${detectedColumns.join(', ')}`)
+      return
+    }
     const CHUNK = 500
     for (let i = 0; i < records.length; i += CHUNK) {
       const chunk = records.slice(i, i + CHUNK)
@@ -88,5 +100,5 @@ export async function POST(req: NextRequest) {
     await batchInsert('volunteers', records)
   }
 
-  return NextResponse.json({ inserted, errors, total: rows.length })
+  return NextResponse.json({ inserted, errors, total: rows.length, detectedColumns, sampleRow })
 }

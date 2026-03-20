@@ -13,7 +13,7 @@ export default function ImportPage() {
   const [type, setType] = useState('contacts')
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<{ inserted: number; errors: string[]; total: number } | null>(null)
+  const [result, setResult] = useState<{ inserted: number; errors: string[]; total: number; detectedColumns?: string[]; sampleRow?: Record<string, unknown> } | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   async function handleImport() {
@@ -136,6 +136,12 @@ export default function ImportPage() {
           {result.errors.map((e, i) => (
             <p key={i} className="text-xs text-red-600 mt-1">{e}</p>
           ))}
+          {result.detectedColumns && (
+            <div className="mt-3 pt-3 border-t border-slate-200">
+              <p className="text-xs font-semibold text-slate-500 mb-1">Detected columns in your file:</p>
+              <p className="text-xs text-slate-600 font-mono break-all">{result.detectedColumns.join(' | ')}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
