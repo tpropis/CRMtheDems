@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import * as XLSX from 'xlsx'
 
+
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://nacouyntrjwmfprbdpjy.supabase.co'
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
@@ -30,6 +31,16 @@ export async function POST(req: NextRequest) {
   let inserted = 0
   let errors: string[] = []
 
+  async function batchInsert(table: string, records: Record<string, unknown>[]) {
+    const CHUNK = 500
+    for (let i = 0; i < records.length; i += CHUNK) {
+      const chunk = records.slice(i, i + CHUNK)
+      const { data, error } = await supabase.from(table).insert(chunk).select('id')
+      if (error) errors.push(`Rows ${i + 1}–${i + chunk.length}: ${error.message}`)
+      else inserted += data?.length ?? 0
+    }
+  }
+
   if (type === 'contacts') {
     const records = rows.map((r) => ({
       first_name: String(r['First Name'] || r['first_name'] || r['FIRST_NAME'] || r['FirstName'] || '').trim(),
@@ -47,9 +58,7 @@ export async function POST(req: NextRequest) {
       support_status: 'unknown',
     })).filter((r) => r.first_name && r.last_name)
 
-    const { data, error } = await supabase.from('contacts').insert(records).select('id')
-    if (error) errors.push(error.message)
-    else inserted = data?.length ?? 0
+    await batchInsert('contacts', records)
 
   } else if (type === 'donors') {
     const records = rows.map((r) => ({
@@ -63,9 +72,7 @@ export async function POST(req: NextRequest) {
       notes: String(r['Notes'] || r['notes'] || '').trim() || null,
     })).filter((r) => r.first_name && r.last_name)
 
-    const { data, error } = await supabase.from('donors').insert(records).select('id')
-    if (error) errors.push(error.message)
-    else inserted = data?.length ?? 0
+    await batchInsert('donors', records)
 
   } else if (type === 'volunteers') {
     const records = rows.map((r) => ({
@@ -78,9 +85,7 @@ export async function POST(req: NextRequest) {
       active: true,
     })).filter((r) => r.first_name && r.last_name)
 
-    const { data, error } = await supabase.from('volunteers').insert(records).select('id')
-    if (error) errors.push(error.message)
-    else inserted = data?.length ?? 0
+    await batchInsert('volunteers', records)
   }
 
   return NextResponse.json({ inserted, errors, total: rows.length })
