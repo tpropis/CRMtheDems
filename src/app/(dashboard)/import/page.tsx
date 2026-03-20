@@ -21,16 +21,29 @@ export default function ImportPage() {
     setLoading(true)
     setResult(null)
 
-    const form = new FormData()
-    form.append('file', file)
-    form.append('type', type)
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      form.append('type', type)
 
-    const res = await fetch('/api/import', { method: 'POST', body: form })
-    const data = await res.json()
-    setResult(data)
-    setLoading(false)
-    setFile(null)
-    if (fileRef.current) fileRef.current.value = ''
+      const res = await fetch('/api/import', { method: 'POST', body: form })
+      const text = await res.text()
+
+      let data: any
+      try {
+        data = JSON.parse(text)
+      } catch {
+        data = { inserted: 0, errors: [`Server returned non-JSON (status ${res.status}): ${text.slice(0, 300)}`], total: 0 }
+      }
+
+      setResult(data)
+    } catch (err: any) {
+      setResult({ inserted: 0, errors: [`Network error: ${err?.message ?? String(err)}`], total: 0 })
+    } finally {
+      setLoading(false)
+      setFile(null)
+      if (fileRef.current) fileRef.current.value = ''
+    }
   }
 
   const selected = IMPORT_TYPES.find((t) => t.value === type)!
