@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { useRole } from '@/hooks/useRole'
 import {
   LayoutDashboard,
   Users,
@@ -88,11 +87,6 @@ interface SidebarProps {
 
 export default function Sidebar({ mobile, onClose }: SidebarProps) {
   const pathname = usePathname()
-  const { role } = useRole()
-
-  const visible = navItems.filter((item) =>
-    item.roles.includes(role)
-  )
 
   return (
     <div className={cn(
@@ -110,7 +104,7 @@ export default function Sidebar({ mobile, onClose }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {visible.map((item) => {
+        {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
           return (
             <Link
