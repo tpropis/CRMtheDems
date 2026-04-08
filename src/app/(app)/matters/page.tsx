@@ -43,7 +43,7 @@ export default async function MattersPage() {
               <Filter className="h-4 w-4" />
               Filter
             </Button>
-            <Link href="/app/intake/new">
+            <Link href="/intake/new">
               <Button size="sm">
                 <Plus className="h-4 w-4" />
                 New Matter
@@ -73,7 +73,7 @@ export default async function MattersPage() {
                 <tr>
                   <td colSpan={8} className="text-center py-12 text-vault-text-secondary">
                     No matters yet.{' '}
-                    <Link href="/app/intake/new" className="text-vault-accent-light hover:underline">
+                    <Link href="/intake/new" className="text-vault-accent-light hover:underline">
                       Start with a new intake
                     </Link>
                   </td>

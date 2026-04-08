@@ -37,7 +37,7 @@ export default async function IntakePage() {
               <Filter className="h-4 w-4" />
               Filter
             </Button>
-            <Link href="/app/intake/new">
+            <Link href="/intake/new">
               <Button size="sm">
                 <Plus className="h-4 w-4" />
                 New Lead
@@ -83,7 +83,7 @@ export default async function IntakePage() {
                 <tr>
                   <td colSpan={8} className="text-center py-12 text-vault-text-secondary">
                     No intake leads yet.{' '}
-                    <Link href="/app/intake/new" className="text-vault-accent-light hover:underline">
+                    <Link href="/intake/new" className="text-vault-accent-light hover:underline">
                       Create the first one
                     </Link>
                   </td>
