@@ -4,11 +4,16 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.supabase.co',
-        port: '',
-        pathname: '/storage/v1/object/**',
+        hostname: '*.amazonaws.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
       },
     ],
+  },
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
   },
 }
 

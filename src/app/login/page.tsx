@@ -1,122 +1,54 @@
-'use client'
-
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
-import { Eye, EyeOff } from 'lucide-react'
+import { Suspense } from 'react'
+import { LoginForm } from './LoginForm'
+import { Logo } from '@/components/brand/Logo'
+import { Shield } from 'lucide-react'
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-
-    const supabase = createClient()
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (authError) {
-      setError(authError.message)
-      setLoading(false)
-    } else {
-      router.push('/dashboard')
-      router.refresh()
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center px-4">
-      {/* Background pattern */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-brand-900/20 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-brand-800/10 blur-3xl" />
+    <div className="min-h-screen bg-vault-bg flex">
+      <div className="flex flex-1 flex-col items-center justify-center px-8 py-12">
+        <div className="w-full max-w-sm">
+          <div className="mb-10">
+            <Logo variant="dark" size="lg" />
+          </div>
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-vault-text tracking-tight">Secure Access</h1>
+            <p className="mt-1.5 text-sm text-vault-text-secondary">Sign in to your firm's private workspace.</p>
+          </div>
+          <Suspense fallback={<div className="h-64 skeleton rounded-md" />}>
+            <LoginForm />
+          </Suspense>
+        </div>
       </div>
 
-      <div className="relative w-full max-w-sm">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <img
-            src="/logo.png"
-            alt="Keith Gettmann for Georgia House District 51"
-            className="w-64 mx-auto mb-4"
-          />
-          <p className="mt-1 text-sm text-slate-400">Campaign Staff Portal</p>
-        </div>
-
-        {/* Card */}
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl">
-          <form onSubmit={handleLogin} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                Email address
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                className="block w-full rounded-md border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="block w-full rounded-md border border-slate-600 bg-slate-900 px-3 py-2.5 pr-10 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+      <div className="hidden lg:flex w-96 flex-col justify-between border-l border-vault-border bg-vault-surface p-10">
+        <div />
+        <div className="space-y-8">
+          <div className="rounded-lg border border-vault-border bg-vault-elevated p-5">
+            <Shield className="h-6 w-6 text-vault-accent mb-3" />
+            <h3 className="text-sm font-semibold text-vault-text mb-1">Zero-Trust Architecture</h3>
+            <p className="text-xs text-vault-text-secondary leading-relaxed">
+              All AI inference runs locally within your firm's environment. No client data, privileged communications, or work product ever leaves your control.
+            </p>
+          </div>
+          <div className="space-y-3">
+            {[
+              'AES-256 encryption at rest and in transit',
+              'Matter-level access controls enforced server-side',
+              'Immutable audit log for every action',
+              'No third-party AI API dependency by default',
+              'SOC 2 compliant architecture',
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-2.5">
+                <div className="h-1.5 w-1.5 rounded-full bg-vault-success shrink-0" />
+                <span className="text-xs text-vault-text-secondary">{item}</span>
               </div>
-            </div>
-
-            {error && (
-              <div className="rounded-md bg-red-900/40 border border-red-800 px-3 py-2.5">
-                <p className="text-sm text-red-300">{error}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-10 rounded-md bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 focus:ring-offset-slate-800 disabled:opacity-50 disabled:pointer-events-none transition-colors flex items-center justify-center gap-2"
-            >
-              {loading && (
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              )}
-              {loading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
+            ))}
+          </div>
         </div>
-
-        <p className="text-center mt-6 text-xs text-slate-600">
-          Access restricted to authorized campaign staff
-        </p>
+        <div className="border-t border-vault-border pt-6">
+          <p className="text-2xs text-vault-muted">© 2026 Privilege Vault AI. Built for AmLaw firms that demand security.</p>
+        </div>
       </div>
     </div>
   )
