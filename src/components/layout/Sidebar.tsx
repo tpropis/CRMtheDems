@@ -1,135 +1,155 @@
 'use client'
-
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { Logo } from '@/components/brand/Logo'
 import {
-  LayoutDashboard,
-  Users,
-  MapPin,
-  DollarSign,
-  Heart,
-  SignpostBig,
-  CheckSquare,
-  Calendar,
-  Settings,
-  Upload,
-  ChevronRight,
+  LayoutDashboard, Inbox, ClipboardList, Users, Briefcase,
+  Calendar, FileText, Search, Database, Clock, Receipt,
+  BarChart3, Settings, Shield, UserCheck, AlertTriangle,
+  ChevronDown, ChevronRight, Bot, FolderOpen, LogOut,
 } from 'lucide-react'
+import { signOut } from 'next-auth/react'
+import type { Session } from 'next-auth'
+import { roleLabel, initials } from '@/lib/utils'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
-const navItems = [
+interface NavSection {
+  label?: string
+  items: NavItem[]
+}
+interface NavItem {
+  label: string
+  href: string
+  icon: React.ComponentType<{ className?: string }>
+  badge?: number
+  exact?: boolean
+}
+
+const NAV: NavSection[] = [
   {
-    label: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard,
-    roles: ['admin', 'manager', 'field', 'volunteer'],
+    items: [
+      { label: 'Dashboard',    href: '/app/dashboard',   icon: LayoutDashboard, exact: true },
+      { label: 'Inbox',        href: '/app/inbox',       icon: Inbox },
+    ],
   },
   {
-    label: 'Contacts',
-    href: '/contacts',
-    icon: Users,
-    roles: ['admin', 'manager', 'field'],
+    label: 'Clients & Matters',
+    items: [
+      { label: 'Intake',       href: '/app/intake',      icon: ClipboardList },
+      { label: 'Conflicts',    href: '/app/conflicts',   icon: AlertTriangle },
+      { label: 'Clients',      href: '/app/clients',     icon: Users },
+      { label: 'Contacts',     href: '/app/contacts',    icon: UserCheck },
+      { label: 'Matters',      href: '/app/matters',     icon: Briefcase },
+    ],
   },
   {
-    label: 'Canvassing',
-    href: '/canvassing',
-    icon: MapPin,
-    roles: ['admin', 'manager', 'field', 'volunteer'],
+    label: 'Work Product',
+    items: [
+      { label: 'Calendar',     href: '/app/calendar',    icon: Calendar },
+      { label: 'Documents',    href: '/app/documents',   icon: FileText },
+      { label: 'Templates',    href: '/app/templates',   icon: FolderOpen },
+    ],
   },
   {
-    label: 'Donors',
-    href: '/donors',
-    icon: DollarSign,
-    roles: ['admin', 'manager'],
+    label: 'AI Tools',
+    items: [
+      { label: 'Research',     href: '/app/research',    icon: Search },
+      { label: 'Discovery',    href: '/app/discovery',   icon: Database },
+    ],
   },
   {
-    label: 'Volunteers',
-    href: '/volunteers',
-    icon: Heart,
-    roles: ['admin', 'manager', 'field'],
+    label: 'Finance',
+    items: [
+      { label: 'Timekeeping',  href: '/app/timekeeping', icon: Clock },
+      { label: 'Billing',      href: '/app/billing',     icon: Receipt },
+      { label: 'Reports',      href: '/app/reports',     icon: BarChart3 },
+    ],
   },
   {
-    label: 'Yard Signs',
-    href: '/yard-signs',
-    icon: SignpostBig,
-    roles: ['admin', 'manager', 'field'],
-  },
-  {
-    label: 'Tasks',
-    href: '/tasks',
-    icon: CheckSquare,
-    roles: ['admin', 'manager', 'field', 'volunteer'],
-  },
-  {
-    label: 'Events',
-    href: '/events',
-    icon: Calendar,
-    roles: ['admin', 'manager', 'field', 'volunteer'],
-  },
-  {
-    label: 'Import Data',
-    href: '/import',
-    icon: Upload,
-    roles: ['admin'],
-  },
-  {
-    label: 'Admin',
-    href: '/admin',
-    icon: Settings,
-    roles: ['admin'],
+    label: 'Administration',
+    items: [
+      { label: 'Admin',        href: '/app/admin',       icon: Settings },
+      { label: 'Audit',        href: '/app/admin/audit', icon: Shield },
+    ],
   },
 ]
 
-interface SidebarProps {
-  mobile?: boolean
-  onClose?: () => void
-}
-
-export default function Sidebar({ mobile, onClose }: SidebarProps) {
+function NavItem({ item }: { item: NavItem }) {
   const pathname = usePathname()
+  const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href)
 
   return (
-    <div className={cn(
-      'flex flex-col h-full bg-slate-900 text-white',
-      mobile ? 'w-full' : 'w-60'
-    )}>
-      {/* Logo */}
-      <div className="px-4 py-4 border-b border-slate-700/60">
-        <img
-          src="/logo.png"
-          alt="Keith Gettmann for Georgia House District 51"
-          className="w-full max-w-[180px] mx-auto block"
-        />
-      </div>
+    <Link
+      href={item.href}
+      className={cn(
+        'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors w-full',
+        isActive
+          ? 'bg-vault-accent/10 text-vault-accent-light border-l-2 border-vault-accent pl-[10px]'
+          : 'text-vault-text-secondary hover:bg-vault-elevated hover:text-vault-text'
+      )}
+    >
+      <item.icon className={cn('h-4 w-4 shrink-0', isActive ? 'text-vault-accent-light' : 'text-vault-muted')} />
+      <span className="flex-1 truncate">{item.label}</span>
+      {item.badge !== undefined && (
+        <span className="text-xs bg-vault-accent/20 text-vault-accent-light rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center">
+          {item.badge}
+        </span>
+      )}
+    </Link>
+  )
+}
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onClose}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors group',
-                isActive
-                  ? 'bg-brand-600 text-white'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              )}
-            >
-              <item.icon className="h-4 w-4 flex-shrink-0" />
-              <span className="flex-1">{item.label}</span>
-              {isActive && <ChevronRight className="h-3 w-3 opacity-60" />}
-            </Link>
-          )
-        })}
+export function Sidebar({ session }: { session: Session }) {
+  const user = session.user
+  return (
+    <aside className="flex h-full w-56 flex-col border-r border-vault-border bg-vault-surface">
+      <div className="flex h-14 items-center border-b border-vault-border px-4">
+        <Link href="/app/dashboard" className="flex items-center">
+          <Logo variant="dark" size="sm" />
+        </Link>
+      </div>
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+        {NAV.map((section, si) => (
+          <div key={si} className="space-y-0.5">
+            {section.label && (
+              <p className="text-2xs font-semibold uppercase tracking-widest text-vault-muted px-3 mb-1">{section.label}</p>
+            )}
+            {section.items.map((item) => (
+              <NavItem key={item.href} item={item} />
+            ))}
+          </div>
+        ))}
       </nav>
-
-      {/* Footer */}
-      <div className="px-4 py-3 border-t border-slate-700/60">
-        <p className="text-xs text-slate-500">GA House District 51</p>
+      <div className="px-3 py-2 border-t border-vault-border">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-vault-elevated">
+          <Bot className="h-3.5 w-3.5 text-vault-success shrink-0" />
+          <div className="min-w-0">
+            <p className="text-2xs text-vault-muted uppercase tracking-wider">AI Engine</p>
+            <p className="text-xs text-vault-text truncate">Local · Private</p>
+          </div>
+          <div className="ml-auto h-1.5 w-1.5 rounded-full bg-vault-success shrink-0" />
+        </div>
       </div>
-    </div>
+      <div className="border-t border-vault-border p-3">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-7 w-7">
+            <AvatarFallback className="text-2xs">{initials(user.name || user.email)}</AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium text-vault-text truncate">{user.name}</p>
+            <p className="text-2xs text-vault-muted truncate">{roleLabel((user as any).role)}</p>
+          </div>
+          <button
+            onClick={() => signOut({ callbackUrl: '/login' })}
+            className="shrink-0 rounded p-1 text-vault-muted hover:text-vault-text transition-colors"
+            title="Sign out"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+    </aside>
   )
 }

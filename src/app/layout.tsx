@@ -1,32 +1,30 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
-import { Toaster } from 'react-hot-toast'
 
 export const metadata: Metadata = {
-  title: 'Keith Gettmann for GA House District 51',
-  description: 'Campaign field operations and voter CRM',
+  title: {
+    default: 'Privilege Vault AI',
+    template: '%s | Privilege Vault AI',
+  },
+  description: 'Private AI platform for privileged legal work. Built for law firms that demand security, precision, and control.',
+  robots: 'noindex, nofollow',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export const viewport: Viewport = {
+  themeColor: '#080B12',
+  width: 'device-width',
+  initialScale: 1,
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="font-sans antialiased bg-vault-bg text-vault-text">
         {children}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#1e293b',
-              color: '#f1f5f9',
-              fontSize: '14px',
-            },
-          }}
-        />
       </body>
     </html>
   )
