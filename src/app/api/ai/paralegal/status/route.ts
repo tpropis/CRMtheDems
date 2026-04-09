@@ -11,35 +11,62 @@ export async function POST(req: Request) {
   const firmId = (session.user as any).firmId
   const { matterId, context } = await req.json()
 
-  // Optionally enrich with matter data from DB
   let matterContext = ''
+
   if (matterId) {
+    // Find matter by id, number, or name
     const matter = await db.matter.findFirst({
-      where: { firmId, OR: [{ id: matterId }, { matterNumber: matterId }, { name: { contains: matterId, mode: 'insensitive' } }] },
+      where: {
+        firmId,
+        OR: [
+          { id: matterId },
+          { matterNumber: matterId },
+          { name: { contains: matterId, mode: 'insensitive' } },
+        ],
+      },
       include: {
         client: true,
         parties: { include: { user: true }, where: { isPrimary: true } },
-        tasks: { where: { status: { not: 'DONE' } }, orderBy: { dueDate: 'asc' }, take: 5 },
-        calendarEvents: { where: { startDate: { gte: new Date() } }, orderBy: { startDate: 'asc' }, take: 5 },
       },
     })
 
     if (matter) {
       const attorney = matter.parties[0]?.user
-      const upcomingEvents = matter.calendarEvents.map(e => `${new Date(e.startDate).toLocaleDateString()} — ${e.title}`).join('\n')
-      const openTasks = matter.tasks.map(t => `${t.title} (${t.priority})`).join('\n')
 
-      matterContext = `
-Matter: ${matter.name} (${matter.matterNumber})
-Client: ${matter.client.name}
-Attorney: ${attorney?.name || 'Unassigned'}
-Status: ${matter.status}
-Type: ${matter.type}
-Court: ${matter.courtName || 'N/A'}
-Case No.: ${matter.caseNumber || 'N/A'}
-${upcomingEvents ? `\nUpcoming Events:\n${upcomingEvents}` : ''}
-${openTasks ? `\nOpen Tasks:\n${openTasks}` : ''}
-`
+      // Fetch tasks and events separately to avoid TypeScript inference issues
+      const [openTasks, upcomingEvents] = await Promise.all([
+        db.task.findMany({
+          where: { matterId: matter.id, status: { not: 'DONE' } },
+          orderBy: { dueAt: 'asc' },
+          take: 5,
+          select: { title: true, priority: true, dueAt: true },
+        }),
+        db.calendarEvent.findMany({
+          where: { matterId: matter.id, startAt: { gte: new Date() } },
+          orderBy: { startAt: 'asc' },
+          take: 5,
+          select: { title: true, startAt: true, eventType: true },
+        }),
+      ])
+
+      const eventsStr = upcomingEvents
+        .map((e) => `${new Date(e.startAt).toLocaleDateString()} — ${e.title}`)
+        .join('\n')
+      const tasksStr = openTasks
+        .map((t) => `${t.title} (${t.priority})${t.dueAt ? ` — due ${new Date(t.dueAt).toLocaleDateString()}` : ''}`)
+        .join('\n')
+
+      matterContext = [
+        `Matter: ${matter.name} (${matter.matterNumber})`,
+        `Client: ${matter.client.name}`,
+        `Attorney: ${attorney?.name || 'Unassigned'}`,
+        `Status: ${matter.status}`,
+        `Type: ${matter.type}`,
+        matter.courtName ? `Court: ${matter.courtName}` : '',
+        matter.caseNumber ? `Case No.: ${matter.caseNumber}` : '',
+        eventsStr ? `\nUpcoming Events:\n${eventsStr}` : '',
+        tasksStr ? `\nOpen Tasks:\n${tasksStr}` : '',
+      ].filter(Boolean).join('\n')
     }
   }
 
@@ -55,17 +82,17 @@ ${openTasks ? `\nOpen Tasks:\n${openTasks}` : ''}
 Format:
 - Date at top
 - "PRIVILEGED AND CONFIDENTIAL" header
-- Re: line
+- Re: line with matter name
 - Brief introductory paragraph
 - Sections: CURRENT STATUS, RECENT ACTIVITY, UPCOMING DEADLINES, ACTION REQUIRED FROM CLIENT
-- Close with contact information placeholder
-- Tone: professional, confident, reassuring — clients want to know their attorney is on top of things
+- Professional closing
+- Tone: professional, confident, reassuring
 
-Do NOT include placeholder text like "[insert name]" — write the actual document using the information provided. If something is unknown, omit that section rather than leaving a blank.`,
+Do NOT use placeholder text like "[insert name]". Write the actual document using the information provided. Omit sections where data is unavailable rather than leaving blanks.`,
       },
       {
         role: 'user',
-        content: `Today's date: ${today}${matterContext ? `\n\nMatter context from our system:\n${matterContext}` : ''}\n\nAdditional context from attorney:\n${context || 'No additional context provided.'}`,
+        content: `Today's date: ${today}${matterContext ? `\n\nMatter data:\n${matterContext}` : ''}\n\nAttorney notes:\n${context || 'No additional context.'}`,
       },
     ],
     temperature: 0.25,
