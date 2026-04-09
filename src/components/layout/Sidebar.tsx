@@ -9,6 +9,7 @@ import {
   Calendar, FileText, Search, Database, Clock, Receipt,
   BarChart3, Settings, Shield, UserCheck, AlertTriangle,
   ChevronDown, ChevronRight, Bot, FolderOpen, LogOut,
+  Wand2, Link2, Sparkles,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import type { Session } from 'next-auth'
@@ -50,11 +51,13 @@ const NAV: NavSection[] = [
       { label: 'Calendar',     href: '/calendar',    icon: Calendar },
       { label: 'Documents',    href: '/documents',   icon: FileText },
       { label: 'Templates',    href: '/templates',   icon: FolderOpen },
+      { label: 'Generate Doc', href: '/documents/generate', icon: Wand2 },
     ],
   },
   {
     label: 'AI Tools',
     items: [
+      { label: 'AI Paralegal', href: '/ai',          icon: Sparkles },
       { label: 'Research',     href: '/research',    icon: Search },
       { label: 'Discovery',    href: '/discovery',   icon: Database },
     ],
@@ -71,6 +74,8 @@ const NAV: NavSection[] = [
     label: 'Administration',
     items: [
       { label: 'Admin',        href: '/admin',       icon: Settings },
+      { label: 'Brand',        href: '/admin/brand', icon: BarChart3 },
+      { label: 'Integrations', href: '/admin/integrations', icon: Link2 },
       { label: 'Audit',        href: '/admin/audit', icon: Shield },
     ],
   },

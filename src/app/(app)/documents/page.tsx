@@ -80,7 +80,7 @@ export default async function DocumentsPage() {
                     </td>
                     <td>
                       {doc.matter ? (
-                        <Link href={`/app/matters/${doc.matterId}/documents`} className="hover:text-vault-accent-light">
+                        <Link href={`/matters/${doc.matterId}/documents`} className="hover:text-vault-accent-light">
                           <p className="text-sm text-vault-text-secondary">{doc.matter.name}</p>
                           <p className="text-xs font-mono text-vault-muted">{doc.matter.matterNumber}</p>
                         </Link>
