@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { z } from 'zod'
+import type { BrandConfig } from '@/server/pdf/letterhead'
 
 const schema = z.object({
   content: z.string().min(1),
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json()
-    const { content, title, matterId } = schema.parse(body)
+    const { content, title } = schema.parse(body)
 
     // Load firm brand settings for letterhead
     const firm = await db.firm.findUnique({
@@ -27,21 +28,21 @@ export async function POST(req: Request) {
     })
 
     const settings = (firm?.settings as any) || {}
-    const brand = {
+    const brand: BrandConfig = {
       firmName: firm?.name || '',
       address: firm?.address || '',
       city: firm?.city || '',
       state: firm?.state || '',
       zipCode: firm?.zipCode || '',
       phone: firm?.phone || '',
-      website: firm?.website,
-      barNumber: firm?.barNumber,
-      logoUrl: settings.logoUrl,
+      website: firm?.website ?? undefined,
+      barNumber: firm?.barNumber ?? undefined,
+      logoUrl: settings.logoUrl ?? undefined,
       primaryColor: settings.primaryColor || '#2563EB',
       secondaryColor: settings.secondaryColor || '#1E2535',
-      tagline: settings.tagline,
+      tagline: settings.tagline ?? undefined,
       letterheadStyle: settings.letterheadStyle || 'classic',
-      footerText: settings.footerText,
+      footerText: settings.footerText ?? undefined,
       showBarNumber: settings.showBarNumber ?? true,
       showWebsite: settings.showWebsite ?? true,
     }
@@ -49,17 +50,15 @@ export async function POST(req: Request) {
     // Dynamic import to avoid edge runtime issues
     const { renderToBuffer } = await import('@react-pdf/renderer')
     const { LetterheadDocument } = await import('@/server/pdf/letterhead')
-    const React = await import('react')
+    const React = (await import('react')).default
 
-    const pdfBuffer = await renderToBuffer(
-      React.createElement(LetterheadDocument, { brand, content, title })
-    )
+    const element = React.createElement(LetterheadDocument, { brand, content, title })
+    const pdfBuffer = await renderToBuffer(element as any)
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer as unknown as BodyInit, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${title.replace(/[^a-z0-9]/gi, '_')}.pdf"`,
-        'Content-Length': String(pdfBuffer.length),
       },
     })
   } catch (err: any) {

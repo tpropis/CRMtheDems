@@ -15,6 +15,7 @@ const badgeVariants = cva(
         accent:    'bg-vault-accent/15 border-vault-accent/25 text-vault-accent-light',
         gold:      'bg-amber-500/10 border-amber-500/25 text-amber-400',
         outline:   'border-vault-border text-vault-text-secondary bg-transparent',
+        success:   'bg-vault-success/15 border-vault-success/25 text-vault-success',
       },
     },
     defaultVariants: { variant: 'default' },

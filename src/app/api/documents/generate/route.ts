@@ -4,7 +4,6 @@ import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { getAIProvider } from '@/server/ai'
 import { z } from 'zod'
-import Mustache from 'mustache'
 
 const schema = z.object({
   templateName: z.string().min(1),
@@ -14,10 +13,9 @@ const schema = z.object({
 })
 
 // Build mustache view from matter DB record
-function buildMustacheView(matter: any, firm: any, today: string) {
+function buildView(matter: any, firm: any, today: string): Record<string, string> {
   const client = matter?.client || {}
-  const attorney = matter?.parties?.find((p: any) => p.isPrimary && p.user) || matter?.parties?.[0]
-  const attyUser = attorney?.user || {}
+  const attorney = matter?.parties?.[0]?.user || {}
 
   return {
     today,
@@ -37,15 +35,19 @@ function buildMustacheView(matter: any, firm: any, today: string) {
     'matter.caseNumber': matter?.caseNumber || '',
     'matter.judge': matter?.judgeAssigned || '',
     'matter.jurisdiction': matter?.jurisdiction || '',
-    'attorney.name': attyUser.name || '',
-    'attorney.title': attyUser.title || '',
-    'attorney.barNumber': attyUser.barNumber || '',
+    'attorney.name': attorney.name || '',
+    'attorney.title': attorney.title || '',
+    'attorney.barNumber': attorney.barNumber || '',
     'attorney.rate': matter?.billingRate ? `$${matter.billingRate}/hr` : '',
     'opposing.counsel': matter?.opposingCounsel || '',
     'opposing.party': '',
-    'opposing.address': '',
     'retainer.amount': matter?.retainerAmount ? `$${matter.retainerAmount}` : '',
   }
+}
+
+// Simple mustache-style variable replacement (avoids import type issues)
+function renderTemplate(template: string, view: Record<string, string>): string {
+  return template.replace(/\{\{([\w.]+)\}\}/g, (_, key) => view[key] || `{{${key}}}`)
 }
 
 export async function POST(req: Request) {
@@ -72,11 +74,8 @@ export async function POST(req: Request) {
     ])
 
     const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-    const view = buildMustacheView(matter, firm, today)
-
-    // Pre-fill known variables with Mustache
-    let prefilledContent = templateContent
-    try { prefilledContent = Mustache.render(templateContent, view) } catch {}
+    const view = buildView(matter, firm, today)
+    const prefilledContent = renderTemplate(templateContent, view)
 
     // Build AI prompt
     const systemPrompt = `You are a senior attorney drafting legal documents for ${firm?.name || 'a law firm'}.
@@ -98,11 +97,14 @@ Use formal legal language. Do not add commentary — output ONLY the document te
     })
 
     // Save to document vault
+    const storageKey = `generated/${firmId}/${Date.now()}-${templateName.replace(/\s+/g, '_')}.txt`
     const doc = await db.document.create({
       data: {
         firmId,
         matterId: matterId || null,
         name: `${templateName} — ${today}`,
+        originalName: `${templateName}.txt`,
+        storageKey,
         description: `AI-generated from template: ${templateName}`,
         mimeType: 'text/plain',
         size: result.content.length,
@@ -112,7 +114,6 @@ Use formal legal language. Do not add commentary — output ONLY the document te
         uploadedById: userId,
         isCurrentVersion: true,
         version: 1,
-        // Store generated content in metadata
         metadata: { generatedContent: result.content, templateName, model: result.model },
       },
     })
