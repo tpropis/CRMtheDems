@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import { PageHeader } from '@/components/ui/page-header'
-import { Users, Shield, Settings, Key } from 'lucide-react'
+import { Users, Shield, Settings, Key, Palette, Link2 } from 'lucide-react'
 
 const ADMIN_SECTIONS = [
-  { href: '/app/admin/users', icon: Users, title: 'User Management', desc: 'Invite, manage, and deactivate firm users. Assign roles and offices.' },
-  { href: '/app/admin/audit', icon: Shield, title: 'Audit Log', desc: 'Immutable record of all firm activity. Exportable for compliance review.' },
-  { href: '/app/admin/settings', icon: Settings, title: 'Firm Settings', desc: 'Configure AI providers, billing rules, retention policies, and integrations.' },
-  { href: '/app/admin/roles', icon: Key, title: 'Roles & Permissions', desc: 'Manage role-based access control and permission matrices.' },
+  { href: '/admin/users', icon: Users, title: 'User Management', desc: 'Invite, manage, and deactivate firm users. Assign roles and offices.' },
+  { href: '/admin/brand', icon: Palette, title: 'Firm Brand', desc: 'Logo, letterhead style, colors, and document footer applied to all generated PDFs.' },
+  { href: '/admin/integrations', icon: Link2, title: 'Integrations', desc: 'Connect Clio and other practice management tools with bidirectional AI sync.' },
+  { href: '/admin/audit', icon: Shield, title: 'Audit Log', desc: 'Immutable record of all firm activity. Exportable for compliance review.' },
+  { href: '/admin/settings', icon: Settings, title: 'Firm Settings', desc: 'Configure AI providers, billing rules, retention policies, and integrations.' },
+  { href: '/admin/roles', icon: Key, title: 'Roles & Permissions', desc: 'Manage role-based access control and permission matrices.' },
 ]
 
 export default function AdminPage() {

@@ -9,6 +9,7 @@ import {
   Calendar, FileText, Search, Database, Clock, Receipt,
   BarChart3, Settings, Shield, UserCheck, AlertTriangle,
   ChevronDown, ChevronRight, Bot, FolderOpen, LogOut,
+  Wand2, Link2, Sparkles,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import type { Session } from 'next-auth'
@@ -30,48 +31,52 @@ interface NavItem {
 const NAV: NavSection[] = [
   {
     items: [
-      { label: 'Dashboard',    href: '/app/dashboard',   icon: LayoutDashboard, exact: true },
-      { label: 'Inbox',        href: '/app/inbox',       icon: Inbox },
+      { label: 'Dashboard',    href: '/dashboard',   icon: LayoutDashboard, exact: true },
+      { label: 'Inbox',        href: '/inbox',       icon: Inbox },
     ],
   },
   {
     label: 'Clients & Matters',
     items: [
-      { label: 'Intake',       href: '/app/intake',      icon: ClipboardList },
-      { label: 'Conflicts',    href: '/app/conflicts',   icon: AlertTriangle },
-      { label: 'Clients',      href: '/app/clients',     icon: Users },
-      { label: 'Contacts',     href: '/app/contacts',    icon: UserCheck },
-      { label: 'Matters',      href: '/app/matters',     icon: Briefcase },
+      { label: 'Intake',       href: '/intake',      icon: ClipboardList },
+      { label: 'Conflicts',    href: '/conflicts',   icon: AlertTriangle },
+      { label: 'Clients',      href: '/clients',     icon: Users },
+      { label: 'Contacts',     href: '/contacts',    icon: UserCheck },
+      { label: 'Matters',      href: '/matters',     icon: Briefcase },
     ],
   },
   {
     label: 'Work Product',
     items: [
-      { label: 'Calendar',     href: '/app/calendar',    icon: Calendar },
-      { label: 'Documents',    href: '/app/documents',   icon: FileText },
-      { label: 'Templates',    href: '/app/templates',   icon: FolderOpen },
+      { label: 'Calendar',     href: '/calendar',    icon: Calendar },
+      { label: 'Documents',    href: '/documents',   icon: FileText },
+      { label: 'Templates',    href: '/templates',   icon: FolderOpen },
+      { label: 'Generate Doc', href: '/documents/generate', icon: Wand2 },
     ],
   },
   {
     label: 'AI Tools',
     items: [
-      { label: 'Research',     href: '/app/research',    icon: Search },
-      { label: 'Discovery',    href: '/app/discovery',   icon: Database },
+      { label: 'AI Paralegal', href: '/ai',          icon: Sparkles },
+      { label: 'Research',     href: '/research',    icon: Search },
+      { label: 'Discovery',    href: '/discovery',   icon: Database },
     ],
   },
   {
     label: 'Finance',
     items: [
-      { label: 'Timekeeping',  href: '/app/timekeeping', icon: Clock },
-      { label: 'Billing',      href: '/app/billing',     icon: Receipt },
-      { label: 'Reports',      href: '/app/reports',     icon: BarChart3 },
+      { label: 'Timekeeping',  href: '/timekeeping', icon: Clock },
+      { label: 'Billing',      href: '/billing',     icon: Receipt },
+      { label: 'Reports',      href: '/reports',     icon: BarChart3 },
     ],
   },
   {
     label: 'Administration',
     items: [
-      { label: 'Admin',        href: '/app/admin',       icon: Settings },
-      { label: 'Audit',        href: '/app/admin/audit', icon: Shield },
+      { label: 'Admin',        href: '/admin',       icon: Settings },
+      { label: 'Brand',        href: '/admin/brand', icon: BarChart3 },
+      { label: 'Integrations', href: '/admin/integrations', icon: Link2 },
+      { label: 'Audit',        href: '/admin/audit', icon: Shield },
     ],
   },
 ]
@@ -106,7 +111,7 @@ export function Sidebar({ session }: { session: Session }) {
   return (
     <aside className="flex h-full w-56 flex-col border-r border-vault-border bg-vault-surface">
       <div className="flex h-14 items-center border-b border-vault-border px-4">
-        <Link href="/app/dashboard" className="flex items-center">
+        <Link href="/dashboard" className="flex items-center">
           <Logo variant="dark" size="sm" />
         </Link>
       </div>
