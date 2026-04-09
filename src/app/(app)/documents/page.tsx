@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { formatDate, formatFileSize } from '@/lib/utils'

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import Link from 'next/link'
@@ -134,7 +135,7 @@ export default async function DashboardPage() {
         description="Here's what requires your attention today."
         actions={
           <div className="flex gap-2">
-            <Link href="/app/intake/new">
+            <Link href="/intake/new">
               <Button size="sm">
                 <Plus className="h-4 w-4" />
                 New Intake
@@ -159,7 +160,7 @@ export default async function DashboardPage() {
               <Briefcase className="h-4 w-4 text-vault-muted" />
               <h2 className="text-sm font-semibold text-vault-text">Active Matters</h2>
             </div>
-            <Link href="/app/matters">
+            <Link href="/matters">
               <Button variant="ghost" size="sm" className="text-xs">
                 View all <ArrowRight className="h-3 w-3 ml-1" />
               </Button>
@@ -169,7 +170,7 @@ export default async function DashboardPage() {
             {data.recentMatters.length === 0 ? (
               <div className="px-5 py-8 text-center text-sm text-vault-text-secondary">
                 No active matters.{' '}
-                <Link href="/app/intake/new" className="text-vault-accent-light hover:underline">Create one</Link>
+                <Link href="/intake/new" className="text-vault-accent-light hover:underline">Create one</Link>
               </div>
             ) : (
               data.recentMatters.map((matter) => {
@@ -216,7 +217,7 @@ export default async function DashboardPage() {
                 <Calendar className="h-4 w-4 text-vault-muted" />
                 <h2 className="text-sm font-semibold text-vault-text">Deadlines</h2>
               </div>
-              <Link href="/app/calendar">
+              <Link href="/calendar">
                 <Button variant="ghost" size="sm" className="text-xs">All</Button>
               </Link>
             </div>

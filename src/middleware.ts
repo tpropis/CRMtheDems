@@ -1,44 +1,8 @@
-import { auth } from '@/lib/auth'
-import { NextResponse } from 'next/server'
+import NextAuth from 'next-auth'
+import { authConfig } from '@/lib/auth.config'
 
-const PUBLIC_ROUTES = [
-  '/',
-  '/login',
-  '/about',
-  '/security',
-  '/platform',
-  '/pricing',
-  '/demo',
-  '/contact',
-  '/api/auth',
-]
-
-export default auth((req) => {
-  const { pathname } = req.nextUrl
-  const isPublic = PUBLIC_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + '/')
-  )
-
-  // Allow public routes and static assets
-  if (
-    isPublic ||
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/favicon') ||
-    pathname.match(/\.(ico|png|jpg|jpeg|svg|webp|css|js|woff|woff2)$/)
-  ) {
-    return NextResponse.next()
-  }
-
-  // Redirect unauthenticated users
-  if (!req.auth) {
-    const loginUrl = new URL('/login', req.url)
-    loginUrl.searchParams.set('callbackUrl', pathname)
-    return NextResponse.redirect(loginUrl)
-  }
-
-  return NextResponse.next()
-})
+export default NextAuth(authConfig).auth
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|webp|ico|css|js|woff|woff2)$).*)'],
 }

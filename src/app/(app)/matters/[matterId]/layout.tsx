@@ -49,7 +49,7 @@ export default async function MatterLayout({
       {/* Matter header */}
       <div className="mb-5">
         <nav className="flex items-center gap-1.5 text-xs text-vault-muted mb-3">
-          <Link href="/app/matters" className="hover:text-vault-text-secondary">Matters</Link>
+          <Link href="/matters" className="hover:text-vault-text-secondary">Matters</Link>
           <span>/</span>
           <span className="text-vault-text-secondary">{matter.matterNumber}</span>
         </nav>

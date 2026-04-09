@@ -160,11 +160,11 @@ This Retainer Agreement ("Agreement") is entered into as of {{today}} between {{
 1. ENGAGEMENT. Client hereby retains Firm to represent Client in connection with {{matter.description}}.
 
 2. FEES. Client agrees to pay Firm's fees at the following rates:
-   - Partners: ${{rate.partner}} per hour
-   - Associates: ${{rate.associate}} per hour
-   - Paralegals: ${{rate.paralegal}} per hour
+   - Partners: \${{rate.partner}} per hour
+   - Associates: \${{rate.associate}} per hour
+   - Paralegals: \${{rate.paralegal}} per hour
 
-3. RETAINER. Client shall pay an initial retainer of ${{retainer.amount}} upon execution of this Agreement. The retainer will be deposited in Firm's client trust account and applied against fees as earned.
+3. RETAINER. Client shall pay an initial retainer of \${{retainer.amount}} upon execution of this Agreement. The retainer will be deposited in Firm's client trust account and applied against fees as earned.
 
 4. BILLING. Firm will invoice Client monthly. Invoices are due within 30 days.
 
@@ -313,8 +313,8 @@ OUTSTANDING ITEMS — ACTION REQUIRED FROM CLIENT
 
 BUDGET UPDATE
 
-Fees incurred to date: ${{status.fees_to_date}}
-Estimated fees remaining: ${{status.fees_remaining}}
+Fees incurred to date: \${{status.fees_to_date}}
+Estimated fees remaining: \${{status.fees_remaining}}
 
 Please do not hesitate to contact us with any questions.
 
@@ -341,7 +341,7 @@ B. The parties desire to resolve all claims without further litigation.
 
 AGREEMENT
 
-1. SETTLEMENT PAYMENT. In full and final settlement of all claims, Defendant shall pay to Plaintiff the sum of ${{settlement.amount}} within {{settlement.payment_days}} days of execution of this Agreement.
+1. SETTLEMENT PAYMENT. In full and final settlement of all claims, Defendant shall pay to Plaintiff the sum of \${{settlement.amount}} within {{settlement.payment_days}} days of execution of this Agreement.
 
 2. RELEASE. In consideration of the settlement payment, Plaintiff hereby releases and forever discharges Defendant from any and all claims arising out of or related to {{settlement.claims_released}}.
 
