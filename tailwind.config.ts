@@ -10,77 +10,81 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Privilege Vault AI Design System
+        // Privilege Vault AI — Navy Design System
         vault: {
-          bg:        '#080B12',   // page background
-          surface:   '#0E1220',   // card / panel surface
-          elevated:  '#141824',   // elevated surfaces
-          border:    '#1E2535',   // default borders
-          'border-strong': '#2A3349', // stronger borders
-          text:      '#E2E8F2',   // primary text
-          'text-secondary': '#8B98B5', // secondary text
-          muted:     '#4A5568',   // muted/disabled
-          accent:    '#2563EB',   // primary accent (legal blue)
-          'accent-light': '#3B82F6',
-          'accent-dim': '#1D4ED8',
-          success:   '#16A34A',
-          warning:   '#D97706',
-          danger:    '#DC2626',
-          'danger-dim': '#991B1B',
-          gold:      '#B8860B',   // premium accents
-          silver:    '#94A3B8',   // secondary metallic
+          bg:             '#0A1628',
+          surface:        '#12294A',
+          elevated:       '#1A3560',
+          border:         '#2B4A7A',
+          'border-strong':'#3A6099',
+          text:           '#FFFFFF',
+          'text-secondary':'#C8D0DC',
+          muted:          '#7A8899',
+          accent:         '#2B7CC1',
+          'accent-light': '#4A9DD4',
+          'accent-dim':   '#1A5A99',
+          success:        '#1E8A4A',
+          warning:        '#B07A10',
+          danger:         '#C83232',
+          'danger-dim':   '#8B1A1A',
+          gold:           '#C9A84C',
+          'gold-dim':     '#8A6A20',
+          'gold-light':   '#E8C870',
+          silver:         '#94A3B8',
         },
-        // Shadcn compatibility
-        border: '#1E2535',
-        input: '#1E2535',
-        ring: '#2563EB',
-        background: '#080B12',
-        foreground: '#E2E8F2',
+        // shadcn compatibility
+        border:     '#2B4A7A',
+        input:      '#1A3560',
+        ring:       '#2B7CC1',
+        background: '#0A1628',
+        foreground: '#FFFFFF',
         primary: {
-          DEFAULT: '#2563EB',
+          DEFAULT:    '#2B7CC1',
           foreground: '#FFFFFF',
         },
         secondary: {
-          DEFAULT: '#141824',
-          foreground: '#E2E8F2',
+          DEFAULT:    '#1A3560',
+          foreground: '#C8D0DC',
         },
         destructive: {
-          DEFAULT: '#DC2626',
+          DEFAULT:    '#C83232',
           foreground: '#FFFFFF',
         },
         muted: {
-          DEFAULT: '#0E1220',
-          foreground: '#8B98B5',
+          DEFAULT:    '#12294A',
+          foreground: '#7A8899',
         },
         accent: {
-          DEFAULT: '#141824',
-          foreground: '#E2E8F2',
+          DEFAULT:    '#1A3560',
+          foreground: '#C8D0DC',
         },
         popover: {
-          DEFAULT: '#0E1220',
-          foreground: '#E2E8F2',
+          DEFAULT:    '#12294A',
+          foreground: '#FFFFFF',
         },
         card: {
-          DEFAULT: '#0E1220',
-          foreground: '#E2E8F2',
+          DEFAULT:    '#12294A',
+          foreground: '#FFFFFF',
         },
       },
       borderRadius: {
-        lg: '0.5rem',
-        md: '0.375rem',
-        sm: '0.25rem',
+        lg: '8px',
+        md: '6px',
+        sm: '4px',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans:  ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['Cambria', 'Georgia', 'Times New Roman', 'serif'],
+        mono:  ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '0.875rem' }],
       },
       boxShadow: {
-        'vault': '0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.5)',
-        'vault-lg': '0 4px 16px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.4)',
-        'vault-glow': '0 0 0 1px rgba(37,99,235,0.3), 0 0 20px rgba(37,99,235,0.1)',
+        'vault':          '0 2px 8px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.4)',
+        'vault-lg':       '0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4)',
+        'vault-glow':     '0 0 0 1px rgba(43,124,193,0.5), 0 0 24px rgba(43,124,193,0.2)',
+        'vault-gold-glow':'0 0 0 1px rgba(201,168,76,0.5), 0 0 24px rgba(201,168,76,0.15)',
       },
       keyframes: {
         'accordion-down': {

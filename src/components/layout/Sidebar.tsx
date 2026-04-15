@@ -1,104 +1,100 @@
 'use client'
-import React, { useState } from 'react'
+
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { Logo } from '@/components/brand/Logo'
+import { initials, roleLabel } from '@/lib/utils'
 import {
-  LayoutDashboard, Inbox, ClipboardList, Users, Briefcase,
-  Calendar, FileText, Search, Database, Clock, Receipt,
-  BarChart3, Settings, Shield, UserCheck, AlertTriangle,
-  ChevronDown, ChevronRight, Bot, FolderOpen, LogOut,
-  Wand2, Link2, Sparkles,
+  Shield,
+  LayoutDashboard,
+  Briefcase,
+  Brain,
+  FileEdit,
+  Clock,
+  FolderOpen,
+  CalendarDays,
+  Users,
+  BarChart3,
+  Settings,
+  Bell,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
-import { signOut } from 'next-auth/react'
 import type { Session } from 'next-auth'
-import { roleLabel, initials } from '@/lib/utils'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
-interface NavSection {
-  label?: string
-  items: NavItem[]
-}
 interface NavItem {
   label: string
   href: string
   icon: React.ComponentType<{ className?: string }>
-  badge?: number
+  badge?: string | number
   exact?: boolean
 }
 
-const NAV: NavSection[] = [
-  {
-    items: [
-      { label: 'Dashboard',    href: '/dashboard',   icon: LayoutDashboard, exact: true },
-      { label: 'Inbox',        href: '/inbox',       icon: Inbox },
-    ],
-  },
-  {
-    label: 'Clients & Matters',
-    items: [
-      { label: 'Intake',       href: '/intake',      icon: ClipboardList },
-      { label: 'Conflicts',    href: '/conflicts',   icon: AlertTriangle },
-      { label: 'Clients',      href: '/clients',     icon: Users },
-      { label: 'Contacts',     href: '/contacts',    icon: UserCheck },
-      { label: 'Matters',      href: '/matters',     icon: Briefcase },
-    ],
-  },
-  {
-    label: 'Work Product',
-    items: [
-      { label: 'Calendar',     href: '/calendar',    icon: Calendar },
-      { label: 'Documents',    href: '/documents',   icon: FileText },
-      { label: 'Templates',    href: '/templates',   icon: FolderOpen },
-      { label: 'Generate Doc', href: '/documents/generate', icon: Wand2 },
-    ],
-  },
-  {
-    label: 'AI Tools',
-    items: [
-      { label: 'AI Paralegal', href: '/ai',          icon: Sparkles },
-      { label: 'Research',     href: '/research',    icon: Search },
-      { label: 'Discovery',    href: '/discovery',   icon: Database },
-    ],
-  },
-  {
-    label: 'Finance',
-    items: [
-      { label: 'Timekeeping',  href: '/timekeeping', icon: Clock },
-      { label: 'Billing',      href: '/billing',     icon: Receipt },
-      { label: 'Reports',      href: '/reports',     icon: BarChart3 },
-    ],
-  },
-  {
-    label: 'Administration',
-    items: [
-      { label: 'Admin',        href: '/admin',       icon: Settings },
-      { label: 'Brand',        href: '/admin/brand', icon: BarChart3 },
-      { label: 'Integrations', href: '/admin/integrations', icon: Link2 },
-      { label: 'Audit',        href: '/admin/audit', icon: Shield },
-    ],
-  },
+const NAV_ITEMS: NavItem[] = [
+  { label: 'Dashboard',    href: '/dashboard',          icon: LayoutDashboard, exact: true },
+  { label: 'Matters',      href: '/matters',             icon: Briefcase,       badge: '47' },
+  { label: 'AI Research',  href: '/research',            icon: Brain },
+  { label: 'AI Drafting',  href: '/documents/generate',  icon: FileEdit },
+  { label: 'Discovery',    href: '/discovery',           icon: Shield },
+  { label: 'Time & Billing', href: '/timekeeping',       icon: Clock },
+  { label: 'Documents',    href: '/documents',           icon: FolderOpen },
+  { label: 'Calendar',     href: '/calendar',            icon: CalendarDays },
+  { label: 'Clients',      href: '/clients',             icon: Users },
+  { label: 'Reports',      href: '/reports',             icon: BarChart3 },
+  { label: 'Settings',     href: '/admin',               icon: Settings },
 ]
 
-function NavItem({ item }: { item: NavItem }) {
+function NavLink({
+  item,
+  collapsed,
+}: {
+  item: NavItem
+  collapsed: boolean
+}) {
   const pathname = usePathname()
-  const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href)
+  const isActive = item.exact
+    ? pathname === item.href
+    : pathname.startsWith(item.href)
 
   return (
     <Link
       href={item.href}
+      title={collapsed ? item.label : undefined}
       className={cn(
-        'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors w-full',
+        'relative flex items-center gap-3 py-2 text-sm transition-all duration-150 w-full rounded-md',
+        collapsed ? 'justify-center px-0' : 'px-3',
         isActive
-          ? 'bg-vault-accent/10 text-vault-accent-light border-l-2 border-vault-accent pl-[10px]'
-          : 'text-vault-text-secondary hover:bg-vault-elevated hover:text-vault-text'
+          ? 'text-vault-gold-light bg-vault-gold/8'
+          : 'text-vault-text-secondary hover:bg-vault-elevated/80 hover:text-vault-text'
       )}
+      style={
+        isActive && !collapsed
+          ? { borderLeft: '2px solid #C9A84C', paddingLeft: 'calc(0.75rem - 2px)' }
+          : isActive && collapsed
+          ? { borderLeft: '2px solid #C9A84C' }
+          : undefined
+      }
     >
-      <item.icon className={cn('h-4 w-4 shrink-0', isActive ? 'text-vault-accent-light' : 'text-vault-muted')} />
-      <span className="flex-1 truncate">{item.label}</span>
-      {item.badge !== undefined && (
-        <span className="text-xs bg-vault-accent/20 text-vault-accent-light rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center">
+      <item.icon
+        className={cn(
+          'shrink-0 h-4 w-4',
+          isActive ? 'text-vault-gold' : 'text-vault-muted'
+        )}
+      />
+      {!collapsed && (
+        <>
+          <span className="flex-1 truncate">{item.label}</span>
+          {item.badge !== undefined && (
+            <span className="text-xs bg-vault-accent/20 text-vault-accent-light rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center leading-none">
+              {item.badge}
+            </span>
+          )}
+        </>
+      )}
+      {collapsed && item.badge !== undefined && (
+        <span className="absolute top-0.5 right-0.5 h-4 w-4 text-2xs bg-vault-accent text-white rounded-full flex items-center justify-center leading-none">
           {item.badge}
         </span>
       )}
@@ -108,50 +104,126 @@ function NavItem({ item }: { item: NavItem }) {
 
 export function Sidebar({ session }: { session: Session }) {
   const user = session.user
+  const userInitials = initials((user.name || user.email || 'U').toString())
+
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('sidebar-collapsed')
+      return stored === 'true'
+    }
+    return false
+  })
+
+  useEffect(() => {
+    localStorage.setItem('sidebar-collapsed', String(collapsed))
+  }, [collapsed])
+
   return (
-    <aside className="flex h-full w-56 flex-col border-r border-vault-border bg-vault-surface">
-      <div className="flex h-14 items-center border-b border-vault-border px-4">
-        <Link href="/dashboard" className="flex items-center">
-          <Logo variant="dark" size="sm" />
-        </Link>
-      </div>
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
-        {NAV.map((section, si) => (
-          <div key={si} className="space-y-0.5">
-            {section.label && (
-              <p className="text-2xs font-semibold uppercase tracking-widest text-vault-muted px-3 mb-1">{section.label}</p>
-            )}
-            {section.items.map((item) => (
-              <NavItem key={item.href} item={item} />
-            ))}
+    <aside
+      className={cn(
+        'relative flex h-full flex-col border-r border-vault-border bg-vault-surface transition-all duration-200 ease-in-out shrink-0',
+        collapsed ? 'w-16' : 'w-60'
+      )}
+    >
+      {/* Toggle button */}
+      <button
+        onClick={() => setCollapsed((c) => !c)}
+        className={cn(
+          'absolute -right-3 top-5 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-vault-border bg-vault-elevated text-vault-muted hover:text-vault-text transition-colors shadow-vault'
+        )}
+        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        {collapsed ? (
+          <ChevronRight className="h-3 w-3" />
+        ) : (
+          <ChevronLeft className="h-3 w-3" />
+        )}
+      </button>
+
+      {/* Logo */}
+      <div
+        className={cn(
+          'flex h-14 items-center border-b border-vault-border shrink-0',
+          collapsed ? 'justify-center px-0' : 'px-4 gap-2'
+        )}
+      >
+        <Shield className="h-7 w-7 text-vault-gold shrink-0" />
+        {!collapsed && (
+          <div className="min-w-0">
+            <p className="font-serif text-sm font-bold text-vault-text leading-tight truncate">
+              Privilege Vault AI
+            </p>
+            <p className="text-2xs text-vault-muted truncate">Morrison &amp; Chen LLP</p>
           </div>
+        )}
+      </div>
+
+      {/* Nav */}
+      <nav
+        className={cn(
+          'flex-1 overflow-y-auto py-3 space-y-0.5',
+          collapsed ? 'px-1' : 'px-2'
+        )}
+      >
+        {NAV_ITEMS.map((item) => (
+          <NavLink key={item.href} item={item} collapsed={collapsed} />
         ))}
       </nav>
-      <div className="px-3 py-2 border-t border-vault-border">
-        <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-vault-elevated">
-          <Bot className="h-3.5 w-3.5 text-vault-success shrink-0" />
-          <div className="min-w-0">
-            <p className="text-2xs text-vault-muted uppercase tracking-wider">AI Engine</p>
-            <p className="text-xs text-vault-text truncate">Local · Private</p>
+
+      {/* Bottom section */}
+      <div className="border-t border-vault-border shrink-0">
+        {/* New Matter CTA */}
+        {!collapsed ? (
+          <div className="px-3 pt-3">
+            <button className="btn-gold w-full justify-center">
+              <Plus className="h-4 w-4" />
+              New Matter
+            </button>
           </div>
-          <div className="ml-auto h-1.5 w-1.5 rounded-full bg-vault-success shrink-0" />
-        </div>
-      </div>
-      <div className="border-t border-vault-border p-3">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-7 w-7">
-            <AvatarFallback className="text-2xs">{initials(user.name || user.email)}</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-vault-text truncate">{user.name}</p>
-            <p className="text-2xs text-vault-muted truncate">{roleLabel((user as any).role)}</p>
+        ) : (
+          <div className="flex justify-center pt-3">
+            <button
+              title="New Matter"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-vault-gold text-vault-bg hover:bg-vault-gold-light transition-colors shadow-vault-gold-glow"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
           </div>
+        )}
+
+        {/* User row */}
+        <div
+          className={cn(
+            'flex items-center py-3 gap-2',
+            collapsed ? 'flex-col px-1' : 'px-3'
+          )}
+        >
+          {/* Avatar */}
+          <div className="relative shrink-0">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-vault-elevated border border-vault-border text-xs font-semibold text-vault-text-secondary select-none">
+              {userInitials}
+            </div>
+          </div>
+
+          {/* Name + role (expanded only) */}
+          {!collapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-vault-text truncate">{user.name}</p>
+              <p className="text-2xs text-vault-muted truncate">
+                {roleLabel((user as any).role || '')}
+              </p>
+            </div>
+          )}
+
+          {/* Bell with badge */}
           <button
-            onClick={() => signOut({ callbackUrl: '/login' })}
-            className="shrink-0 rounded p-1 text-vault-muted hover:text-vault-text transition-colors"
-            title="Sign out"
+            title="Notifications"
+            className="relative shrink-0 rounded p-1 text-vault-muted hover:text-vault-text transition-colors"
           >
-            <LogOut className="h-3.5 w-3.5" />
+            <Bell className="h-4 w-4" />
+            <span className="absolute top-0 right-0 h-3.5 w-3.5 text-2xs bg-vault-danger text-white rounded-full flex items-center justify-center leading-none">
+              3
+            </span>
           </button>
         </div>
       </div>
