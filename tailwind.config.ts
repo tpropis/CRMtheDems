@@ -10,106 +10,149 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Privilege Vault AI Design System
-        vault: {
-          bg:        '#080B12',   // page background
-          surface:   '#0E1220',   // card / panel surface
-          elevated:  '#141824',   // elevated surfaces
-          border:    '#1E2535',   // default borders
-          'border-strong': '#2A3349', // stronger borders
-          text:      '#E2E8F2',   // primary text
-          'text-secondary': '#8B98B5', // secondary text
-          muted:     '#4A5568',   // muted/disabled
-          accent:    '#2563EB',   // primary accent (legal blue)
-          'accent-light': '#3B82F6',
-          'accent-dim': '#1D4ED8',
-          success:   '#16A34A',
-          warning:   '#D97706',
-          danger:    '#DC2626',
-          'danger-dim': '#991B1B',
-          gold:      '#B8860B',   // premium accents
-          silver:    '#94A3B8',   // secondary metallic
+        // ── New design token colours ───────────────────────
+        pv: {
+          base:         '#070E1A',
+          sidebar:      '#0A1628',
+          card:         '#0F2040',
+          elevated:     '#162B52',
+          hover:        '#1E3A6B',
+          gold:         '#C9A84C',
+          'gold-light': '#E2C97E',
+          accent:       '#3B8FD4',
+          't1':         '#F2F5F9',
+          't2':         '#94A8C0',
+          't3':         '#4E6480',
+          success:      '#2EAD6E',
+          danger:       '#E05252',
+          warning:      '#D4A017',
         },
-        // Shadcn compatibility
-        border: '#1E2535',
-        input: '#1E2535',
-        ring: '#2563EB',
-        background: '#080B12',
-        foreground: '#E2E8F2',
+        // ── Legacy vault tokens (keep for backward compat) ──
+        vault: {
+          bg:              '#070E1A',
+          surface:         '#0F2040',
+          elevated:        '#162B52',
+          border:          'rgba(255,255,255,0.06)',
+          'border-strong': 'rgba(255,255,255,0.11)',
+          text:            '#F2F5F9',
+          'text-secondary':'#94A8C0',
+          muted:           '#4E6480',
+          accent:          '#3B8FD4',
+          'accent-light':  '#5BAAEC',
+          'accent-dim':    '#1A5A99',
+          success:         '#2EAD6E',
+          warning:         '#D4A017',
+          danger:          '#E05252',
+          'danger-dim':    '#8B1A1A',
+          gold:            '#C9A84C',
+          'gold-dim':      'rgba(201,168,76,0.12)',
+          'gold-light':    '#E2C97E',
+          silver:          '#94A3B8',
+        },
+        // ── shadcn compatibility ───────────────────────────
+        border:     'rgba(255,255,255,0.06)',
+        input:      '#162B52',
+        ring:       '#3B8FD4',
+        background: '#070E1A',
+        foreground: '#F2F5F9',
         primary: {
-          DEFAULT: '#2563EB',
-          foreground: '#FFFFFF',
+          DEFAULT:    '#3B8FD4',
+          foreground: '#F2F5F9',
         },
         secondary: {
-          DEFAULT: '#141824',
-          foreground: '#E2E8F2',
+          DEFAULT:    '#162B52',
+          foreground: '#94A8C0',
         },
         destructive: {
-          DEFAULT: '#DC2626',
-          foreground: '#FFFFFF',
+          DEFAULT:    '#E05252',
+          foreground: '#F2F5F9',
         },
         muted: {
-          DEFAULT: '#0E1220',
-          foreground: '#8B98B5',
+          DEFAULT:    '#0F2040',
+          foreground: '#4E6480',
         },
         accent: {
-          DEFAULT: '#141824',
-          foreground: '#E2E8F2',
+          DEFAULT:    '#162B52',
+          foreground: '#94A8C0',
         },
         popover: {
-          DEFAULT: '#0E1220',
-          foreground: '#E2E8F2',
+          DEFAULT:    '#0F2040',
+          foreground: '#F2F5F9',
         },
         card: {
-          DEFAULT: '#0E1220',
-          foreground: '#E2E8F2',
+          DEFAULT:    '#0F2040',
+          foreground: '#F2F5F9',
         },
       },
       borderRadius: {
-        lg: '0.5rem',
-        md: '0.375rem',
-        sm: '0.25rem',
+        lg: '10px',
+        md: '8px',
+        sm: '6px',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans:  ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+        mono:  ['JetBrains Mono', 'Courier New', 'monospace'],
       },
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '0.875rem' }],
       },
       boxShadow: {
-        'vault': '0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.5)',
-        'vault-lg': '0 4px 16px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.4)',
-        'vault-glow': '0 0 0 1px rgba(37,99,235,0.3), 0 0 20px rgba(37,99,235,0.1)',
+        'vault':           '0 2px 8px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.4)',
+        'vault-lg':        '0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4)',
+        'vault-glow':      '0 0 0 1px rgba(59,143,212,0.5), 0 0 24px rgba(59,143,212,0.2)',
+        'vault-gold-glow': '0 0 0 1px rgba(201,168,76,0.5), 0 0 24px rgba(201,168,76,0.15)',
+        'panel':           '-8px 0 40px rgba(0,0,0,0.4)',
+        'float':           '0 4px 20px rgba(201,168,76,0.4)',
       },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
+          to:   { height: 'var(--radix-accordion-content-height)' },
         },
         'accordion-up': {
           from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
+          to:   { height: '0' },
         },
         'fade-in': {
           from: { opacity: '0', transform: 'translateY(4px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
         },
         'slide-in-right': {
           from: { transform: 'translateX(100%)' },
-          to: { transform: 'translateX(0)' },
+          to:   { transform: 'translateX(0)' },
         },
         shimmer: {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
+          '0%':   { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition:  '200% 0' },
+        },
+        'pulse-dot': {
+          '0%,100%': { opacity: '1', boxShadow: '0 0 0 0 rgba(46,173,110,0.4)' },
+          '50%':     { opacity: '0.7', boxShadow: '0 0 0 4px rgba(46,173,110,0)' },
+        },
+        'spin-ring': {
+          from: { transform: 'rotate(0deg)' },
+          to:   { transform: 'rotate(360deg)' },
+        },
+        'ticker-scroll': {
+          '0%':   { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        'slide-up-panel': {
+          from: { opacity: '0', transform: 'translateY(24px)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
-        'fade-in': 'fade-in 0.2s ease-out',
-        'slide-in-right': 'slide-in-right 0.3s ease-out',
-        shimmer: 'shimmer 2s linear infinite',
+        'accordion-down':  'accordion-down 0.2s ease-out',
+        'accordion-up':    'accordion-up 0.2s ease-out',
+        'fade-in':         'fade-in 0.2s ease-out',
+        'slide-in-right':  'slide-in-right 0.3s ease-out',
+        'shimmer':         'shimmer 2s linear infinite',
+        'pulse-dot':       'pulse-dot 2s infinite',
+        'spin-ring':       'spin-ring 3s linear infinite',
+        'ticker-scroll':   'ticker-scroll 30s linear infinite',
+        'slide-up-panel':  'slide-up-panel 0.25s ease-out',
       },
     },
   },
