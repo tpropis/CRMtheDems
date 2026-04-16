@@ -42,7 +42,7 @@ function PrivilegeShield() {
           </p>
           {/* arrow */}
           <div style={{
-            position: 'absolute', bottom: -5, left: '50%', transform: 'translateX(-50%)',
+            position: 'absolute', bottom: -5, left: '50%',
             width: 8, height: 8, background: 'var(--bg-elevated)',
             border: '1px solid var(--border-mid)',
             borderTop: 'none', borderLeft: 'none',

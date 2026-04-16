@@ -196,14 +196,14 @@ export function CommandPalette({
                       onClick={item.action}
                       onMouseEnter={() => setSelectedIdx(globalIdx)}
                       style={{
-                        width: '100%', height: 40,
+                        width: 'calc(100% - 8px)', height: 40,
                         padding: '0 16px',
                         display: 'flex', alignItems: 'center', gap: 10,
                         background: isSelected ? 'var(--bg-elevated)' : 'transparent',
                         border: 'none', cursor: 'pointer',
                         borderRadius: 6,
                         color: isSelected ? 'var(--text-1)' : 'var(--text-2)',
-                        margin: '0 4px', width: 'calc(100% - 8px)',
+                        margin: '0 4px',
                         textAlign: 'left',
                         transition: 'background 0.1s ease',
                       }}
