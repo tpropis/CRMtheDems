@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,51 +6,75 @@
 
 /* ── Design Token Variables ───────────────────────────────────────────────── */
 :root {
-  --bg-base:       #070E1A;
-  --bg-sidebar:    #0A1628;
-  --bg-card:       #0F2040;
-  --bg-elevated:   #162B52;
-  --bg-hover:      #1E3A6B;
+  /* Surfaces — light content area, dark sidebar */
+  --bg-base:       #F5F7FA;
+  --bg-sidebar:    #1A2942;
+  --bg-card:       #FFFFFF;
+  --bg-elevated:   #EEF2F9;
+  --bg-hover:      #E5EBF5;
 
+  /* Brand gold */
   --gold:          #C9A84C;
   --gold-light:    #E2C97E;
   --gold-dim:      rgba(201,168,76,0.12);
   --gold-border:   rgba(201,168,76,0.3);
 
-  --accent:        #3B8FD4;
-  --accent-dim:    rgba(59,143,212,0.12);
-  --accent-border: rgba(59,143,212,0.3);
+  /* Accent blue */
+  --accent:        #2563EB;
+  --accent-dim:    rgba(37,99,235,0.08);
+  --accent-border: rgba(37,99,235,0.2);
 
-  --text-1:        #F2F5F9;
-  --text-2:        #94A8C0;
-  --text-3:        #4E6480;
+  /* Text hierarchy (light background context) */
+  --text-1:        #111827;
+  --text-2:        #374151;
+  --text-3:        #9CA3AF;
 
-  --border:        rgba(255,255,255,0.06);
-  --border-mid:    rgba(255,255,255,0.11);
+  /* Borders */
+  --border:        #E5E7EB;
+  --border-mid:    #D1D5DB;
 
-  --success:       #2EAD6E;
-  --danger:        #E05252;
-  --warning:       #D4A017;
+  /* Semantic */
+  --success:       #059669;
+  --danger:        #DC2626;
+  --warning:       #D97706;
 
   /* shadcn compat */
-  --background: 214 55% 4%;
-  --foreground: 210 25% 97%;
-  --card: 214 60% 10%;
-  --card-foreground: 0 0% 100%;
-  --popover: 214 60% 10%;
-  --popover-foreground: 0 0% 100%;
-  --primary: 207 63% 52%;
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --primary: 221 83% 53%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 214 55% 18%;
-  --secondary-foreground: 210 25% 87%;
-  --muted: 214 60% 10%;
-  --muted-foreground: 210 12% 53%;
-  --destructive: 0 60% 56%;
+  --secondary: 214 32% 91%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --border: 214 45% 22%;
-  --input: 214 55% 18%;
-  --ring: 207 63% 52%;
+  --input: 214 32% 91%;
+  --ring: 221 83% 53%;
   --radius: 6px;
+}
+
+/* ── Sidebar dark-surface context ────────────────────────────────────────── */
+/* Applied to sidebar <aside> elements so all CSS vars resolve correctly for
+   a dark background without affecting the rest of the UI. */
+.pv-sidebar {
+  --text-1:        #E8EDF4;
+  --text-2:        #8AA3BF;
+  --text-3:        #4D6882;
+  --border:        rgba(255,255,255,0.07);
+  --border-mid:    rgba(255,255,255,0.13);
+  --bg-elevated:   rgba(255,255,255,0.07);
+  --bg-hover:      rgba(255,255,255,0.10);
+  --bg-base:       #1A2942;
+  --bg-card:       #1A2942;
+  --gold-dim:      rgba(201,168,76,0.15);
+  --gold-border:   rgba(201,168,76,0.25);
+  --accent-dim:    rgba(59,143,212,0.15);
+  --accent-border: rgba(59,143,212,0.3);
 }
 
 @layer base {
@@ -73,23 +96,26 @@
 
   h1 {
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: normal;
     color: var(--text-1);
   }
   h2 {
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: normal;
     color: var(--text-1);
   }
 
-  ::selection { background: rgba(59,143,212,0.25); color: #F2F5F9; }
+  ::selection { background: rgba(37,99,235,0.15); color: #111827; }
 
   ::-webkit-scrollbar         { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track   { background: transparent; }
-  ::-webkit-scrollbar-thumb   { background: var(--bg-elevated); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+  ::-webkit-scrollbar-thumb   { background: #D1D5DB; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+  .pv-sidebar ::-webkit-scrollbar-thumb   { background: rgba(255,255,255,0.15); }
+  .pv-sidebar ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
 
   :focus-visible {
     outline: 2px solid var(--gold);
@@ -100,8 +126,8 @@
 
 /* ── Keyframes ────────────────────────────────────────────────────────────── */
 @keyframes pulse-dot {
-  0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(46,173,110,0.4); }
-  50%     { opacity:0.7; box-shadow: 0 0 0 4px rgba(46,173,110,0); }
+  0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(5,150,105,0.4); }
+  50%     { opacity:0.7; box-shadow: 0 0 0 4px rgba(5,150,105,0); }
 }
 @keyframes spin-ring {
   from { transform: rotate(0deg); }
@@ -112,11 +138,11 @@
   100% { transform: translateX(-50%); }
 }
 @keyframes fade-slide-up {
-  from { opacity:0; transform:translateY(10px); }
+  from { opacity:0; transform:translateY(8px); }
   to   { opacity:1; transform:translateY(0); }
 }
 @keyframes fade-in {
-  from { opacity:0; transform:translateY(4px); }
+  from { opacity:0; transform:translateY(3px); }
   to   { opacity:1; transform:translateY(0); }
 }
 @keyframes slide-in-right {
@@ -124,7 +150,7 @@
   to   { transform: translateX(0); }
 }
 @keyframes slide-up-panel {
-  from { opacity:0; transform:translateY(24px); }
+  from { opacity:0; transform:translateY(16px); }
   to   { opacity:1; transform:translateY(0); }
 }
 @keyframes shimmer {
@@ -145,7 +171,7 @@
   /* ── Page wrapper ───────────────────────────────────────── */
   .page-container { animation: fade-slide-up 0.25s ease forwards; }
 
-  /* ── Surface hierarchy (kept for compat) ────────────────── */
+  /* ── Surface hierarchy ──────────────────────────────────── */
   .vault-page     { background: var(--bg-base); min-height: 100vh; }
   .vault-panel    { background: var(--bg-card);     border: 1px solid var(--border); border-radius: 10px; }
   .vault-elevated { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; }
@@ -155,7 +181,7 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 16px 20px;
+    padding: 18px 20px;
     position: relative;
     overflow: hidden;
     cursor: pointer;
@@ -172,37 +198,38 @@
   .stat-card:hover {
     border-color: var(--border-mid);
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   }
   .stat-card.accent-gold::before    { background: var(--gold); }
   .stat-card.accent-success::before { background: var(--success); }
   .stat-card.accent-danger::before  { background: var(--danger); }
   .stat-card.accent-warning::before { background: var(--warning); }
-  .stat-card.accent-muted::before   { background: var(--text-3); }
+  .stat-card.accent-muted::before   { background: var(--border-mid); }
 
   .stat-value {
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: 32px;
+    font-size: 30px;
     font-weight: normal;
     color: var(--text-1);
     margin-top: 6px;
     line-height: 1;
   }
   .stat-label {
-    font-size: 10px;
-    letter-spacing: 0.1em;
+    font-size: 11px;
+    letter-spacing: 0.06em;
     color: var(--text-3);
     text-transform: uppercase;
+    font-weight: 500;
   }
 
   /* ── Buttons ────────────────────────────────────────────── */
   .btn-gold, .btn-primary {
     background: var(--gold);
-    color: #070E1A;
+    color: #1A2942;
     border: none;
-    border-radius: 8px;
+    border-radius: 7px;
     height: 36px;
-    padding: 0 20px;
+    padding: 0 18px;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -215,7 +242,7 @@
   }
   .btn-gold:hover, .btn-primary:hover {
     background: var(--gold-light);
-    box-shadow: 0 0 20px rgba(201,168,76,0.35);
+    box-shadow: 0 4px 12px rgba(201,168,76,0.3);
   }
   .btn-gold:active, .btn-primary:active { transform: scale(0.97); }
 
@@ -223,7 +250,7 @@
     background: transparent;
     color: var(--text-2);
     border: 1px solid var(--border-mid);
-    border-radius: 8px;
+    border-radius: 7px;
     height: 36px;
     padding: 0 16px;
     font-size: 13px;
@@ -250,13 +277,13 @@
   }
   .data-table { width: 100%; }
   .data-table thead tr {
-    background: var(--bg-sidebar);
-    border-bottom: 1px solid var(--border-mid);
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
   }
   .data-table thead th {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     color: var(--text-3);
     text-transform: uppercase;
     padding: 0 16px;
@@ -266,14 +293,14 @@
   }
   .data-table tbody tr {
     border-bottom: 1px solid var(--border);
-    transition: background 0.12s ease;
+    transition: background 0.1s ease;
     cursor: pointer;
   }
   .data-table tbody tr:hover  { background: var(--bg-elevated); }
   .data-table tbody tr:last-child { border-bottom: none; }
   .data-table tbody td {
     padding: 0 16px;
-    height: 52px;
+    height: 50px;
     font-size: 13px;
     color: var(--text-2);
   }
@@ -293,16 +320,16 @@
     background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border);
   }
   .pill-urgent, .pill-conflict {
-    background: rgba(224,82,82,0.1); color: var(--danger); border: 1px solid rgba(224,82,82,0.3);
+    background: rgba(220,38,38,0.08); color: var(--danger); border: 1px solid rgba(220,38,38,0.2);
   }
   .pill-approved {
-    background: rgba(46,173,110,0.1); color: var(--success); border: 1px solid rgba(46,173,110,0.3);
+    background: rgba(5,150,105,0.08); color: var(--success); border: 1px solid rgba(5,150,105,0.2);
   }
   .pill-screening, .pill-pending {
-    background: rgba(212,160,23,0.1); color: var(--warning); border: 1px solid rgba(212,160,23,0.3);
+    background: rgba(217,119,6,0.08); color: var(--warning); border: 1px solid rgba(217,119,6,0.2);
   }
   .pill-closed {
-    background: rgba(78,100,128,0.15); color: var(--text-3); border: 1px solid rgba(78,100,128,0.25);
+    background: rgba(156,163,175,0.12); color: var(--text-3); border: 1px solid rgba(156,163,175,0.25);
   }
   .pill-gold {
     background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold-border);
@@ -342,7 +369,7 @@
   .shield-inner {
     width: 22px; height: 22px;
     border-radius: 50%;
-    background: var(--bg-sidebar);
+    background: var(--bg-card);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -354,10 +381,11 @@
     background: var(--bg-card);
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    height: 40px;
+    height: 38px;
     display: flex;
     align-items: center;
     flex-shrink: 0;
+    border-radius: 8px;
   }
   .ticker-track {
     display: flex;
@@ -372,17 +400,17 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
   .card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     border-color: var(--border-mid);
   }
 
   /* ── Vault input ────────────────────────────────────────── */
   .vault-input {
-    background: var(--bg-elevated);
+    background: var(--bg-card);
     border: 1px solid var(--border-mid);
     color: var(--text-1);
-    border-radius: 8px;
+    border-radius: 7px;
     padding: 0 12px;
     height: 34px;
     font-size: 13px;
@@ -392,17 +420,17 @@
   .vault-input::placeholder { color: var(--text-3); }
   .vault-input:focus {
     outline: none;
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px var(--gold-dim);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
   }
   .vault-select { appearance: none; cursor: pointer; }
 
   /* ── Legacy badge compat ────────────────────────────────── */
-  .badge-active   { background: var(--accent-dim);         color: var(--accent);  border: 1px solid var(--accent-border); }
-  .badge-inactive { background: rgba(78,100,128,0.15);     color: var(--text-3);  border: 1px solid rgba(78,100,128,0.25); }
-  .badge-warning  { background: rgba(212,160,23,0.1);      color: var(--warning); border: 1px solid rgba(212,160,23,0.3); }
-  .badge-danger   { background: rgba(224,82,82,0.1);       color: var(--danger);  border: 1px solid rgba(224,82,82,0.3); }
-  .badge-accent   { background: var(--accent-dim);         color: var(--accent);  border: 1px solid var(--accent-border); }
+  .badge-active   { background: var(--accent-dim);             color: var(--accent);  border: 1px solid var(--accent-border); }
+  .badge-inactive { background: rgba(156,163,175,0.12);        color: var(--text-3);  border: 1px solid rgba(156,163,175,0.25); }
+  .badge-warning  { background: rgba(217,119,6,0.08);          color: var(--warning); border: 1px solid rgba(217,119,6,0.2); }
+  .badge-danger   { background: rgba(220,38,38,0.08);          color: var(--danger);  border: 1px solid rgba(220,38,38,0.2); }
+  .badge-accent   { background: var(--accent-dim);             color: var(--accent);  border: 1px solid var(--accent-border); }
 
   /* ── Section label ──────────────────────────────────────── */
   .section-label {
@@ -419,8 +447,8 @@
     background-clip: text;
     color: transparent;
   }
-  .glow-gold   { box-shadow: 0 0 0 1px rgba(201,168,76,0.4), 0 0 20px rgba(201,168,76,0.1); }
-  .glow-accent { box-shadow: 0 0 0 1px rgba(59,143,212,0.4), 0 0 20px rgba(59,143,212,0.15); }
+  .glow-gold   { box-shadow: 0 0 0 1px rgba(201,168,76,0.3), 0 0 16px rgba(201,168,76,0.12); }
+  .glow-accent { box-shadow: 0 0 0 1px rgba(37,99,235,0.3), 0 0 16px rgba(37,99,235,0.1); }
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -443,11 +471,6 @@
   .mobile-bottom-nav { display: flex !important; }
 
   main { padding-bottom: 72px !important; }
-
-  .btn-primary, .btn-secondary, .btn-gold {
-    width: 100%;
-    justify-content: center;
-  }
 }
 
 @media (min-width: 769px) {

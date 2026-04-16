@@ -21,9 +21,9 @@ function PillarLogo({ size = 34 }: { size?: number }) {
       <rect x="10" y="7"  width="28" height="3"  rx="0.5" fill="currentColor" opacity="0.7" />
       <rect x="10" y="10" width="8"  height="32" rx="1"   fill="currentColor" />
       <rect x="30" y="10" width="8"  height="32" rx="1"   fill="currentColor" />
-      <rect x="11" y="13" width="6"  height="2"  rx="0.5" fill="#070E1A" />
-      <rect x="11" y="17" width="6"  height="2"  rx="0.5" fill="#070E1A" />
-      <rect x="11" y="13" width="2"  height="6"  rx="0.5" fill="#070E1A" />
+      <rect x="11" y="13" width="6"  height="2"  rx="0.5" fill="#1A2942" />
+      <rect x="11" y="17" width="6"  height="2"  rx="0.5" fill="#1A2942" />
+      <rect x="11" y="13" width="2"  height="6"  rx="0.5" fill="#1A2942" />
       <polygon points="18,10 30,10 26,42 22,42" fill="currentColor" opacity="0.5" />
       <rect x="8"  y="42" width="32" height="4"  rx="1"   fill="currentColor" />
       <rect x="4"  y="46" width="40" height="4"  rx="1"   fill="currentColor" />
@@ -371,7 +371,7 @@ export function Sidebar({
 
       {/* Mobile sidebar (slide in from left) */}
       <aside
-        className="md:hidden"
+        className="pv-sidebar md:hidden"
         style={{
           position: 'fixed', left: 0, top: 0,
           width: 280, height: '100vh',
@@ -395,7 +395,7 @@ export function Sidebar({
 
       {/* Desktop sidebar */}
       <aside
-        className="sidebar-desktop hidden md:flex flex-col"
+        className="pv-sidebar sidebar-desktop hidden md:flex flex-col"
         style={{
           background: 'var(--bg-sidebar)',
           borderRight: '1px solid var(--border)',

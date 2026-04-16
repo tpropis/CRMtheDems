@@ -106,9 +106,9 @@ function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (
     <div style={{
-      background: 'var(--bg-elevated)', border: '1px solid var(--border-mid)',
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
       borderRadius: 8, padding: '10px 14px', fontSize: 12,
-      boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+      boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
     }}>
       <p style={{ color: 'var(--text-2)', fontWeight: 600, marginBottom: 6 }}>{label}</p>
       {payload.map((p: any) => (
@@ -373,11 +373,11 @@ export default function DashboardPage() {
           </span>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={REVENUE_DATA} barSize={14} barGap={4}>
-              <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
+              <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.06)" strokeDasharray="3 3" />
               <XAxis dataKey="month" tick={{ fill: 'var(--text-3)', fontSize: 12 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: 'var(--text-3)', fontSize: 11 }} axisLine={false} tickLine={false}
                 tickFormatter={fmtDollars} width={48} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.04)' }} />
               <Bar dataKey="invoiced"  name="invoiced"  fill="#C9A84C" radius={[3,3,0,0]} />
               <Bar dataKey="collected" name="collected" fill="#3B8FD4" radius={[3,3,0,0]} />
             </BarChart>

@@ -88,7 +88,7 @@ export function TopBar({
 
   return (
     <header style={{
-      background: 'var(--bg-sidebar)',
+      background: 'var(--bg-card)',
       borderBottom: '1px solid var(--border)',
       height: 56,
       padding: '0 24px',

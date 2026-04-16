@@ -83,7 +83,7 @@ function HealthRing({ score }: { score: number }) {
         {score}
       </span>
       {show && (
-        <div style={{ position:'absolute', bottom:'calc(100% + 8px)', left:'50%', transform:'translateX(-50%)', background:'var(--bg-elevated)', border:'1px solid var(--border-mid)', borderRadius:8, padding:'10px 14px', zIndex:50, width:240, boxShadow:'0 8px 32px rgba(0,0,0,0.5)', pointerEvents:'none' }}>
+        <div style={{ position:'absolute', bottom:'calc(100% + 8px)', left:'50%', transform:'translateX(-50%)', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:8, padding:'10px 14px', zIndex:50, width:240, boxShadow:'0 4px 20px rgba(0,0,0,0.12)', pointerEvents:'none' }}>
           <p style={{ fontSize:11, fontWeight:700, color:'var(--text-1)', margin:'0 0 6px' }}>Health Score Factors</p>
           {tooltip.split('\n').map((line, i) => (
             <p key={i} style={{ fontSize:11, color: line.startsWith('⚠') ? 'var(--warning)' : line.startsWith('Score') ? color : 'var(--success)', margin:'2px 0', fontFamily:'monospace' }}>
