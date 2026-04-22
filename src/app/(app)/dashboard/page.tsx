@@ -87,11 +87,24 @@ async function getDashboardData(firmId: string) {
   }
 }
 
+const EMPTY_DATA = {
+  activeMatters: 0,
+  newIntake: 0,
+  urgentDeadlines: 0,
+  pendingTime: 0,
+  recentMatters: [] as any[],
+  upcomingDeadlines: [] as any[],
+  recentAIJobs: [] as any[],
+  tasksDueToday: 0,
+}
+
 export default async function DashboardPage() {
   const session = await auth()
   const firmId = (session?.user as any)?.firmId
 
-  const data = await getDashboardData(firmId)
+  const data = firmId === 'demo-firm'
+    ? EMPTY_DATA
+    : await getDashboardData(firmId).catch(() => EMPTY_DATA)
 
   const stats = [
     {
