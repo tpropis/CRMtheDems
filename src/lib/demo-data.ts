@@ -749,3 +749,459 @@ export function getDemoMatter(id: string): DemoMatterDetail | null {
 export function isDemoSession(firmId?: string | null): boolean {
   return firmId === 'demo-firm'
 }
+
+// ── AI Conversation threads (matter-scoped) ─────────────────────────
+export interface DemoAIMessage {
+  id: string
+  role: 'user' | 'assistant' | 'system'
+  content: string
+  citations?: { doc: string; page: string; bates?: string; excerpt?: string }[]
+  at: string
+  reviewed?: boolean
+  reviewer?: string
+}
+
+export interface DemoAIThread {
+  id: string
+  title: string
+  matter?: string
+  matterNumber?: string
+  scope: 'matter' | 'firm' | 'research'
+  model: string
+  createdBy: string
+  startedAt: string
+  lastActivity: string
+  status: 'active' | 'signed' | 'archived'
+  messages: DemoAIMessage[]
+}
+
+export const demoAIThreads: DemoAIThread[] = [
+  {
+    id: 'th-1',
+    title: 'Aventra board communications · privilege audit',
+    matter: 'Roth v. Aventra Capital',
+    matterNumber: 'M-2026-0142',
+    scope: 'matter',
+    model: 'vault-legal-7b · pinned to matter',
+    createdBy: 'Margaret Hartley',
+    startedAt: '1 hr ago',
+    lastActivity: '18 min ago',
+    status: 'active',
+    messages: [
+      {
+        id: 'm-1',
+        role: 'user',
+        content: 'Build a chronology of the Aventra board communications cited in the amended complaint. Flag any likely privileged.',
+        at: '1 hr ago',
+      },
+      {
+        id: 'm-2',
+        role: 'assistant',
+        content:
+          '17 communications identified between 11/14/2024 and 3/22/2026.\n\n• 6 likely privileged — counsel on the thread (Kirkland & Ellis cc\'d on 4 email chains; Shearman on 2)\n• 9 business-only — regular course of fund operations\n• 2 ambiguous — dual-purpose (business + legal interleaved). Recommend attorney review.\n\nChronology exported to the matter workspace as "Chronology · Aventra board comms (AI).md".',
+        citations: [
+          { doc: 'Amended Complaint', page: '¶¶ 42–61', excerpt: '"As alleged herein, the Board repeatedly received and considered..."' },
+          { doc: 'AVT_PROD_001', page: '347 docs', bates: 'AVT-0003210 — 0003557' },
+        ],
+        at: '58 min ago',
+        reviewed: true,
+        reviewer: 'M. Hartley',
+      },
+      {
+        id: 'm-3',
+        role: 'user',
+        content: 'For the 2 ambiguous communications — what specifically makes them dual-purpose?',
+        at: '35 min ago',
+      },
+      {
+        id: 'm-4',
+        role: 'assistant',
+        content:
+          'Both emails contain material non-legal business content interleaved with discrete legal advice requests.\n\n**Email 1 (AVT-0003412, 2/14/2026):** CEO asks Kirkland counsel about (a) quarterly distribution mechanics *and* (b) potential SEC disclosure exposure in a single message. The distribution mechanics portion is not privileged; the SEC question is.\n\n**Email 2 (AVT-0003501, 3/08/2026):** Board memo from CFO discussing proposed fund restructuring *and* the Delaware fiduciary implications. The restructuring summary is ordinary business; the fiduciary analysis is privileged.\n\nSuggested approach: redact the privileged portions for production; produce the business portions. I can draft redaction proposals if helpful.',
+        citations: [
+          { doc: 'AVT-0003412.msg', page: 'p. 1', bates: 'AVT-0003412', excerpt: '"Separately, we need guidance on whether the 8-K..."' },
+          { doc: 'AVT-0003501.msg', page: 'p. 2-3', bates: 'AVT-0003501' },
+          { doc: 'In re Grand Jury (3d Cir. 2019)', page: 'at *8' },
+        ],
+        at: '32 min ago',
+        reviewed: true,
+        reviewer: 'M. Hartley',
+      },
+      {
+        id: 'm-5',
+        role: 'user',
+        content: 'Yes — draft the redactions for both.',
+        at: '18 min ago',
+      },
+      {
+        id: 'm-6',
+        role: 'assistant',
+        content:
+          'Redaction proposals drafted. Two attachments added to the matter workspace:\n\n  • `Redaction proposal · AVT-0003412.pdf` — redacts ¶ 3 (SEC disclosure inquiry)\n  • `Redaction proposal · AVT-0003501.pdf` — redacts §§ II–III (fiduciary analysis)\n\nBoth flagged Pending Review. S. Reyes will need to sign off before production. Privilege log entries auto-generated.',
+        at: '18 min ago',
+        reviewed: false,
+      },
+    ],
+  },
+  {
+    id: 'th-2',
+    title: 'SEC Wells notice ¶ 14 — deficiency analysis',
+    matter: 'Nexovance — SEC Inquiry Response',
+    matterNumber: 'M-2026-0109',
+    scope: 'matter',
+    model: 'vault-legal-7b · pinned to matter',
+    createdBy: 'Margaret Hartley',
+    startedAt: '4 hr ago',
+    lastActivity: '3 hr ago',
+    status: 'active',
+    messages: [
+      {
+        id: 'n-1',
+        role: 'user',
+        content:
+          'Draft a deficiency letter re: SEC Wells notice paragraph 14. Argue the characterization conflates two materially distinct transactions.',
+        at: '4 hr ago',
+      },
+      {
+        id: 'n-2',
+        role: 'assistant',
+        content:
+          '3-page draft prepared. Structure:\n\n  I.  Preliminary statement — request for 30-day meet-and-confer\n  II. ¶ 14 conflates the Q2-2024 Series B tranche (transaction A) with the Q4-2024 secondary offering (transaction B). These involve different counterparties, different disclosure obligations, and different triggering events.\n  III. Factual record in prod. batches 03 and 05 contradicts the Staff\'s inference of coordinated conduct.\n  IV. Reservation of rights + proposed next steps.\n\nDraft saved to matter workspace. Status: **Draft · Pending Review**.',
+        citations: [
+          { doc: 'Wells Notice 04/14', page: '¶ 14' },
+          { doc: 'NXV Prod. batch 03 (summary)', page: 'p. 2' },
+          { doc: 'NXV Prod. batch 05 (summary)', page: 'p. 1' },
+          { doc: '17 CFR § 230.144A', page: '' },
+        ],
+        at: '3 hr ago',
+        reviewed: false,
+      },
+    ],
+  },
+]
+
+// ── Global Document Library (cross-matter) ──────────────────────────
+export interface DemoGlobalDocument {
+  id: string
+  name: string
+  matter: string
+  matterNumber: string
+  type: DemoDocument['type']
+  privilege?: DemoPrivilegeEntry['classification']
+  confidence?: number
+  pages: number
+  size: string
+  ingestedAt: string
+  author?: string
+  bates?: string
+  status: 'indexed' | 'ingesting' | 'review' | 'produced' | 'withheld'
+}
+
+export const demoGlobalDocuments: DemoGlobalDocument[] = [
+  {
+    id: 'gd-1',
+    name: 'MTD Reply Brief (opposing).pdf',
+    matter: 'Roth v. Aventra Capital',
+    matterNumber: 'M-2026-0142',
+    type: 'pleading',
+    pages: 23,
+    size: '540 KB',
+    ingestedAt: '6 min ago',
+    author: 'Kirkland & Ellis',
+    status: 'indexed',
+  },
+  {
+    id: 'gd-2',
+    name: 'Board email chain — Aventra 3/22/2026.msg',
+    matter: 'Roth v. Aventra Capital',
+    matterNumber: 'M-2026-0142',
+    type: 'email',
+    privilege: 'Attorney-Client',
+    confidence: 96,
+    pages: 4,
+    size: '18 KB',
+    ingestedAt: '8 min ago',
+    status: 'review',
+  },
+  {
+    id: 'gd-3',
+    name: 'Litigation hold memo v3.docx',
+    matter: 'Nexovance — SEC Inquiry Response',
+    matterNumber: 'M-2026-0109',
+    type: 'memo',
+    privilege: 'Work Product',
+    confidence: 99,
+    pages: 12,
+    size: '64 KB',
+    ingestedAt: '22 min ago',
+    author: 'M. Hartley',
+    status: 'indexed',
+  },
+  {
+    id: 'gd-4',
+    name: 'Co-defendant JDA — Alderton',
+    matter: 'Alderton Capital — Internal Investigation',
+    matterNumber: 'M-2026-0101',
+    type: 'contract',
+    privilege: 'Common Interest',
+    confidence: 88,
+    pages: 3,
+    size: '84 KB',
+    ingestedAt: '1 hr ago',
+    status: 'indexed',
+  },
+  {
+    id: 'gd-5',
+    name: 'Closing checklist — Meridian Phase II',
+    matter: 'Meridian Acquisition — Phase II Diligence',
+    matterNumber: 'M-2026-0117',
+    type: 'memo',
+    privilege: 'Not Privileged',
+    confidence: 97,
+    pages: 2,
+    size: '24 KB',
+    ingestedAt: '2 hr ago',
+    author: 'J. Chan',
+    status: 'indexed',
+  },
+  {
+    id: 'gd-6',
+    name: 'Hartley memo re: settlement valuation',
+    matter: 'Blackrock Dispute — Vendor Breach',
+    matterNumber: 'M-2026-0076',
+    type: 'memo',
+    privilege: 'Needs Review',
+    confidence: 62,
+    pages: 6,
+    size: '98 KB',
+    ingestedAt: '3 hr ago',
+    author: 'M. Hartley',
+    status: 'review',
+  },
+  {
+    id: 'gd-7',
+    name: 'AVT Production batch 07 (347 docs)',
+    matter: 'Roth v. Aventra Capital',
+    matterNumber: 'M-2026-0142',
+    type: 'production',
+    pages: 1248,
+    size: '220 MB',
+    ingestedAt: '2 hr ago',
+    bates: 'AVT-0003210 — 0003557',
+    status: 'ingesting',
+  },
+  {
+    id: 'gd-8',
+    name: 'Chronology · Aventra board comms (AI).md',
+    matter: 'Roth v. Aventra Capital',
+    matterNumber: 'M-2026-0142',
+    type: 'memo',
+    privilege: 'Work Product',
+    confidence: 99,
+    pages: 9,
+    size: '32 KB',
+    ingestedAt: '1 hr ago',
+    author: 'AI Paralegal · Reviewed by M. Hartley',
+    status: 'indexed',
+  },
+  {
+    id: 'gd-9',
+    name: 'NXV Production batch 05 (summary).pdf',
+    matter: 'Nexovance — SEC Inquiry Response',
+    matterNumber: 'M-2026-0109',
+    type: 'production',
+    pages: 41,
+    size: '1.4 MB',
+    ingestedAt: '2 days ago',
+    status: 'produced',
+  },
+  {
+    id: 'gd-10',
+    name: 'Deposition prep outline · C. Roth.docx',
+    matter: 'Roth v. Aventra Capital',
+    matterNumber: 'M-2026-0142',
+    type: 'memo',
+    privilege: 'Work Product',
+    confidence: 98,
+    pages: 14,
+    size: '82 KB',
+    ingestedAt: '3 hr ago',
+    author: 'S. Reyes',
+    status: 'indexed',
+  },
+  {
+    id: 'gd-11',
+    name: 'Amended Complaint (4/7/2026).pdf',
+    matter: 'Roth v. Aventra Capital',
+    matterNumber: 'M-2026-0142',
+    type: 'pleading',
+    pages: 62,
+    size: '1.4 MB',
+    ingestedAt: '14 hr ago',
+    author: 'Hartley & Associates',
+    status: 'indexed',
+  },
+  {
+    id: 'gd-12',
+    name: 'SPA v7 clean.pdf',
+    matter: 'Meridian Acquisition — Phase II Diligence',
+    matterNumber: 'M-2026-0117',
+    type: 'contract',
+    pages: 148,
+    size: '3.8 MB',
+    ingestedAt: '1 day ago',
+    author: 'Meridian — redline from counsel',
+    status: 'indexed',
+  },
+]
+
+// ── Research threads ────────────────────────────────────────────────
+export interface DemoResearchThread {
+  id: string
+  title: string
+  matter: string
+  matterNumber: string
+  author: string
+  lastActivity: string
+  messageCount: number
+  citations: number
+  saved: boolean
+  tags: string[]
+}
+
+export const demoResearchThreads: DemoResearchThread[] = [
+  {
+    id: 'rt-1',
+    title: 'Dual-purpose privilege doctrine — Third Circuit',
+    matter: 'Roth v. Aventra Capital',
+    matterNumber: 'M-2026-0142',
+    author: 'Margaret Hartley',
+    lastActivity: '32 min ago',
+    messageCount: 12,
+    citations: 14,
+    saved: true,
+    tags: ['privilege', 'discovery', 'dual-purpose'],
+  },
+  {
+    id: 'rt-2',
+    title: 'Rule 10b5-1 plan amendment — safe harbor preservation',
+    matter: 'Nexovance — SEC Inquiry Response',
+    matterNumber: 'M-2026-0109',
+    author: 'Margaret Hartley',
+    lastActivity: '2 hr ago',
+    messageCount: 21,
+    citations: 28,
+    saved: true,
+    tags: ['securities', 'SEC', 'safe-harbor'],
+  },
+  {
+    id: 'rt-3',
+    title: 'DE Chancery — indemnification carve-out enforcement',
+    matter: 'Meridian Acquisition — Phase II Diligence',
+    matterNumber: 'M-2026-0117',
+    author: 'Jonathan Chan',
+    lastActivity: '1 day ago',
+    messageCount: 9,
+    citations: 11,
+    saved: false,
+    tags: ['M&A', 'indemnification', 'DE-Chancery'],
+  },
+  {
+    id: 'rt-4',
+    title: 'Fiduciary duty — successor trustee removal standard (NY)',
+    matter: 'Harrington Estate — Trust Contest',
+    matterNumber: 'M-2026-0128',
+    author: 'Sofia Reyes',
+    lastActivity: '2 days ago',
+    messageCount: 7,
+    citations: 9,
+    saved: true,
+    tags: ['trusts', 'fiduciary', 'NY-Surrogate'],
+  },
+  {
+    id: 'rt-5',
+    title: 'Common interest privilege across co-defendants',
+    matter: 'Alderton Capital — Internal Investigation',
+    matterNumber: 'M-2026-0101',
+    author: 'Dev Patel',
+    lastActivity: '3 days ago',
+    messageCount: 16,
+    citations: 19,
+    saved: true,
+    tags: ['privilege', 'common-interest', 'JDA'],
+  },
+]
+
+// ── Discovery Collections ───────────────────────────────────────────
+export interface DemoDiscoveryCollection {
+  id: string
+  name: string
+  matter: string
+  matterNumber: string
+  producingParty: string
+  totalDocs: number
+  reviewedDocs: number
+  privilegedDocs: number
+  hotDocs: number
+  productionDate?: string
+  status: 'active' | 'closed' | 'producing'
+  lastActivity: string
+}
+
+export const demoDiscoveryCollections: DemoDiscoveryCollection[] = [
+  {
+    id: 'dc-1',
+    name: 'AVT Production batches 01–07',
+    matter: 'Roth v. Aventra Capital',
+    matterNumber: 'M-2026-0142',
+    producingParty: 'Aventra Capital (via K&E)',
+    totalDocs: 11420,
+    reviewedDocs: 9238,
+    privilegedDocs: 2184,
+    hotDocs: 47,
+    productionDate: 'Apr 18, 2026',
+    status: 'active',
+    lastActivity: '2 hr ago',
+  },
+  {
+    id: 'dc-2',
+    name: 'NXV Custodian collection · Q2 2024',
+    matter: 'Nexovance — SEC Inquiry Response',
+    matterNumber: 'M-2026-0109',
+    producingParty: 'Nexovance Technologies',
+    totalDocs: 8412,
+    reviewedDocs: 8412,
+    privilegedDocs: 1042,
+    hotDocs: 31,
+    productionDate: 'Apr 19, 2026',
+    status: 'producing',
+    lastActivity: '22 min ago',
+  },
+  {
+    id: 'dc-3',
+    name: 'Alderton · Internal investigation collection',
+    matter: 'Alderton Capital — Internal Investigation',
+    matterNumber: 'M-2026-0101',
+    producingParty: 'Internal — Alderton Capital',
+    totalDocs: 4720,
+    reviewedDocs: 2104,
+    privilegedDocs: 512,
+    hotDocs: 18,
+    status: 'active',
+    lastActivity: '6 hr ago',
+  },
+  {
+    id: 'dc-4',
+    name: 'Meridian · Diligence data room',
+    matter: 'Meridian Acquisition — Phase II Diligence',
+    matterNumber: 'M-2026-0117',
+    producingParty: 'Meridian Holdings',
+    totalDocs: 14280,
+    reviewedDocs: 14280,
+    privilegedDocs: 147,
+    hotDocs: 4,
+    productionDate: 'Apr 10, 2026',
+    status: 'closed',
+    lastActivity: '2 days ago',
+  },
+]
