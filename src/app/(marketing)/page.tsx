@@ -198,7 +198,7 @@ export default function HomePage() {
                 </span>
               </div>
 
-              <h1 className="hero-display text-[clamp(2.75rem,6.2vw,5.25rem)] font-semibold text-vault-ink">
+              <h1 className="hero-display text-[clamp(2.25rem,6.2vw,5.25rem)] font-semibold text-vault-ink">
                 The private operating system for{' '}
                 <span className="text-gradient-gold italic">privileged</span>{' '}
                 <span className="text-gradient-forest">legal work.</span>
@@ -296,7 +296,7 @@ export default function HomePage() {
 
       {/* ───────────── § 02 — THE PROBLEM ───────────── */}
       <section className="relative border-b border-vault-border">
-        <div className="mx-auto max-w-[1200px] px-6 py-28">
+        <div className="mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <SectionMark number="02" label="The problem" />
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
             <div className="lg:col-span-7">
@@ -338,7 +338,7 @@ export default function HomePage() {
 
       {/* ───────────── § 03 — WHY PRIVATE AI WINS ───────────── */}
       <section className="relative border-b border-vault-border">
-        <div className="mx-auto max-w-[1200px] px-6 py-28">
+        <div className="mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <div className="mb-14 flex items-end justify-between gap-8">
             <div>
               <SectionMark number="03" label="Why private AI wins" />
@@ -375,7 +375,7 @@ export default function HomePage() {
 
       {/* ───────────── § 04 — THE OPERATING SYSTEM ───────────── */}
       <section className="relative border-b border-vault-border bg-vault-elevated">
-        <div className="mx-auto max-w-[1200px] px-6 py-28">
+        <div className="mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <SectionMark number="04" label="The operating system" />
           <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-12">
             <h2 className="display-serif text-4xl font-medium leading-[1.1] text-vault-ink md:text-5xl lg:col-span-7">
@@ -411,7 +411,7 @@ export default function HomePage() {
 
       {/* ───────────── § 05 — HOW IT WORKS ───────────── */}
       <section className="relative border-b border-vault-border">
-        <div className="mx-auto max-w-[1200px] px-6 py-28">
+        <div className="mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <SectionMark number="05" label="How it works" />
           <div className="mb-14">
             <h2 className="display-serif max-w-3xl text-4xl font-medium leading-[1.1] text-vault-text md:text-5xl">
@@ -440,7 +440,7 @@ export default function HomePage() {
       {/* ───────────── § 06 — SECURITY ARCHITECTURE ───────────── */}
       <section className="relative border-b border-vault-border bg-vault-elevated">
         <div className="pointer-events-none absolute inset-0 grid-bg opacity-40 mask-fade-y" />
-        <div className="relative mx-auto max-w-[1200px] px-6 py-28">
+        <div className="relative mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
             <div>
               <SectionMark number="06" label="Security architecture" />
@@ -473,7 +473,7 @@ export default function HomePage() {
 
       {/* ───────────── § 07 — PRACTICE WORKFLOWS ───────────── */}
       <section className="relative border-b border-vault-border">
-        <div className="mx-auto max-w-[1200px] px-6 py-28">
+        <div className="mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <SectionMark number="07" label="Practice workflows" />
           <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-12">
             <h2 className="display-serif text-4xl font-medium leading-[1.1] text-vault-text md:text-5xl lg:col-span-7">
@@ -510,7 +510,7 @@ export default function HomePage() {
       {/* ───────────── § 08 — INTELLIGENCE / DASHBOARD SHOWCASE ───────────── */}
       <section className="relative overflow-hidden border-b border-vault-border bg-vault-elevated">
         <div className="pointer-events-none absolute inset-0 bg-vault-radial-gold" />
-        <div className="relative mx-auto max-w-[1200px] px-6 py-28">
+        <div className="relative mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <div className="mb-14 grid grid-cols-1 gap-10 lg:grid-cols-12">
             <div className="lg:col-span-7">
               <SectionMark number="08" label="Document intelligence" />
@@ -568,7 +568,7 @@ export default function HomePage() {
 
       {/* ───────────── § 09 — COMPARISON ───────────── */}
       <section className="relative border-b border-vault-border">
-        <div className="mx-auto max-w-[1200px] px-6 py-28">
+        <div className="mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <SectionMark number="09" label="The difference" />
           <div className="mb-12">
             <h2 className="display-serif max-w-3xl text-4xl font-medium leading-[1.1] text-vault-text md:text-5xl">
@@ -611,7 +611,7 @@ export default function HomePage() {
 
       {/* ───────────── § 10 — PROOF ───────────── */}
       <section className="relative border-b border-vault-border bg-vault-elevated">
-        <div className="mx-auto max-w-[1200px] px-6 py-28">
+        <div className="mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <SectionMark number="10" label="Proof" />
           <div className="mb-12">
             <h2 className="display-serif max-w-2xl text-4xl font-medium leading-[1.1] text-vault-ink md:text-5xl">
@@ -649,7 +649,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-vault-radial-gold" />
           <div className="absolute inset-0 grid-bg opacity-30 mask-fade-y" />
         </div>
-        <div className="relative mx-auto max-w-[1200px] px-6 py-32">
+        <div className="relative mx-auto max-w-[1200px] px-6 py-20 md:py-32">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-10 flex justify-center">
               <Seal size={72} className="glow-seal rounded-full" />
