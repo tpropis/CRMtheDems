@@ -198,10 +198,10 @@ export default function HomePage() {
                 </span>
               </div>
 
-              <h1 className="hero-display text-[clamp(2.75rem,6.2vw,5.25rem)] font-semibold text-vault-text">
+              <h1 className="hero-display text-[clamp(2.75rem,6.2vw,5.25rem)] font-semibold text-vault-ink">
                 The private operating system for{' '}
                 <span className="text-gradient-gold italic">privileged</span>{' '}
-                <span className="text-gradient-silver">legal work.</span>
+                <span className="text-gradient-forest">legal work.</span>
               </h1>
 
               <p className="mt-8 max-w-xl text-lg leading-relaxed text-vault-text-secondary">
@@ -374,13 +374,13 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── § 04 — THE OPERATING SYSTEM ───────────── */}
-      <section className="relative border-b border-vault-border bg-vault-ink">
+      <section className="relative border-b border-vault-border bg-vault-elevated">
         <div className="mx-auto max-w-[1200px] px-6 py-28">
           <SectionMark number="04" label="The operating system" />
           <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-12">
-            <h2 className="display-serif text-4xl font-medium leading-[1.1] text-vault-text md:text-5xl lg:col-span-7">
+            <h2 className="display-serif text-4xl font-medium leading-[1.1] text-vault-ink md:text-5xl lg:col-span-7">
               One platform.{' '}
-              <span className="text-gradient-silver">The full practice stack.</span>
+              <span className="text-gradient-forest">The full practice stack.</span>
             </h2>
             <p className="max-w-md text-base leading-relaxed text-vault-text-secondary lg:col-span-5">
               Intake, conflicts, matters, documents, discovery, deadlines, communications, time, and AI — unified under one permission model.
@@ -438,13 +438,13 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── § 06 — SECURITY ARCHITECTURE ───────────── */}
-      <section className="relative border-b border-vault-border bg-vault-ink">
-        <div className="pointer-events-none absolute inset-0 grid-bg opacity-30 mask-fade-y" />
+      <section className="relative border-b border-vault-border bg-vault-elevated">
+        <div className="pointer-events-none absolute inset-0 grid-bg opacity-40 mask-fade-y" />
         <div className="relative mx-auto max-w-[1200px] px-6 py-28">
           <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
             <div>
               <SectionMark number="06" label="Security architecture" />
-              <h2 className="display-serif max-w-2xl text-4xl font-medium leading-[1.1] text-vault-text md:text-5xl">
+              <h2 className="display-serif max-w-2xl text-4xl font-medium leading-[1.1] text-vault-ink md:text-5xl">
                 Privilege{' '}
                 <span className="italic text-gradient-gold">by architecture.</span>
               </h2>
@@ -508,15 +508,15 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── § 08 — INTELLIGENCE / DASHBOARD SHOWCASE ───────────── */}
-      <section className="relative overflow-hidden border-b border-vault-border bg-vault-ink">
-        <div className="pointer-events-none absolute inset-0 bg-vault-radial" />
+      <section className="relative overflow-hidden border-b border-vault-border bg-vault-elevated">
+        <div className="pointer-events-none absolute inset-0 bg-vault-radial-gold" />
         <div className="relative mx-auto max-w-[1200px] px-6 py-28">
           <div className="mb-14 grid grid-cols-1 gap-10 lg:grid-cols-12">
             <div className="lg:col-span-7">
               <SectionMark number="08" label="Document intelligence" />
-              <h2 className="display-serif text-4xl font-medium leading-[1.1] text-vault-text md:text-5xl">
+              <h2 className="display-serif text-4xl font-medium leading-[1.1] text-vault-ink md:text-5xl">
                 Read a production the way{' '}
-                <span className="italic text-gradient-silver">a first-year should</span> — in minutes.
+                <span className="italic text-gradient-forest">a first-year should</span> — in minutes.
               </h2>
               <p className="mt-6 max-w-xl text-base leading-relaxed text-vault-text-secondary">
                 Privilege detection, issue tagging, chronology construction, and citation-traced research — all inside the matter, all reviewable before anything is relied on.
@@ -610,12 +610,12 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── § 10 — PROOF ───────────── */}
-      <section className="relative border-b border-vault-border bg-vault-ink">
+      <section className="relative border-b border-vault-border bg-vault-elevated">
         <div className="mx-auto max-w-[1200px] px-6 py-28">
           <SectionMark number="10" label="Proof" />
           <div className="mb-12">
-            <h2 className="display-serif max-w-2xl text-4xl font-medium leading-[1.1] text-vault-text md:text-5xl">
-              Partners, CIOs, and GCs don't hedge.
+            <h2 className="display-serif max-w-2xl text-4xl font-medium leading-[1.1] text-vault-ink md:text-5xl">
+              Partners, CIOs, and GCs don&apos;t hedge.
             </h2>
           </div>
 
@@ -627,7 +627,7 @@ export default function HomePage() {
                     <path d="M0 24V14.4C0 6.4 4.8 1.6 12 0l1.6 3.2c-4 1.6-6.4 4-6.4 8H12V24H0zM18.4 24V14.4c0-8 4.8-12.8 12-14.4L32 3.2c-4 1.6-6.4 4-6.4 8h4.8V24h-12z" />
                   </svg>
                 </div>
-                <blockquote className="flex-1 text-base leading-relaxed text-vault-text">
+                <blockquote className="flex-1 text-base leading-relaxed text-vault-ink">
                   {q.body}
                 </blockquote>
                 <figcaption className="mt-6 flex items-center gap-3 border-t border-vault-border pt-5">
@@ -655,8 +655,8 @@ export default function HomePage() {
               <Seal size={72} className="glow-seal rounded-full" />
             </div>
             <SectionMark number="11" label="The call" className="justify-center" />
-            <h2 className="hero-display text-4xl font-semibold text-vault-text md:text-6xl">
-              Your firm's AI should live{' '}
+            <h2 className="hero-display text-4xl font-semibold text-vault-ink md:text-6xl">
+              Your firm&apos;s AI should live{' '}
               <span className="italic text-gradient-gold">inside your firm.</span>
             </h2>
             <p className="mx-auto mt-8 max-w-xl text-base leading-relaxed text-vault-text-secondary">

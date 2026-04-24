@@ -6,9 +6,9 @@ export function DashboardMockup() {
       {/* Chrome */}
       <div className="flex items-center gap-2 border-b border-vault-border bg-vault-elevated/60 px-4 py-2.5">
         <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#2A3349]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#2A3349]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#2A3349]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-vault-border-strong" />
+          <span className="h-2.5 w-2.5 rounded-full bg-vault-border-strong" />
+          <span className="h-2.5 w-2.5 rounded-full bg-vault-border-strong" />
         </div>
         <div className="ml-3 flex items-center gap-2 font-mono text-[10px] text-vault-muted">
           <span className="live-dot" />
