@@ -37,9 +37,9 @@ export default async function MatterLayout({
       : 'bg-vault-success/10 text-vault-success border-vault-success/30'
 
   return (
-    <div className="animate-fade-in pb-12 -mx-6 -mt-6">
+    <div className="animate-fade-in pb-12 -mx-4 md:-mx-6 -mt-4 md:-mt-6">
       {/* Matter header band */}
-      <header className="bg-vault-elevated border-b border-vault-border px-6 pt-5 pb-0">
+      <header className="bg-vault-elevated border-b border-vault-border px-4 md:px-6 pt-5 pb-0">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-[11px] mb-3">
           <Link href="/matters" className="text-vault-text-secondary hover:text-vault-accent transition-colors">
@@ -108,7 +108,7 @@ export default async function MatterLayout({
       </header>
 
       {/* Page body */}
-      <div className="px-6 pt-6">{children}</div>
+      <div className="px-4 md:px-6 pt-6">{children}</div>
     </div>
   )
 }

@@ -80,13 +80,14 @@ const NAV: NavSection[] = [
   },
 ]
 
-function NavItem({ item }: { item: NavItem }) {
+function NavItem({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
   const pathname = usePathname()
   const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href)
 
   return (
     <Link
       href={item.href}
+      onClick={onNavigate}
       className={cn(
         'group relative flex items-center gap-3 px-3 py-1.5 rounded-sm text-[13px] transition-colors w-full',
         isActive
@@ -113,7 +114,7 @@ function NavItem({ item }: { item: NavItem }) {
   )
 }
 
-export function Sidebar({ session }: { session: Session }) {
+export function Sidebar({ session, onNavigate }: { session: Session; onNavigate?: () => void }) {
   const user = session.user
   return (
     <aside className="relative flex h-full w-60 flex-col border-r border-vault-border bg-vault-surface">
@@ -135,7 +136,7 @@ export function Sidebar({ session }: { session: Session }) {
               </p>
             )}
             {section.items.map((item) => (
-              <NavItem key={item.href} item={item} />
+              <NavItem key={item.href} item={item} onNavigate={onNavigate} />
             ))}
           </div>
         ))}

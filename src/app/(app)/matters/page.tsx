@@ -79,6 +79,8 @@ export default async function MattersPage() {
 
       {/* Matter table */}
       <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+       <div className="overflow-x-auto">
+        <div className="min-w-[820px]">
         <div className="grid grid-cols-12 gap-3 px-5 py-3 border-b border-vault-border bg-vault-elevated/50">
           <div className="col-span-5 font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">
             Matter
@@ -100,6 +102,8 @@ export default async function MattersPage() {
           ))}
         </div>
 
+        </div>
+       </div>
         {!demoMode && (
           <footer className="px-5 py-3 border-t border-vault-border bg-vault-elevated/40">
             <p className="font-mono text-[10px] text-vault-muted">

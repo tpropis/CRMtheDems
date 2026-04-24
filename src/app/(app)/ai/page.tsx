@@ -25,9 +25,9 @@ export default function AIParalegalPage() {
     : []
 
   return (
-    <div className="-mx-6 -mt-6 h-[calc(100vh-56px)] flex animate-fade-in">
+    <div className="-mx-4 md:-mx-6 -mt-4 md:-mt-6 h-[calc(100vh-56px)] flex animate-fade-in">
       {/* ────── Left rail: thread list ────── */}
-      <aside className="w-72 shrink-0 border-r border-vault-border bg-vault-elevated/40 flex flex-col">
+      <aside className="hidden md:flex w-72 shrink-0 border-r border-vault-border bg-vault-elevated/40 flex-col">
         <div className="px-4 pt-5 pb-3">
           <p className="eyebrow text-vault-gold">§ AI Paralegal</p>
           <h1 className="display-serif mt-1.5 text-[20px] font-medium text-vault-ink tracking-tight">
@@ -192,7 +192,7 @@ export default function AIParalegalPage() {
 
       {/* ────── Right rail: citations & context ────── */}
       {active && (
-        <aside className="w-80 shrink-0 border-l border-vault-border bg-vault-elevated/40 overflow-y-auto">
+        <aside className="hidden xl:flex w-80 shrink-0 border-l border-vault-border bg-vault-elevated/40 overflow-y-auto flex-col">
           <div className="px-5 pt-5 pb-3">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">
               § Citations
