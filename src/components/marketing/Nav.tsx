@@ -5,8 +5,8 @@ import { Lock, ArrowRight } from 'lucide-react'
 
 export function MarketingNav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-vault-border/80 bg-vault-bg/80 backdrop-blur-xl">
-      <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-vault-border-strong to-transparent" />
+    <header className="sticky top-0 z-50 border-b border-vault-border bg-vault-bg/85 backdrop-blur-xl">
+      <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-vault-gold/60 to-transparent" />
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6">
         <Link href="/" className="flex items-center">
           <Logo variant="dark" size="sm" />
@@ -21,7 +21,7 @@ export function MarketingNav() {
         <div className="flex items-center gap-2">
           <Link
             href="/login"
-            className="hidden rounded-md px-3 py-1.5 text-sm text-vault-text-secondary transition-colors hover:text-vault-text md:inline-flex"
+            className="hidden items-center rounded-md px-3 py-1.5 text-sm text-vault-text-secondary transition-colors hover:text-vault-accent md:inline-flex"
           >
             <Lock className="mr-1.5 h-3.5 w-3.5" />
             Sign in
@@ -42,7 +42,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="text-sm text-vault-text-secondary transition-colors hover:text-vault-text"
+      className="relative text-sm text-vault-text-secondary transition-colors hover:text-vault-accent after:absolute after:left-0 after:-bottom-1 after:h-px after:w-0 after:bg-vault-accent after:transition-all hover:after:w-full"
     >
       {children}
     </Link>
