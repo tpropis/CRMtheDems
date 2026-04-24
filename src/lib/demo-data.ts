@@ -526,7 +526,226 @@ export const demoStats = {
   docsIngestedToday: 1287,
 }
 
-// ── Utility: is this session a demo session? ────────────────────────
+// ── Matter Parties ──────────────────────────────────────────────────
+export interface DemoParty {
+  id: string
+  name: string
+  role:
+    | 'RESPONSIBLE_ATTORNEY'
+    | 'ORIGINATING_ATTORNEY'
+    | 'SUPERVISING_PARTNER'
+    | 'ASSOCIATE'
+    | 'PARALEGAL'
+    | 'CLIENT_CONTACT'
+    | 'OPPOSING_COUNSEL'
+    | 'EXPERT'
+  org?: string
+  email?: string
+  isPrimary?: boolean
+}
+
+// ── Matter Documents ────────────────────────────────────────────────
+export interface DemoDocument {
+  id: string
+  name: string
+  type: 'pleading' | 'correspondence' | 'memo' | 'exhibit' | 'contract' | 'email' | 'production' | 'note'
+  privilege?: DemoPrivilegeEntry['classification']
+  bates?: string
+  pages: number
+  ingestedAt: string
+  size: string
+  author?: string
+}
+
+// ── Matter Timeline ────────────────────────────────────────────────
+export interface DemoTimelineEvent {
+  id: string
+  at: string // relative time label
+  atISO: string // absolute
+  actor: string
+  kind:
+    | 'filing'
+    | 'correspondence'
+    | 'ai_action'
+    | 'deadline_computed'
+    | 'doc_ingested'
+    | 'meeting'
+    | 'note'
+    | 'billing'
+  title: string
+  body?: string
+  metadata?: Record<string, string>
+}
+
+// ── Matter Tasks ────────────────────────────────────────────────────
+export interface DemoTask {
+  id: string
+  title: string
+  assignee: string
+  dueRelative: string
+  status: 'todo' | 'in_progress' | 'review' | 'done'
+  priority: 'low' | 'medium' | 'high'
+}
+
+// ── Per-matter bundle ───────────────────────────────────────────────
+export interface DemoMatterDetail extends DemoMatter {
+  description: string
+  clientContact: string
+  opposingCounsel?: string
+  court?: string
+  caseNumber?: string
+  openedAt: string
+  parties: DemoParty[]
+  documents: DemoDocument[]
+  timeline: DemoTimelineEvent[]
+  tasks: DemoTask[]
+  keyFacts: { label: string; value: string }[]
+}
+
+const baseParties: DemoParty[] = [
+  { id: 'u-hartley', name: 'Margaret Hartley', role: 'RESPONSIBLE_ATTORNEY', org: 'Hartley & Associates', email: 'mhartley@hartleyandassoc.com', isPrimary: true },
+  { id: 'u-chan', name: 'Jonathan Chan', role: 'SUPERVISING_PARTNER', org: 'Hartley & Associates', email: 'jchan@hartleyandassoc.com' },
+  { id: 'u-reyes', name: 'Sofia Reyes', role: 'ASSOCIATE', org: 'Hartley & Associates', email: 'sreyes@hartleyandassoc.com' },
+  { id: 'u-thompson', name: 'Marcus Thompson', role: 'PARALEGAL', org: 'Hartley & Associates', email: 'mthompson@hartleyandassoc.com' },
+]
+
+export const demoMatterDetails: Record<string, DemoMatterDetail> = {
+  'm-0142': {
+    ...demoMatters.find((m) => m.id === 'm-0142')!,
+    description:
+      'Securities fraud action arising out of alleged material omissions in Aventra Fund II offering materials. Defendant moved to dismiss 3/28; plaintiff filed amended complaint 4/7. Motion-to-dismiss window now open; discovery stayed pending resolution.',
+    clientContact: 'Charles Roth, Trustee',
+    opposingCounsel: 'Kirkland & Ellis LLP — Laurence Pell, lead',
+    court: 'U.S. District Court, Southern District of New York',
+    caseNumber: '1:26-cv-02147-JMF',
+    openedAt: 'Jan 9, 2026',
+    parties: [
+      ...baseParties,
+      { id: 'p-roth', name: 'Roth Family Trust', role: 'CLIENT_CONTACT', org: 'Client', email: 'trustee@rothfamilytrust.com', isPrimary: true },
+      { id: 'p-pell', name: 'Laurence Pell', role: 'OPPOSING_COUNSEL', org: 'Kirkland & Ellis LLP' },
+      { id: 'p-exp-1', name: 'Dr. Elena Vasquez', role: 'EXPERT', org: 'Vasquez Damages Consulting' },
+    ],
+    documents: [
+      { id: 'doc-1', name: 'Amended Complaint (4/7/2026).pdf', type: 'pleading', pages: 62, ingestedAt: '14 hr ago', size: '1.4 MB', author: 'Hartley & Associates' },
+      { id: 'doc-2', name: 'MTD Reply Brief (opposing).pdf', type: 'pleading', pages: 23, ingestedAt: '6 min ago', size: '540 KB', author: 'Kirkland & Ellis' },
+      { id: 'doc-3', name: 'Board email chain — Aventra 3/22/2026.msg', type: 'email', privilege: 'Attorney-Client', pages: 4, ingestedAt: '8 min ago', size: '18 KB', author: 'Multiple' },
+      { id: 'doc-4', name: 'AVT Production batch 07 (347 docs)', type: 'production', bates: 'AVT-0003210 — 0003557', pages: 1248, ingestedAt: '2 hr ago', size: '220 MB' },
+      { id: 'doc-5', name: 'Chronology · Aventra board comms (AI).md', type: 'memo', privilege: 'Work Product', pages: 9, ingestedAt: '1 hr ago', size: '32 KB', author: 'AI Paralegal · Reviewed by M. Hartley' },
+      { id: 'doc-6', name: 'Deposition prep outline · C. Roth.docx', type: 'memo', privilege: 'Work Product', pages: 14, ingestedAt: '3 hr ago', size: '82 KB', author: 'S. Reyes' },
+      { id: 'doc-7', name: 'Aventra Fund II PPM (exhibit).pdf', type: 'exhibit', pages: 118, ingestedAt: '2 days ago', size: '4.2 MB' },
+    ],
+    timeline: [
+      { id: 't-1', at: '6 min ago', atISO: '2026-04-24T09:54:00Z', actor: 'System · Court docket', kind: 'filing', title: 'Opposing counsel filed MTD reply brief (23 pp.)', body: 'Kirkland response to amended complaint. Flags: Wells factor analysis in § II; revised damages theory in Exhibit C.' },
+      { id: 't-2', at: '18 min ago', atISO: '2026-04-24T09:42:00Z', actor: 'AI Paralegal', kind: 'ai_action', title: 'Flagged potential privilege conflict in AVT prod. batch 07', body: '6 documents identified as dual-purpose; Kirkland counsel copied on 4 email threads. Recommended review by S. Reyes before production log.' },
+      { id: 't-3', at: '1 hr ago', atISO: '2026-04-24T09:00:00Z', actor: 'M. Hartley', kind: 'ai_action', title: 'Asked AI: chronology of Aventra board communications', body: '17 communications identified between 11/14/2024 and 3/22/2026. Exported chronology to matter workspace.' },
+      { id: 't-4', at: '3 hr ago', atISO: '2026-04-24T07:00:00Z', actor: 'System · Deadline Engine', kind: 'deadline_computed', title: 'Computed: Motion-to-dismiss window opens 4/28', body: 'Triggered by amended complaint service 4/7. Rule source: Fed. R. Civ. P. 12(b), 15(a)(3).' },
+      { id: 't-5', at: '6 hr ago', atISO: '2026-04-24T04:00:00Z', actor: 'M. Hartley', kind: 'correspondence', title: 'Client call · C. Roth, trustee', body: '30 min. Reviewed MTD strategy and potential settlement posture. Client prefers aggressive response; authorized Wells factor rebuttal.' },
+      { id: 't-6', at: '2 days ago', atISO: '2026-04-22T14:30:00Z', actor: 'S. Reyes', kind: 'filing', title: 'Filed: Amended complaint (62 pp.)', body: 'Filed under seal portions re: confidential fund terms. Exhibits A–F attached. Service perfected on K&E 4/7.' },
+      { id: 't-7', at: '5 days ago', atISO: '2026-04-19T10:00:00Z', actor: 'M. Hartley', kind: 'meeting', title: 'Strategy meeting · 2 hours', body: 'Attendees: Hartley, Reyes, Chan, Thompson. Key decisions: (1) amend rather than oppose MTD, (2) add Wells-factor claim, (3) pursue document discovery pre-MTD via 12(d) motion.' },
+    ],
+    tasks: [
+      { id: 'tk-1', title: 'Review AVT prod. batch 07 privilege flags', assignee: 'S. Reyes', dueRelative: 'today', status: 'in_progress', priority: 'high' },
+      { id: 'tk-2', title: 'Draft opposition to MTD', assignee: 'M. Hartley', dueRelative: 'in 3 days', status: 'todo', priority: 'high' },
+      { id: 'tk-3', title: 'Depose expert · Vasquez damages model', assignee: 'J. Chan', dueRelative: 'in 9 days', status: 'todo', priority: 'medium' },
+      { id: 'tk-4', title: 'Update chronology with batch 07 docs', assignee: 'AI Paralegal', dueRelative: 'pending review', status: 'review', priority: 'medium' },
+      { id: 'tk-5', title: 'Client status letter · Q1 billing', assignee: 'M. Thompson', dueRelative: 'in 5 days', status: 'todo', priority: 'low' },
+    ],
+    keyFacts: [
+      { label: 'Claim value', value: '$48.2M' },
+      { label: 'Venue', value: 'S.D.N.Y.' },
+      { label: 'Case stage', value: 'MTD briefing' },
+      { label: 'Privilege docs', value: '2,184 / 11,420' },
+      { label: 'Discovery status', value: 'Stayed pending MTD' },
+      { label: 'Expert retained', value: 'Vasquez (damages)' },
+    ],
+  },
+  'm-0109': {
+    ...demoMatters.find((m) => m.id === 'm-0109')!,
+    description:
+      'SEC investigation concerning Nexovance Series B round and alleged Rule 10b5-1 issues. Wells notice received 4/14; 30-day response window. Firm retained post-notice.',
+    clientContact: 'Priya Deshmukh, General Counsel, Nexovance Technologies',
+    opposingCounsel: 'SEC Staff — Div. of Enforcement, Boston Regional',
+    court: 'SEC · Administrative',
+    caseNumber: 'SEC FW-12847',
+    openedAt: 'Apr 15, 2026',
+    parties: [
+      ...baseParties.slice(0, 3),
+      { id: 'p-nxv', name: 'Priya Deshmukh, GC', role: 'CLIENT_CONTACT', org: 'Nexovance Technologies', isPrimary: true },
+      { id: 'p-sec', name: 'SEC · Div. of Enforcement', role: 'OPPOSING_COUNSEL', org: 'U.S. Securities and Exchange Commission' },
+    ],
+    documents: [
+      { id: 'doc-nxv-1', name: 'Wells Notice (SEC 4/14/2026).pdf', type: 'correspondence', pages: 18, ingestedAt: '10 days ago', size: '420 KB', author: 'SEC' },
+      { id: 'doc-nxv-2', name: 'Litigation hold memo v3.docx', type: 'memo', privilege: 'Work Product', pages: 12, ingestedAt: '22 min ago', size: '64 KB', author: 'M. Hartley' },
+      { id: 'doc-nxv-3', name: 'NXV Production batch 03 (summary).pdf', type: 'production', pages: 34, ingestedAt: '4 days ago', size: '1.1 MB' },
+      { id: 'doc-nxv-4', name: 'NXV Production batch 05 (summary).pdf', type: 'production', pages: 41, ingestedAt: '2 days ago', size: '1.4 MB' },
+      { id: 'doc-nxv-5', name: 'Draft deficiency letter · ¶ 14.docx', type: 'correspondence', privilege: 'Work Product', pages: 3, ingestedAt: '3 hr ago', size: '28 KB', author: 'AI Paralegal · Draft' },
+    ],
+    timeline: [
+      { id: 't-nxv-1', at: '22 min ago', atISO: '2026-04-24T09:38:00Z', actor: 'System · Court docket', kind: 'filing', title: 'Docket update · Staff request for supplemental response', body: 'Staff issued request for supplemental information re: Wells notice ¶ 14. Deadline: 30 days from 4/24 notice.' },
+      { id: 't-nxv-2', at: '42 min ago', atISO: '2026-04-24T09:18:00Z', actor: 'AI Paralegal', kind: 'ai_action', title: 'Drafted deficiency letter re: Wells notice ¶ 14', body: '3-page draft arguing (i) conflated transactions, (ii) factual record contradicts Staff inference, (iii) requests 30-day meet-and-confer.' },
+      { id: 't-nxv-3', at: '3 days ago', atISO: '2026-04-21T15:00:00Z', actor: 'M. Hartley', kind: 'meeting', title: 'Client strategy call · P. Deshmukh', body: 'Reviewed Wells notice strategy. Client authorized supplemental production batch 04. Internal investigation findings to be shared next week.' },
+      { id: 't-nxv-4', at: '5 days ago', atISO: '2026-04-19T09:00:00Z', actor: 'M. Thompson', kind: 'doc_ingested', title: 'Ingested production batch 03 (2,441 docs)', body: 'Automatic privilege tagging applied. 187 docs flagged Attorney-Client; 43 Work Product; 12 Needs Review.' },
+    ],
+    tasks: [
+      { id: 'tk-nxv-1', title: 'Finalize deficiency letter response', assignee: 'M. Hartley', dueRelative: 'in 18 hr', status: 'in_progress', priority: 'high' },
+      { id: 'tk-nxv-2', title: 'Prepare supplemental prod. batch 04', assignee: 'M. Thompson', dueRelative: 'in 5 days', status: 'todo', priority: 'high' },
+      { id: 'tk-nxv-3', title: 'Schedule follow-up with Division Chief', assignee: 'J. Chan', dueRelative: 'in 7 days', status: 'todo', priority: 'medium' },
+    ],
+    keyFacts: [
+      { label: 'Wells deadline', value: '18 hours' },
+      { label: 'Production volume', value: '8,412 docs' },
+      { label: 'Privilege log entries', value: '1,042' },
+      { label: 'Forum', value: 'SEC Boston Regional' },
+      { label: 'Retained', value: 'Apr 15, 2026' },
+      { label: 'Risk classification', value: 'Critical' },
+    ],
+  },
+}
+
+/**
+ * Look up a demo matter detail bundle. Returns null for non-demo matter IDs.
+ * Matters that exist in demoMatters but don't have a full detail bundle yet
+ * get a "lite" bundle generated on the fly.
+ */
+export function getDemoMatter(id: string): DemoMatterDetail | null {
+  const preset = demoMatterDetails[id]
+  if (preset) return preset
+
+  const base = demoMatters.find((m) => m.id === id)
+  if (!base) return null
+
+  // Lite fallback — no rich timeline/docs, but enough to render the shell
+  return {
+    ...base,
+    description: `${base.practice} matter in progress for ${base.client}. Full workspace loading.`,
+    clientContact: base.client,
+    openedAt: '2026',
+    parties: baseParties,
+    documents: [],
+    timeline: [
+      {
+        id: `${id}-seed`,
+        at: base.lastActivity,
+        atISO: new Date().toISOString(),
+        actor: base.attorney,
+        kind: 'note',
+        title: `Matter ${base.number} last touched`,
+        body: undefined,
+      },
+    ],
+    tasks: [],
+    keyFacts: [
+      { label: 'Practice', value: base.practice },
+      { label: 'Risk', value: base.risk },
+      { label: 'Attorney', value: base.attorney },
+      { label: 'Status', value: base.status },
+    ],
+  }
+}
+
+/**
+ * Utility: is this session a demo session?
+ */
 export function isDemoSession(firmId?: string | null): boolean {
   return firmId === 'demo-firm'
 }
