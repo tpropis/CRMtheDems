@@ -20,7 +20,7 @@ export default async function ClientsPage() {
       _count: { select: { matters: true, contacts: true } },
     },
     take: 100,
-  })
+  }).catch(() => [] as any[])
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -63,12 +63,12 @@ export default async function ClientsPage() {
                   </td>
                 </tr>
               ) : (
-                clients.map((client) => {
-                  const activeMatters = client.matters.filter((m) => m.status === 'ACTIVE').length
+                clients.map((client: any) => {
+                  const activeMatters = client.matters.filter((m: any) => m.status === 'ACTIVE').length
                   return (
                     <tr key={client.id}>
                       <td>
-                        <Link href={`/app/clients/${client.id}`} className="hover:text-vault-accent-light block">
+                        <Link href={`/clients/${client.id}`} className="hover:text-vault-accent-light block">
                           <p className="font-medium text-vault-text">{client.name}</p>
                           <p className="text-xs font-mono text-vault-muted">{client.clientNumber}</p>
                         </Link>

@@ -21,15 +21,15 @@ export default async function TimekeepingPage() {
         user: { select: { name: true } },
       },
       take: 50,
-    }),
+    }).catch(() => [] as any[]),
     db.timeEntry.aggregate({
       where: { firmId, userId, status: { not: 'WRITTEN_OFF' } },
       _sum: { hoursWorked: true },
-    }),
+    }).catch(() => ({ _sum: { hoursWorked: null } } as any)),
     db.timeEntry.aggregate({
       where: { firmId, userId, isBillable: true, status: { not: 'WRITTEN_OFF' } },
       _sum: { amount: true },
-    }),
+    }).catch(() => ({ _sum: { amount: null } } as any)),
   ])
 
   return (

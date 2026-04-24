@@ -17,7 +17,7 @@ export default async function AdminUsersPage() {
     where: { firmId },
     orderBy: [{ isActive: 'desc' }, { name: 'asc' }],
     include: { office: { select: { name: true } } },
-  })
+  }).catch(() => [] as any[])
 
   return (
     <div className="space-y-5 animate-fade-in">

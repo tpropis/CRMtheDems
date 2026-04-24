@@ -19,7 +19,7 @@ export default async function IntakePage() {
     orderBy: { createdAt: 'desc' },
     include: { conflictCheck: { select: { status: true } } },
     take: 100,
-  })
+  }).catch(() => [] as any[])
 
   const pipeline = STATUS_ORDER.map((status) => ({
     status,
@@ -92,7 +92,7 @@ export default async function IntakePage() {
                 leads.map((lead) => (
                   <tr key={lead.id}>
                     <td>
-                      <Link href={`/app/intake/${lead.id}`} className="hover:text-vault-accent-light">
+                      <Link href={`/intake/${lead.id}`} className="hover:text-vault-accent-light">
                         <span className="text-xs font-mono text-vault-muted">{lead.leadNumber}</span>
                       </Link>
                     </td>
@@ -134,7 +134,7 @@ export default async function IntakePage() {
                     </td>
                     <td className="text-xs text-vault-muted">{formatDate(lead.createdAt)}</td>
                     <td>
-                      <Link href={`/app/intake/${lead.id}`}>
+                      <Link href={`/intake/${lead.id}`}>
                         <Button variant="ghost" size="sm" className="text-xs">View</Button>
                       </Link>
                     </td>

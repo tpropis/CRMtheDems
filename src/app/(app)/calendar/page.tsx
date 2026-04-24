@@ -20,7 +20,7 @@ export default async function CalendarPage() {
       orderBy: { startAt: 'asc' },
       include: { matter: { select: { name: true, matterNumber: true } } },
       take: 50,
-    }),
+    }).catch(() => [] as any[]),
     db.deadline.findMany({
       where: {
         firmId,
@@ -30,7 +30,7 @@ export default async function CalendarPage() {
       orderBy: { dueAt: 'asc' },
       include: { matter: { select: { name: true, matterNumber: true } } },
       take: 30,
-    }),
+    }).catch(() => [] as any[]),
   ])
 
   const EVENT_COLORS: Record<string, string> = {

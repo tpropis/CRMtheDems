@@ -15,7 +15,7 @@ export default async function InboxPage() {
     where: { userId },
     orderBy: { createdAt: 'desc' },
     take: 50,
-  })
+  }).catch(() => [])
 
   const ICONS: Record<string, any> = {
     URGENT: AlertTriangle,

@@ -15,7 +15,7 @@ export default async function ConflictsPage() {
     orderBy: { runAt: 'desc' },
     include: { intakeLead: { select: { prospectName: true, leadNumber: true } }, results: true },
     take: 50,
-  })
+  }).catch(() => [] as any[])
 
   return (
     <div className="space-y-5 animate-fade-in">

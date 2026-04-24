@@ -13,7 +13,7 @@ const CATEGORY_LABELS: Record<string, string> = { CORRESPONDENCE: 'Correspondenc
 export default async function TemplatesPage() {
   const session = await auth()
   const firmId = (session?.user as any)?.firmId
-  const savedTemplates = await db.template.findMany({ where: { firmId }, orderBy: { usageCount: 'desc' } })
+  const savedTemplates = await db.template.findMany({ where: { firmId }, orderBy: { usageCount: 'desc' } }).catch(() => [] as any[])
   const grouped = DEFAULT_TEMPLATES.reduce((acc, t) => { if (!acc[t.category]) acc[t.category] = []; acc[t.category].push(t); return acc }, {} as Record<string, typeof DEFAULT_TEMPLATES>)
 
   return (

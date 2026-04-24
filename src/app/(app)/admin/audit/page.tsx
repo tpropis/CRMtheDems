@@ -35,7 +35,7 @@ export default async function AuditPage() {
       matter: { select: { name: true, matterNumber: true } },
     },
     take: 200,
-  })
+  }).catch(() => [] as any[])
 
   return (
     <div className="space-y-5 animate-fade-in">

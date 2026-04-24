@@ -10,11 +10,11 @@ export default async function ReportsPage() {
   const firmId = (session?.user as any)?.firmId
 
   const [mattersByStatus, mattersByType, totalWIP, aiJobCount, activeUsers] = await Promise.all([
-    db.matter.groupBy({ by: ['status'], where: { firmId }, _count: true }),
-    db.matter.groupBy({ by: ['type'], where: { firmId }, _count: true }),
-    db.timeEntry.aggregate({ where: { firmId, status: { in: ['DRAFT', 'SUBMITTED', 'APPROVED'] } }, _sum: { amount: true } }),
-    db.aIJob.count({ where: { firmId } }),
-    db.user.count({ where: { firmId, isActive: true } }),
+    db.matter.groupBy({ by: ['status'], where: { firmId }, _count: true }).catch(() => [] as any[]),
+    db.matter.groupBy({ by: ['type'], where: { firmId }, _count: true }).catch(() => [] as any[]),
+    db.timeEntry.aggregate({ where: { firmId, status: { in: ['DRAFT', 'SUBMITTED', 'APPROVED'] } }, _sum: { amount: true } }).catch(() => ({ _sum: { amount: null } } as any)),
+    db.aIJob.count({ where: { firmId } }).catch(() => 0),
+    db.user.count({ where: { firmId, isActive: true } }).catch(() => 0),
   ])
 
   return (

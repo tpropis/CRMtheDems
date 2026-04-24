@@ -16,7 +16,7 @@ export default async function ContactsPage() {
     orderBy: { lastName: 'asc' },
     include: { client: { select: { name: true } } },
     take: 100,
-  })
+  }).catch(() => [] as any[])
 
   return (
     <div className="space-y-5 animate-fade-in">

@@ -18,15 +18,15 @@ export default async function BillingPage() {
       orderBy: { createdAt: 'desc' },
       include: { matter: { select: { name: true, matterNumber: true, client: { select: { name: true } } } } },
       take: 50,
-    }),
+    }).catch(() => [] as any[]),
     db.timeEntry.aggregate({
       where: { firmId, status: { in: ['DRAFT', 'SUBMITTED', 'APPROVED'] }, isBillable: true },
       _sum: { amount: true },
-    }),
+    }).catch(() => ({ _sum: { amount: null } } as any)),
     db.payment.aggregate({
       where: { invoice: { firmId } },
       _sum: { amount: true },
-    }),
+    }).catch(() => ({ _sum: { amount: null } } as any)),
   ])
 
   const totalBilled = invoices.reduce((sum, inv) => sum + Number(inv.total), 0)
