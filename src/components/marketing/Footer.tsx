@@ -33,9 +33,9 @@ const FOOTER = {
 
 export function MarketingFooter() {
   return (
-    <footer className="relative border-t border-vault-border bg-vault-ink">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-vault-gold/40 to-transparent" />
-      <div className="mx-auto max-w-[1200px] px-6 py-20">
+    <footer className="relative border-t border-vault-border-strong bg-vault-elevated">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-vault-gold to-transparent" />
+      <div className="mx-auto max-w-[1200px] px-6 py-16">
         <div className="grid grid-cols-2 gap-10 md:grid-cols-6">
           <div className="col-span-2">
             <Logo variant="dark" size="sm" />
@@ -59,7 +59,7 @@ export function MarketingFooter() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="text-sm text-vault-text-secondary transition-colors hover:text-vault-text"
+                      className="text-sm text-vault-text-secondary transition-colors hover:text-vault-accent"
                     >
                       {item.label}
                     </Link>
@@ -74,13 +74,13 @@ export function MarketingFooter() {
 
         <div className="mt-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <p className="font-mono text-[11px] uppercase tracking-widest text-vault-faint">
-            © 2026 Privilege Vault AI · All rights reserved
+            © 2026 Privilege Vault · All rights reserved
           </p>
           <div className="flex items-center gap-6 text-[11px] uppercase tracking-[0.18em] text-vault-muted">
-            <Link href="/trust" className="hover:text-vault-text">Trust</Link>
-            <Link href="/security/compliance" className="hover:text-vault-text">DPA</Link>
-            <Link href="/security/compliance" className="hover:text-vault-text">Sub-processors</Link>
-            <Link href="/contact" className="hover:text-vault-text">Contact</Link>
+            <Link href="/trust" className="hover:text-vault-accent">Trust</Link>
+            <Link href="/security/compliance" className="hover:text-vault-accent">DPA</Link>
+            <Link href="/security/compliance" className="hover:text-vault-accent">Sub-processors</Link>
+            <Link href="/contact" className="hover:text-vault-accent">Contact</Link>
           </div>
         </div>
       </div>

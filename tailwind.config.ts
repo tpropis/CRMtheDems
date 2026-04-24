@@ -10,64 +10,68 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Privilege Vault AI Design System — Sovereign Custodian
+        // Privilege Vault — Law Library palette
+        // Warm parchment + deep forest + antique brass
         vault: {
-          ink:       '#05070D',   // deepest canvas (hero base)
-          bg:        '#080B12',   // page background
-          surface:   '#0E1220',   // card / panel surface
-          elevated:  '#141A2C',   // elevated surfaces
-          raised:    '#1A2138',   // floating / modal
-          border:    '#1E2535',   // default hairline
-          'border-strong': '#2A3349',
-          text:      '#E6ECF5',   // primary text
-          'text-secondary': '#8B98B5',
-          muted:     '#4A5568',
-          faint:     '#384055',
-          accent:    '#2563EB',
-          'accent-light': '#3B82F6',
-          'accent-dim': '#1D4ED8',
-          'accent-soft': 'rgba(59,130,246,0.12)',
-          success:   '#16A34A',
-          warning:   '#D97706',
-          danger:    '#DC2626',
-          'danger-dim': '#991B1B',
-          gold:      '#C9A65A',   // seal gold — heritage accent
-          'gold-dim': '#8F7433',
-          silver:    '#94A3B8',
+          ink:       '#14120E',   // deepest text / headings (soft black with warm bias)
+          bg:        '#F7F2E7',   // page canvas — warm parchment
+          surface:   '#FFFFFF',   // cards / panels — pure paper
+          elevated:  '#FBF6EA',   // elevated card / cream
+          raised:    '#F2ECDA',   // modal / floating
+          border:    '#E2DAC2',   // default hairline
+          'border-strong': '#C9BE9F',
+          text:      '#14120E',   // primary ink
+          'text-secondary': '#52504A',
+          muted:     '#8B8676',
+          faint:     '#B5AE9C',
+          accent:    '#1F4A3D',   // deep forest / library green
+          'accent-light': '#2B6653',
+          'accent-dim': '#15382D',
+          'accent-soft': 'rgba(31,74,61,0.08)',
+          success:   '#487A3A',   // muted olive
+          warning:   '#B68A3E',   // brass — doubles as warning
+          danger:    '#7A2D2A',   // oxblood
+          'danger-dim': '#5A1F1D',
+          gold:      '#B68A3E',   // antique brass — heritage accent
+          'gold-dim': '#8A6A2D',
+          'gold-light': '#D4AC5F',
+          silver:    '#8A8472',
+          sage:      '#C9D4C2',   // soft success tint
+          oxblood:   '#7A2D2A',
         },
-        // Shadcn compatibility
-        border: '#1E2535',
-        input: '#1E2535',
-        ring: '#2563EB',
-        background: '#080B12',
-        foreground: '#E2E8F2',
+        // Shadcn compatibility (light mode)
+        border: '#E2DAC2',
+        input: '#E2DAC2',
+        ring: '#1F4A3D',
+        background: '#F7F2E7',
+        foreground: '#14120E',
         primary: {
-          DEFAULT: '#2563EB',
-          foreground: '#FFFFFF',
+          DEFAULT: '#1F4A3D',
+          foreground: '#FBF6EA',
         },
         secondary: {
-          DEFAULT: '#141824',
-          foreground: '#E2E8F2',
+          DEFAULT: '#F2ECDA',
+          foreground: '#14120E',
         },
         destructive: {
-          DEFAULT: '#DC2626',
-          foreground: '#FFFFFF',
+          DEFAULT: '#7A2D2A',
+          foreground: '#FBF6EA',
         },
         muted: {
-          DEFAULT: '#0E1220',
-          foreground: '#8B98B5',
+          DEFAULT: '#FBF6EA',
+          foreground: '#52504A',
         },
         accent: {
-          DEFAULT: '#141824',
-          foreground: '#E2E8F2',
+          DEFAULT: '#F2ECDA',
+          foreground: '#14120E',
         },
         popover: {
-          DEFAULT: '#0E1220',
-          foreground: '#E2E8F2',
+          DEFAULT: '#FFFFFF',
+          foreground: '#14120E',
         },
         card: {
-          DEFAULT: '#0E1220',
-          foreground: '#E2E8F2',
+          DEFAULT: '#FFFFFF',
+          foreground: '#14120E',
         },
       },
       borderRadius: {
@@ -87,19 +91,23 @@ const config: Config = {
         'widest-2': '0.18em',
       },
       boxShadow: {
-        'vault': '0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.5)',
-        'vault-lg': '0 4px 16px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.4)',
-        'vault-glow': '0 0 0 1px rgba(37,99,235,0.3), 0 0 20px rgba(37,99,235,0.1)',
-        'vault-seal': '0 0 0 1px rgba(201,166,90,0.35), 0 0 24px rgba(201,166,90,0.08)',
-        'vault-hairline': 'inset 0 0 0 1px rgba(42,51,73,0.8)',
+        'vault':        '0 1px 2px rgba(20,18,14,0.04), 0 1px 3px rgba(20,18,14,0.06)',
+        'vault-lg':     '0 4px 12px rgba(20,18,14,0.06), 0 2px 4px rgba(20,18,14,0.04)',
+        'vault-xl':     '0 10px 30px rgba(20,18,14,0.09), 0 4px 10px rgba(20,18,14,0.06)',
+        'vault-glow':   '0 0 0 1px rgba(31,74,61,0.25), 0 0 24px rgba(31,74,61,0.08)',
+        'vault-seal':   '0 0 0 1px rgba(182,138,62,0.35), 0 0 24px rgba(182,138,62,0.12)',
+        'vault-hairline': 'inset 0 0 0 1px rgba(226,218,194,0.9)',
+        'vault-inset':  'inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(20,18,14,0.03)',
       },
       backgroundImage: {
         'vault-grid':
-          'linear-gradient(rgba(30,37,53,0.45) 1px, transparent 1px), linear-gradient(90deg, rgba(30,37,53,0.45) 1px, transparent 1px)',
+          'linear-gradient(rgba(201,190,159,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(201,190,159,0.35) 1px, transparent 1px)',
         'vault-radial':
-          'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.14), transparent 60%)',
+          'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(31,74,61,0.08), transparent 60%)',
         'vault-radial-gold':
-          'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,166,90,0.06), transparent 70%)',
+          'radial-gradient(ellipse 70% 45% at 50% 0%, rgba(182,138,62,0.10), transparent 70%)',
+        'vault-paper':
+          'radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255,255,255,0.6), transparent 70%)',
       },
       backgroundSize: {
         'vault-grid': '56px 56px',
@@ -130,18 +138,23 @@ const config: Config = {
           '100%': { backgroundPosition: '200% 0' },
         },
         'seal-pulse': {
-          '0%, 100%': { opacity: '0.9', boxShadow: '0 0 0 0 rgba(201,166,90,0.25)' },
-          '50%': { opacity: '1', boxShadow: '0 0 0 10px rgba(201,166,90,0)' },
+          '0%, 100%': { opacity: '0.9', boxShadow: '0 0 0 0 rgba(182,138,62,0.3)' },
+          '50%':      { opacity: '1',   boxShadow: '0 0 0 10px rgba(182,138,62,0)' },
+        },
+        'ticker': {
+          '0%':   { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
-        'fade-in': 'fade-in 0.24s cubic-bezier(0.22,1,0.36,1)',
-        'rise-in': 'rise-in 0.4s cubic-bezier(0.22,1,0.36,1)',
+        'accordion-up':   'accordion-up 0.2s ease-out',
+        'fade-in':        'fade-in 0.24s cubic-bezier(0.22,1,0.36,1)',
+        'rise-in':        'rise-in 0.4s cubic-bezier(0.22,1,0.36,1)',
         'slide-in-right': 'slide-in-right 0.3s ease-out',
-        shimmer: 'shimmer 2s linear infinite',
-        'seal-pulse': 'seal-pulse 3.2s ease-in-out infinite',
+        shimmer:          'shimmer 2s linear infinite',
+        'seal-pulse':     'seal-pulse 3.2s ease-in-out infinite',
+        ticker:           'ticker 45s linear infinite',
       },
     },
   },

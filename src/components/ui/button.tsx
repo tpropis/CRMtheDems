@@ -9,19 +9,19 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-vault-accent text-white hover:bg-vault-accent-light shadow-sm',
+          'bg-vault-accent text-[#FBF6EA] hover:bg-vault-accent-light shadow-vault',
         destructive:
-          'bg-vault-danger text-white hover:bg-vault-danger-dim shadow-sm',
+          'bg-vault-danger text-[#FBF6EA] hover:bg-vault-danger-dim shadow-vault',
         outline:
-          'border border-vault-border bg-transparent text-vault-text hover:bg-vault-elevated hover:border-vault-border-strong',
+          'border border-vault-border-strong bg-transparent text-vault-text hover:bg-vault-elevated',
         secondary:
-          'bg-vault-elevated text-vault-text hover:bg-vault-surface border border-vault-border',
+          'bg-vault-elevated text-vault-text hover:bg-vault-raised border border-vault-border',
         ghost:
           'text-vault-text-secondary hover:bg-vault-elevated hover:text-vault-text',
         link:
-          'text-vault-accent-light underline-offset-4 hover:underline',
+          'text-vault-accent underline-offset-4 hover:underline',
         premium:
-          'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-500 hover:to-blue-600 shadow-vault',
+          'bg-gradient-to-b from-[#C89B4A] to-[#9F7528] text-[#FBF6EA] hover:from-[#D4AC5F] hover:to-[#B68A3E] shadow-vault-lg border border-[#8A6A2D]/40',
       },
       size: {
         default: 'h-9 px-4 py-2',

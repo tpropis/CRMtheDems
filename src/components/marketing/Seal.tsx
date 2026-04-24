@@ -1,5 +1,9 @@
 import { cn } from '@/lib/utils'
 
+/**
+ * Privilege Vault seal — brass disc with three-column monogram, reads as
+ * a firm seal / legal notary. Sits on parchment backgrounds.
+ */
 export function Seal({ size = 64, className }: { size?: number; className?: string }) {
   return (
     <svg
@@ -12,35 +16,50 @@ export function Seal({ size = 64, className }: { size?: number; className?: stri
     >
       <defs>
         <radialGradient id="seal-inner" cx="50%" cy="45%" r="55%">
-          <stop offset="0%" stopColor="#1A2138" />
-          <stop offset="100%" stopColor="#0E1220" />
+          <stop offset="0%" stopColor="#FBF6EA" />
+          <stop offset="100%" stopColor="#F2ECDA" />
         </radialGradient>
         <linearGradient id="seal-ring" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#E8D39A" />
-          <stop offset="100%" stopColor="#8F7433" />
+          <stop offset="0%" stopColor="#D4AC5F" />
+          <stop offset="55%" stopColor="#B68A3E" />
+          <stop offset="100%" stopColor="#8A6A2D" />
         </linearGradient>
       </defs>
-      {/* Outer ring */}
-      <circle cx="32" cy="32" r="30" stroke="url(#seal-ring)" strokeWidth="1" opacity="0.9" />
+
+      {/* Outer rings */}
+      <circle cx="32" cy="32" r="30" stroke="url(#seal-ring)" strokeWidth="1" opacity="0.95" />
       <circle cx="32" cy="32" r="27" stroke="url(#seal-ring)" strokeWidth="0.5" opacity="0.45" />
+
       {/* Inner disc */}
       <circle cx="32" cy="32" r="24" fill="url(#seal-inner)" />
-      {/* Monogram PV — abstract column */}
-      <g transform="translate(22, 18)">
-        <rect x="0" y="0" width="20" height="2" fill="#E6ECF5" />
-        <rect x="2" y="3" width="16" height="1.2" fill="#E6ECF5" opacity="0.75" />
-        <rect x="3" y="6" width="3" height="22" fill="#E6ECF5" />
-        <path d="M6 6 Q13 6 13 12 Q13 18 6 18 L6 6 Z" fill="#E6ECF5" />
-        <path d="M7.5 9 Q10.5 9 10.5 12 Q10.5 15 7.5 15 Z" fill="#0E1220" />
-        <path d="M12 6 L17 6 L20 28 L15 28 Z" fill="#C9A65A" opacity="0.9" />
+
+      {/* Three columns inside the seal */}
+      <g transform="translate(17, 20)">
+        {/* Architrave */}
+        <rect x="0" y="0" width="30" height="2" rx="0.4" fill="#14120E" />
+        {/* Column caps */}
+        <rect x="2" y="3" width="4.5" height="0.8" fill="#14120E" />
+        <rect x="12.75" y="3" width="4.5" height="0.8" fill="#14120E" />
+        <rect x="23.5" y="3" width="4.5" height="0.8" fill="#14120E" />
+        {/* Shafts */}
+        <rect x="2.75" y="4" width="3" height="15" fill="#14120E" />
+        <rect x="13.5" y="4" width="3" height="15" fill="#14120E" />
+        <rect x="24.25" y="4" width="3" height="15" fill="#14120E" />
+        {/* Column bases */}
+        <rect x="2" y="19.2" width="4.5" height="0.8" fill="#14120E" />
+        <rect x="12.75" y="19.2" width="4.5" height="0.8" fill="#14120E" />
+        <rect x="23.5" y="19.2" width="4.5" height="0.8" fill="#14120E" />
+        {/* Stylobate */}
+        <rect x="0" y="20.4" width="30" height="2" rx="0.4" fill="#14120E" />
       </g>
+
       {/* Tick marks around ring */}
-      {Array.from({ length: 12 }).map((_, i) => {
-        const angle = (i * 30 * Math.PI) / 180
+      {Array.from({ length: 24 }).map((_, i) => {
+        const angle = (i * 15 * Math.PI) / 180
         const x1 = 32 + Math.cos(angle) * 28.5
         const y1 = 32 + Math.sin(angle) * 28.5
-        const x2 = 32 + Math.cos(angle) * 30
-        const y2 = 32 + Math.sin(angle) * 30
+        const x2 = 32 + Math.cos(angle) * 29.7
+        const y2 = 32 + Math.sin(angle) * 29.7
         return (
           <line
             key={i}
@@ -48,8 +67,8 @@ export function Seal({ size = 64, className }: { size?: number; className?: stri
             y1={y1}
             x2={x2}
             y2={y2}
-            stroke="#C9A65A"
-            strokeWidth="0.6"
+            stroke="#8A6A2D"
+            strokeWidth="0.5"
             opacity="0.6"
           />
         )
