@@ -45,18 +45,26 @@ export default async function DashboardPage() {
     <div className="space-y-8 animate-fade-in pb-12">
       {/* ── Editorial greeting header ─────────────────────────── */}
       <header className="relative">
-        <div className="flex flex-wrap items-start justify-between gap-6">
+        <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="eyebrow text-vault-gold">§ Command Center</p>
-            <h1 className="display-serif mt-2 text-3xl font-medium text-vault-ink tracking-tight md:text-4xl">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="h-px w-4 bg-vault-gold/60" />
+              <p className="eyebrow text-vault-gold tracking-[0.2em]">Command Center</p>
+            </div>
+            <h1 className="display-serif text-[2rem] font-semibold text-vault-ink tracking-[-0.025em] md:text-[2.5rem] leading-tight">
               {greeting}, {userName}.
             </h1>
-            <p className="mt-2 max-w-xl text-sm text-vault-text-secondary leading-relaxed">
-              {stats.activeMatters} active matters · {stats.urgentDeadlines} imminent deadlines ·{' '}
-              {stats.aiActionsToday} AI actions signed today · {stats.docsIngestedToday.toLocaleString()} documents ingested.
+            <p className="mt-2.5 max-w-xl text-[13px] text-vault-text-secondary leading-relaxed">
+              <span className="font-semibold text-vault-ink">{stats.activeMatters}</span> active matters
+              {' · '}
+              <span className="font-semibold text-vault-danger">{stats.urgentDeadlines}</span> imminent deadlines
+              {' · '}
+              <span className="font-semibold text-vault-gold">{stats.aiActionsToday}</span> AI actions signed today
+              {' · '}
+              {stats.docsIngestedToday.toLocaleString()} documents ingested
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <Link href="/intake/new">
               <Button size="sm" className="gap-1.5">
                 <Plus className="h-3.5 w-3.5" />
@@ -71,7 +79,7 @@ export default async function DashboardPage() {
             </Link>
           </div>
         </div>
-        <div className="vault-divider mt-6" />
+        <div className="vault-divider mt-7" />
       </header>
 
       {/* ── Stat strip ────────────────────────────────────────── */}
@@ -154,19 +162,24 @@ function StatTile({
       : accent === 'gold'
       ? 'text-vault-gold bg-vault-gold/10 border-vault-gold/30'
       : 'text-vault-accent bg-vault-accent/8 border-vault-accent/20'
+  const stripeCls =
+    accent === 'danger' ? 'stripe-danger' : accent === 'gold' ? 'stripe-gold' : 'stripe-accent'
 
   return (
-    <div className="rounded-md border border-vault-border bg-vault-surface p-4 shadow-vault">
-      <div className="flex items-start justify-between">
-        <div>
+    <div className="stat-card">
+      <div className={`h-[3px] w-full ${stripeCls}`} />
+      <div className="p-5">
+        <div className="flex items-start justify-between">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">{label}</p>
-          <p className={`mt-2 font-display text-2xl font-semibold tabular-nums ${accentClass}`}>{value}</p>
+          <div className={`flex h-7 w-7 items-center justify-center rounded border ${iconTint} shrink-0`}>
+            <Icon className="h-3.5 w-3.5" />
+          </div>
         </div>
-        <div className={`flex h-7 w-7 items-center justify-center rounded border ${iconTint}`}>
-          <Icon className="h-3.5 w-3.5" />
-        </div>
+        <p className={`mt-3 font-display text-[1.85rem] font-bold tabular-nums leading-none tracking-tight ${accentClass}`}>
+          {value}
+        </p>
+        <p className="mt-2.5 text-[11px] text-vault-text-secondary">{sub}</p>
       </div>
-      <p className="mt-2 text-[11px] text-vault-text-secondary">{sub}</p>
     </div>
   )
 }
@@ -686,20 +699,23 @@ function SectionHead({
   action?: React.ReactNode
 }) {
   return (
-    <header className="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-vault-border bg-vault-elevated/50">
+    <header className="flex items-center justify-between gap-3 px-5 py-4 border-b border-vault-border bg-gradient-to-r from-vault-elevated/80 via-vault-elevated/40 to-vault-surface">
       <div className="flex items-center gap-3 min-w-0">
-        <div className="flex h-7 w-7 items-center justify-center rounded border border-vault-gold/30 bg-vault-gold/5 shrink-0">
+        <div
+          className="flex h-7 w-7 items-center justify-center rounded border border-vault-gold/40 bg-gradient-to-b from-vault-gold/10 to-vault-gold/5 shrink-0"
+          style={{ boxShadow: '0 0 0 1px rgba(182,138,62,0.14), 0 1px 3px rgba(182,138,62,0.06)' }}
+        >
           {Icon ? (
             <Icon className="h-3.5 w-3.5 text-vault-gold" />
           ) : (
-            <span className="font-mono text-[10px] font-semibold text-vault-gold">{num}</span>
+            <span className="font-mono text-[10px] font-bold text-vault-gold">{num}</span>
           )}
         </div>
         <div className="min-w-0">
-          <h2 className="display-serif text-[15px] font-medium text-vault-ink leading-none">
+          <h2 className="display-serif text-[15px] font-semibold text-vault-ink leading-none tracking-[-0.01em]">
             {title}
           </h2>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-muted truncate">
+          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-muted/80 truncate">
             {subtitle}
           </p>
         </div>

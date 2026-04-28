@@ -18,6 +18,8 @@ const config: Config = {
           surface:   '#FFFFFF',   // cards / panels — pure paper
           elevated:  '#FBF6EA',   // elevated card / cream
           raised:    '#F2ECDA',   // modal / floating
+          sidebar:   '#EDE6D3',   // sidebar rail — darker warm parchment
+          'sidebar-hov': '#E5DCCA', // sidebar item hover
           border:    '#E2DAC2',   // default hairline
           'border-strong': '#C9BE9F',
           text:      '#14120E',   // primary ink
@@ -92,12 +94,15 @@ const config: Config = {
       },
       boxShadow: {
         'vault':        '0 1px 2px rgba(20,18,14,0.04), 0 1px 3px rgba(20,18,14,0.06)',
-        'vault-lg':     '0 4px 12px rgba(20,18,14,0.06), 0 2px 4px rgba(20,18,14,0.04)',
+        'vault-md':     '0 2px 6px rgba(20,18,14,0.06), 0 1px 3px rgba(20,18,14,0.04)',
+        'vault-lg':     '0 4px 12px rgba(20,18,14,0.07), 0 2px 4px rgba(20,18,14,0.04)',
         'vault-xl':     '0 10px 30px rgba(20,18,14,0.09), 0 4px 10px rgba(20,18,14,0.06)',
         'vault-glow':   '0 0 0 1px rgba(31,74,61,0.25), 0 0 24px rgba(31,74,61,0.08)',
         'vault-seal':   '0 0 0 1px rgba(182,138,62,0.35), 0 0 24px rgba(182,138,62,0.12)',
+        'vault-seal-sm':'0 0 0 1px rgba(182,138,62,0.22), 0 1px 4px rgba(182,138,62,0.08)',
         'vault-hairline': 'inset 0 0 0 1px rgba(226,218,194,0.9)',
         'vault-inset':  'inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(20,18,14,0.03)',
+        'vault-card':   '0 1px 3px rgba(20,18,14,0.05), 0 1px 2px rgba(20,18,14,0.04), inset 0 1px 0 rgba(255,255,255,0.7)',
       },
       backgroundImage: {
         'vault-grid':

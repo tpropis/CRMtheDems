@@ -89,24 +89,24 @@ function NavItem({ item, onNavigate }: { item: NavItem; onNavigate?: () => void 
       href={item.href}
       onClick={onNavigate}
       className={cn(
-        'group relative flex items-center gap-3 px-3 py-1.5 rounded-sm text-[13px] transition-colors w-full',
+        'group relative flex items-center gap-2.5 px-3 py-[7px] rounded-[5px] text-[12.5px] transition-all duration-150 w-full',
         isActive
-          ? 'bg-vault-accent/[0.08] text-vault-accent font-medium'
-          : 'text-vault-text-secondary hover:bg-vault-elevated hover:text-vault-ink'
+          ? 'bg-vault-accent/[0.10] text-vault-accent font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]'
+          : 'text-vault-text-secondary hover:bg-vault-sidebar-hov hover:text-vault-ink'
       )}
     >
       {isActive && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-full bg-vault-accent" />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[65%] w-[3px] rounded-r-full bg-vault-accent shadow-[0_0_6px_rgba(31,74,61,0.35)]" />
       )}
       <item.icon
         className={cn(
-          'h-4 w-4 shrink-0',
+          'h-[15px] w-[15px] shrink-0 transition-colors',
           isActive ? 'text-vault-accent' : 'text-vault-muted group-hover:text-vault-text-secondary'
         )}
       />
-      <span className="flex-1 truncate">{item.label}</span>
+      <span className="flex-1 truncate tracking-[-0.01em]">{item.label}</span>
       {item.badge !== undefined && (
-        <span className="text-[10px] bg-vault-gold/15 text-vault-gold rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center font-mono">
+        <span className="text-[9.5px] bg-vault-gold/20 text-vault-gold rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center font-mono font-semibold">
           {item.badge}
         </span>
       )}
@@ -117,23 +117,27 @@ function NavItem({ item, onNavigate }: { item: NavItem; onNavigate?: () => void 
 export function Sidebar({ session, onNavigate }: { session: Session; onNavigate?: () => void }) {
   const user = session.user
   return (
-    <aside className="relative flex h-full w-60 flex-col border-r border-vault-border bg-vault-surface">
+    <aside className="relative flex h-full w-60 flex-col border-r border-vault-border bg-vault-sidebar">
       {/* Logo header */}
-      <div className="relative flex h-14 items-center border-b border-vault-border px-4">
+      <div className="relative flex h-14 items-center border-b border-vault-border/70 px-4 bg-vault-sidebar">
         <Link href="/dashboard" className="flex items-center">
           <Logo variant="dark" size="sm" />
         </Link>
-        <div className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-vault-gold/50 to-transparent" />
+        <div className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-vault-gold/60 to-transparent" />
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-5">
+      <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-4">
         {NAV.map((section, si) => (
           <div key={si} className="space-y-0.5">
             {section.label && (
-              <p className="px-3 mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-vault-muted">
-                {section.label}
-              </p>
+              <div className="flex items-center gap-2 px-3 mb-2">
+                <span className="h-px flex-1 bg-vault-border/60" />
+                <p className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.2em] text-vault-muted/80 whitespace-nowrap">
+                  {section.label}
+                </p>
+                <span className="h-px flex-1 bg-vault-border/60" />
+              </div>
             )}
             {section.items.map((item) => (
               <NavItem key={item.href} item={item} onNavigate={onNavigate} />
@@ -143,34 +147,34 @@ export function Sidebar({ session, onNavigate }: { session: Session; onNavigate?
       </nav>
 
       {/* Private AI indicator */}
-      <div className="px-3 pt-2 pb-2">
-        <div className="flex items-center gap-2.5 px-3 py-2 rounded-md border border-vault-gold/30 bg-vault-gold/5">
+      <div className="px-3 pt-1 pb-2">
+        <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-md border border-vault-gold/35 bg-vault-gold/[0.07] shadow-vault-seal-sm">
           <Bot className="h-3.5 w-3.5 text-vault-gold shrink-0" />
           <div className="min-w-0 flex-1">
-            <p className="font-mono text-[9px] text-vault-muted uppercase tracking-[0.18em]">AI Engine</p>
-            <p className="text-[11px] text-vault-ink font-medium truncate">Private · Sealed</p>
+            <p className="font-mono text-[9px] text-vault-gold/60 uppercase tracking-[0.2em]">AI Engine</p>
+            <p className="text-[11px] text-vault-ink font-semibold truncate">Private · Sealed</p>
           </div>
           <span className="live-dot" />
         </div>
       </div>
 
       {/* User footer */}
-      <div className="border-t border-vault-border p-3 bg-vault-elevated/40">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8 border border-vault-border-strong/50">
-            <AvatarFallback className="text-[10px] bg-vault-accent/10 text-vault-accent font-semibold">
+      <div className="border-t border-vault-border/70 p-3 bg-vault-sidebar-hov/50">
+        <div className="flex items-center gap-2.5">
+          <Avatar className="h-7 w-7 border border-vault-border-strong/60 shrink-0">
+            <AvatarFallback className="text-[10px] bg-vault-accent/15 text-vault-accent font-bold">
               {initials(user.name || user.email)}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-medium text-vault-ink truncate">{user.name}</p>
-            <p className="font-mono text-[9px] text-vault-muted truncate uppercase tracking-wider">
+            <p className="text-[12px] font-semibold text-vault-ink truncate leading-tight">{user.name}</p>
+            <p className="font-mono text-[9px] text-vault-muted truncate uppercase tracking-wider mt-0.5">
               {roleLabel((user as any).role)}
             </p>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}
-            className="shrink-0 rounded p-1.5 text-vault-muted hover:bg-vault-surface hover:text-vault-danger transition-colors"
+            className="shrink-0 rounded-md p-1.5 text-vault-muted hover:bg-vault-surface hover:text-vault-danger transition-colors"
             title="Sign out"
           >
             <LogOut className="h-3.5 w-3.5" />

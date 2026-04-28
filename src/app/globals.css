@@ -45,7 +45,8 @@
     @apply bg-vault-bg text-vault-text;
     min-height: 100vh;
     background-image:
-      radial-gradient(ellipse 120% 60% at 50% -10%, rgba(255,255,255,0.55), transparent 60%);
+      radial-gradient(ellipse 140% 70% at 50% -15%, rgba(255,255,255,0.65), transparent 55%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(31,74,61,0.03), transparent 60%);
   }
 
   ::selection {
@@ -54,15 +55,15 @@
   }
 
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: #D6CEB3;
-    border-radius: 4px;
+    background: #CEC5A8;
+    border-radius: 99px;
   }
-  ::-webkit-scrollbar-thumb:hover { background: #B5AB8A; }
+  ::-webkit-scrollbar-thumb:hover { background: #A89E80; }
 
   :focus-visible {
     outline: 2px solid rgba(31, 74, 61, 0.45);
@@ -74,8 +75,14 @@
 @layer components {
   /* ── Surfaces ─────────────────────────────────────────── */
   .vault-page { @apply bg-vault-bg min-h-screen; }
-  .vault-panel { @apply bg-vault-surface border border-vault-border rounded-md shadow-vault; }
+  .vault-panel { @apply bg-vault-surface border border-vault-border rounded-md shadow-vault-card; }
   .vault-elevated { @apply bg-vault-elevated border border-vault-border rounded-md; }
+
+  /* ── Stat tile accent stripe ─────────────────────────── */
+  .stripe-accent  { background: linear-gradient(90deg, #1F4A3D 0%, rgba(31,74,61,0.4) 100%); }
+  .stripe-gold    { background: linear-gradient(90deg, #B68A3E 0%, rgba(182,138,62,0.4) 100%); }
+  .stripe-danger  { background: linear-gradient(90deg, #7A2D2A 0%, rgba(122,45,42,0.4) 100%); }
+  .stripe-default { background: linear-gradient(90deg, #C9BE9F 0%, rgba(201,190,159,0.3) 100%); }
 
   /* ── Data table ───────────────────────────────────────── */
   .data-table { @apply w-full text-sm; }
@@ -153,13 +160,24 @@
   }
 
   .hairline-card {
-    @apply relative rounded-md border border-vault-border bg-vault-surface shadow-vault;
+    @apply relative rounded-md border border-vault-border bg-vault-surface shadow-vault-card;
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease, box-shadow 200ms ease;
   }
 
   .hairline-card:hover {
     @apply border-vault-border-strong shadow-vault-lg;
     transform: translateY(-1px);
-    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  .stat-card {
+    @apply relative rounded-md border border-vault-border bg-vault-surface overflow-hidden;
+    box-shadow: 0 1px 3px rgba(20,18,14,0.05), 0 1px 2px rgba(20,18,14,0.04), inset 0 1px 0 rgba(255,255,255,0.7);
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(20,18,14,0.07), 0 2px 4px rgba(20,18,14,0.04), inset 0 1px 0 rgba(255,255,255,0.7);
   }
 
   .corner-frame::before,

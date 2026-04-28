@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 
 export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
-    <header className="relative flex h-14 items-center justify-between border-b border-vault-border bg-vault-surface px-3 md:px-5">
+    <header className="relative flex h-14 items-center justify-between border-b border-vault-border bg-vault-surface px-3 md:px-5 shadow-[0_1px_3px_rgba(20,18,14,0.04)]">
       <div className="flex items-center gap-2 min-w-0">
         {/* Mobile menu button */}
         {onMenuClick && (
@@ -21,7 +21,7 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
         {/* Command search pill */}
         <button
           type="button"
-          className="group hidden sm:inline-flex h-8 items-center gap-2 rounded-md border border-vault-border bg-vault-elevated px-3 text-[12px] text-vault-muted hover:border-vault-border-strong hover:text-vault-text-secondary transition-colors w-[280px] text-left"
+          className="group hidden sm:inline-flex h-8 items-center gap-2 rounded-md border border-vault-border bg-vault-elevated px-3 text-[12px] text-vault-muted hover:border-vault-border-strong hover:bg-vault-raised hover:text-vault-text-secondary transition-colors w-[300px] text-left shadow-vault-inset"
         >
           <Search className="h-3.5 w-3.5" />
           <span className="flex-1">Search matters, docs, contacts&hellip;</span>
