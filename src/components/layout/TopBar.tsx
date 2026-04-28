@@ -69,6 +69,9 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
           <Shield className="h-3.5 w-3.5" />
         </div>
 
+        {/* Divider */}
+        <div className="hidden md:block h-5 w-px bg-vault-border mx-0.5" />
+
         {/* Notifications */}
         <Button
           variant="ghost"

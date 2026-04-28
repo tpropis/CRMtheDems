@@ -83,7 +83,7 @@ export default async function DashboardPage() {
       </header>
 
       {/* ── Stat strip ────────────────────────────────────────── */}
-      <section className="grid grid-cols-2 gap-3 md:grid-cols-5">
+      <section className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <StatTile
           icon={Briefcase}
           label="Active Matters"
@@ -119,7 +119,7 @@ export default async function DashboardPage() {
       </section>
 
       {/* ── Main two-column grid ──────────────────────────────── */}
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-7 xl:grid-cols-3">
         {/* Left column (primary, 2/3) */}
         <div className="space-y-6 xl:col-span-2">
           <MatterCommandCenter matters={matters} />
@@ -189,7 +189,7 @@ function StatTile({
 ═══════════════════════════════════════════════════════════════ */
 function MatterCommandCenter({ matters }: { matters: DemoMatter[] }) {
   return (
-    <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+    <section className="section-card">
       <SectionHead
         num="I"
         title="Matter Command Center"
@@ -293,7 +293,7 @@ function MatterPulse({
 ═══════════════════════════════════════════════════════════════ */
 function DeadlineEngine({ deadlines }: { deadlines: DemoDeadline[] }) {
   return (
-    <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+    <section className="section-card">
       <SectionHead
         num="III"
         title="Deadline Engine"
@@ -370,7 +370,7 @@ function DeadlineEngine({ deadlines }: { deadlines: DemoDeadline[] }) {
 ═══════════════════════════════════════════════════════════════ */
 function PrivilegeLog({ entries }: { entries: DemoPrivilegeEntry[] }) {
   return (
-    <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+    <section className="section-card">
       <SectionHead
         num="IV"
         title="Privilege Log"
@@ -444,7 +444,7 @@ function ClassificationBadge({
 ═══════════════════════════════════════════════════════════════ */
 function PrivateAIParalegal({ queries }: { queries: DemoAIQuery[] }) {
   return (
-    <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+    <section className="section-card">
       <SectionHead
         num="II"
         title="Private AI Paralegal"
@@ -533,7 +533,7 @@ function StatusPill({ status, reviewer }: { status: DemoAIQuery['status']; revie
 ═══════════════════════════════════════════════════════════════ */
 function IntelligenceFeed({ items }: { items: DemoFeedItem[] }) {
   return (
-    <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+    <section className="section-card">
       <SectionHead
         num="V"
         title="Intelligence Feed"
@@ -596,7 +596,7 @@ function FeedKindTag({ kind }: { kind: DemoFeedItem['kind'] }) {
 ═══════════════════════════════════════════════════════════════ */
 function ConflictCheck({ hits }: { hits: DemoConflictHit[] }) {
   return (
-    <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+    <section className="section-card">
       <SectionHead
         num="VI"
         title="Conflict Check"

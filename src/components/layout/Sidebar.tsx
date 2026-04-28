@@ -117,7 +117,7 @@ function NavItem({ item, onNavigate }: { item: NavItem; onNavigate?: () => void 
 export function Sidebar({ session, onNavigate }: { session: Session; onNavigate?: () => void }) {
   const user = session.user
   return (
-    <aside className="relative flex h-full w-60 flex-col border-r border-vault-border bg-vault-sidebar">
+    <aside className="relative flex h-full w-60 flex-col border-r border-vault-border bg-vault-sidebar" style={{ backgroundImage: 'linear-gradient(180deg, #F0E8D6 0%, #EDE6D3 40%, #E8DFC8 100%)' }}>
       {/* Logo header */}
       <div className="relative flex h-14 items-center border-b border-vault-border/70 px-4 bg-vault-sidebar">
         <Link href="/dashboard" className="flex items-center">
@@ -130,7 +130,7 @@ export function Sidebar({ session, onNavigate }: { session: Session; onNavigate?
       <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-4">
         {NAV.map((section, si) => (
           <div key={si} className="space-y-0.5">
-            {section.label && (
+            {section.label ? (
               <div className="flex items-center gap-2 px-3 mb-2">
                 <span className="h-px flex-1 bg-vault-border/60" />
                 <p className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.2em] text-vault-muted/80 whitespace-nowrap">
@@ -138,6 +138,8 @@ export function Sidebar({ session, onNavigate }: { session: Session; onNavigate?
                 </p>
                 <span className="h-px flex-1 bg-vault-border/60" />
               </div>
+            ) : si > 0 && (
+              <div className="h-px mx-3 bg-vault-border/40 mb-2" />
             )}
             {section.items.map((item) => (
               <NavItem key={item.href} item={item} onNavigate={onNavigate} />
