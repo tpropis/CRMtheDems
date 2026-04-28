@@ -209,7 +209,7 @@ function MatterCommandCenter({ matters }: { matters: DemoMatter[] }) {
           <Link
             key={m.id}
             href={`/matters/${m.id}`}
-            className="grid grid-cols-12 items-center gap-3 px-5 py-3 hover:bg-vault-elevated/60 transition-colors"
+            className="group relative grid grid-cols-12 items-center gap-3 px-5 py-3 hover:bg-vault-elevated/60 transition-colors before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[2px] before:bg-vault-accent before:rounded-r-full before:opacity-0 hover:before:opacity-100 before:transition-opacity"
           >
             <div className="col-span-5 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
@@ -310,7 +310,7 @@ function DeadlineEngine({ deadlines }: { deadlines: DemoDeadline[] }) {
 
       <div className="divide-y divide-vault-border/70">
         {deadlines.map((d) => (
-          <div key={d.id} className="grid grid-cols-12 items-center gap-3 px-5 py-3">
+          <div key={d.id} className="grid grid-cols-12 items-center gap-3 px-5 py-3 hover:bg-vault-elevated/40 transition-colors">
             <div className="col-span-5 min-w-0">
               <p className="text-[13px] font-medium text-vault-ink truncate">{d.title}</p>
               <p className="text-[11px] text-vault-text-secondary truncate">{d.matter}</p>
@@ -387,7 +387,7 @@ function PrivilegeLog({ entries }: { entries: DemoPrivilegeEntry[] }) {
 
       <div className="divide-y divide-vault-border/70">
         {entries.map((e) => (
-          <div key={e.id} className="px-5 py-3">
+          <div key={e.id} className="px-5 py-3 hover:bg-vault-elevated/40 transition-colors">
             <div className="flex items-start justify-between gap-3 mb-1">
               <div className="min-w-0 flex-1">
                 <p className="text-[13px] font-medium text-vault-ink truncate">{e.doc}</p>
@@ -462,7 +462,7 @@ function PrivateAIParalegal({ queries }: { queries: DemoAIQuery[] }) {
 
       <div className="divide-y divide-vault-border/70">
         {queries.map((q) => (
-          <article key={q.id} className="px-5 py-4">
+          <article key={q.id} className="px-5 py-4 hover:bg-vault-elevated/40 transition-colors">
             <div className="flex items-start gap-2 mb-2">
               <div className="h-5 w-5 rounded-full border border-vault-accent/30 bg-vault-accent/10 flex items-center justify-center shrink-0 mt-0.5">
                 <Search className="h-2.5 w-2.5 text-vault-accent" />
@@ -629,7 +629,7 @@ function ConflictCheck({ hits }: { hits: DemoConflictHit[] }) {
 
       <div className="divide-y divide-vault-border/70">
         {hits.map((h) => (
-          <div key={h.id} className="px-5 py-3">
+          <div key={h.id} className="px-5 py-3 hover:bg-vault-elevated/40 transition-colors">
             <div className="flex items-start justify-between gap-2 mb-1">
               <div className="min-w-0 flex-1">
                 <p className="text-[12.5px] font-medium text-vault-ink truncate">{h.entity}</p>
