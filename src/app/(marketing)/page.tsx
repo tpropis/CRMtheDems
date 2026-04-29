@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Seal } from '@/components/marketing/Seal'
 import { SectionMark, Eyebrow } from '@/components/marketing/SectionMark'
 import { DashboardMockup } from '@/components/marketing/DashboardMockup'
+import { HeroAnimation } from '@/components/marketing/HeroAnimation'
 
 const PRINCIPLES = [
   {
@@ -223,7 +224,7 @@ export default function HomePage() {
                   </Button>
                 </Link>
                 <Link
-                  href="/trust"
+                  href="/security"
                   className="group inline-flex items-center gap-1.5 pl-2 text-sm text-vault-text-secondary hover:text-vault-text"
                 >
                   Read the deployment brief
@@ -236,20 +237,9 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Right — Seal */}
+            {/* Right — Hero animation explainer */}
             <div className="relative hidden lg:col-span-5 lg:flex lg:items-center lg:justify-center">
-              <div className="relative">
-                <div className="absolute -inset-16 rounded-full bg-vault-gold/5 blur-3xl" />
-                <div className="relative flex h-[320px] w-[320px] items-center justify-center rounded-full border border-vault-border-strong bg-vault-surface/40 backdrop-blur">
-                  <div className="absolute inset-3 rounded-full border border-vault-border" />
-                  <div className="absolute inset-6 rounded-full border border-vault-border/60" />
-                  <Seal size={180} className="glow-seal rounded-full" />
-                </div>
-                {/* Floating caption */}
-                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-vault-border bg-vault-surface/80 px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest text-vault-gold backdrop-blur">
-                  Sealed · Signed · Audited
-                </div>
-              </div>
+              <HeroAnimation />
             </div>
           </div>
         </div>
@@ -374,7 +364,7 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── § 04 — THE OPERATING SYSTEM ───────────── */}
-      <section className="relative border-b border-vault-border bg-vault-elevated">
+      <section id="platform" className="relative border-b border-vault-border bg-vault-elevated">
         <div className="mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <SectionMark number="04" label="The operating system" />
           <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-12">
@@ -472,7 +462,7 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── § 07 — PRACTICE WORKFLOWS ───────────── */}
-      <section className="relative border-b border-vault-border">
+      <section id="workflows" className="relative border-b border-vault-border">
         <div className="mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <SectionMark number="07" label="Practice workflows" />
           <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-12">
@@ -508,7 +498,7 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── § 08 — INTELLIGENCE / DASHBOARD SHOWCASE ───────────── */}
-      <section className="relative overflow-hidden border-b border-vault-border bg-vault-elevated">
+      <section id="intelligence" className="relative overflow-hidden border-b border-vault-border bg-vault-elevated">
         <div className="pointer-events-none absolute inset-0 bg-vault-radial-gold" />
         <div className="relative mx-auto max-w-[1200px] px-6 py-20 md:py-28">
           <div className="mb-14 grid grid-cols-1 gap-10 lg:grid-cols-12">
@@ -523,14 +513,14 @@ export default function HomePage() {
                 Every extraction is a card before it is a fact.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
-                <Link href="/intelligence">
+                <Link href="/#intelligence">
                   <Button size="lg" className="gap-2">
                     See the workspace
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <Link
-                  href="/platform/matters"
+                  href="/#platform"
                   className="text-sm text-vault-text-secondary hover:text-vault-text"
                 >
                   Inside a matter →

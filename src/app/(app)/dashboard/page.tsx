@@ -71,7 +71,7 @@ export default async function DashboardPage() {
                 New Intake
               </Button>
             </Link>
-            <Link href="/conflicts/run">
+            <Link href="/conflicts">
               <Button variant="outline" size="sm" className="gap-1.5">
                 <Scale className="h-3.5 w-3.5" />
                 Run Conflict Check

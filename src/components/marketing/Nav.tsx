@@ -12,11 +12,11 @@ export function MarketingNav() {
           <Logo variant="dark" size="sm" />
         </Link>
         <nav className="hidden items-center gap-9 md:flex">
-          <NavLink href="/platform">Platform</NavLink>
+          <NavLink href="/#platform">Platform</NavLink>
           <NavLink href="/security">Security</NavLink>
-          <NavLink href="/workflows">Workflows</NavLink>
-          <NavLink href="/intelligence">AI</NavLink>
-          <NavLink href="/pricing">Pricing</NavLink>
+          <NavLink href="/#workflows">Workflows</NavLink>
+          <NavLink href="/#intelligence">AI</NavLink>
+          <NavLink href="/contact">Contact</NavLink>
         </nav>
         <div className="flex items-center gap-2">
           <Link
