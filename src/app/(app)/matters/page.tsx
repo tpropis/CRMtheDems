@@ -78,10 +78,10 @@ export default async function MattersPage() {
       </div>
 
       {/* Matter table */}
-      <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+      <section className="section-card overflow-hidden">
        <div className="overflow-x-auto">
         <div className="min-w-[820px]">
-        <div className="grid grid-cols-12 gap-3 px-5 py-3 border-b border-vault-border bg-vault-elevated/50">
+        <div className="grid grid-cols-12 gap-3 px-5 py-3 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
           <div className="col-span-5 font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">
             Matter
           </div>
@@ -129,8 +129,8 @@ function PracticeChip({ label, count, active }: { label: string; count: number; 
       <span
         className={`font-mono text-[10px] px-1.5 py-0.5 rounded tabular-nums ${
           active
-            ? 'bg-vault-accent/10 text-vault-accent'
-            : 'bg-vault-elevated text-vault-muted group-hover:bg-vault-raised'
+            ? 'bg-vault-accent/10 text-vault-accent font-semibold'
+            : 'bg-vault-elevated text-vault-muted group-hover:bg-vault-raised group-hover:text-vault-text-secondary'
         }`}
       >
         {count}
