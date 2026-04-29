@@ -15,18 +15,25 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon: Icon, title, description, action, className }: EmptyStateProps) {
   return (
-    <div className={cn('flex flex-col items-center justify-center py-16 px-6 text-center', className)}>
+    <div className={cn('flex flex-col items-center justify-center py-20 px-6 text-center', className)}>
       {Icon && (
-        <div className="mb-4 rounded-lg border border-vault-border bg-vault-elevated p-3">
-          <Icon className="h-6 w-6 text-vault-muted" />
+        <div className="relative mb-5">
+          <div className="absolute inset-0 rounded-full bg-vault-gold/10 blur-xl" />
+          <div className="relative rounded-full border border-vault-gold/30 bg-gradient-to-b from-vault-gold/10 to-vault-gold/5 p-4 shadow-vault-seal-sm">
+            <Icon className="h-7 w-7 text-vault-gold" />
+          </div>
         </div>
       )}
-      <h3 className="text-sm font-semibold text-vault-text mb-1">{title}</h3>
+      <h3 className="display-serif text-[1.05rem] font-semibold text-vault-ink tracking-[-0.01em] mb-1.5">
+        {title}
+      </h3>
       {description && (
-        <p className="text-sm text-vault-text-secondary max-w-sm">{description}</p>
+        <p className="text-[13px] text-vault-text-secondary max-w-sm leading-relaxed">
+          {description}
+        </p>
       )}
       {action && (
-        <Button onClick={action.onClick} size="sm" className="mt-4">
+        <Button onClick={action.onClick} size="sm" className="mt-5">
           {action.label}
         </Button>
       )}
