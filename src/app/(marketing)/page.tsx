@@ -576,7 +576,7 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="overflow-hidden rounded-md border border-vault-border bg-vault-surface">
+          <div className="section-card overflow-hidden">
             <div className="grid grid-cols-4 border-b border-vault-border bg-vault-elevated/60">
               <div className="px-5 py-4 text-[11px] font-semibold uppercase tracking-widest text-vault-muted">
                 Capability

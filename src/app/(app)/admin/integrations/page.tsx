@@ -178,7 +178,7 @@ export default function IntegrationsPage() {
 
       {/* Coming soon integrations */}
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-vault-text">More Integrations — Coming Soon</h3>
+        <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-vault-muted font-semibold">More Integrations — Coming Soon</h3>
         <div className="grid grid-cols-3 gap-3">
           {[
             { name: 'MyCase', desc: 'Practice management + client portal' },

@@ -52,7 +52,7 @@ export default function SecurityPage() {
             <Shield className="h-3.5 w-3.5 text-vault-success" />
             <span className="text-xs text-vault-success font-medium">Security Architecture</span>
           </div>
-          <h1 className="text-4xl font-bold text-vault-text tracking-tight mb-4">
+          <h1 className="display-serif text-[2.4rem] font-semibold text-vault-ink tracking-tight mb-4">
             Built for privilege. Designed for trust.
           </h1>
           <p className="text-lg text-vault-text-secondary leading-relaxed">
@@ -62,18 +62,18 @@ export default function SecurityPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
           {SECURITY_PILLARS.map((p) => (
-            <div key={p.title} className="rounded-md border border-vault-border bg-vault-surface p-6">
+            <div key={p.title} className="section-card p-6">
               <div className="mb-4 inline-flex rounded-md border border-vault-border bg-vault-elevated p-2">
                 <p.icon className="h-5 w-5 text-vault-accent-light" />
               </div>
-              <h3 className="text-sm font-semibold text-vault-text mb-2">{p.title}</h3>
+              <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-vault-ink font-semibold mb-2">{p.title}</h3>
               <p className="text-sm text-vault-text-secondary leading-relaxed">{p.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="rounded-md border border-vault-border bg-vault-surface p-8 mb-8">
-          <h2 className="text-xl font-bold text-vault-text mb-6">AI Data Flow</h2>
+        <div className="section-card p-8 mb-8">
+          <h2 className="display-serif text-[1.4rem] font-semibold text-vault-ink mb-6">AI Data Flow</h2>
           <div className="flex flex-wrap items-center gap-3 text-sm">
             {[
               'User Query',
@@ -93,8 +93,8 @@ export default function SecurityPage() {
           </p>
         </div>
 
-        <div className="rounded-md border border-vault-border bg-vault-surface p-8">
-          <h2 className="text-xl font-bold text-vault-text mb-6">Deployment Options</h2>
+        <div className="section-card p-8">
+          <h2 className="display-serif text-[1.4rem] font-semibold text-vault-ink mb-6">Deployment Options</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { title: 'On-Premises', desc: 'Deploy on your own Linux servers. Full hardware control. No cloud dependency. Maximum isolation.' },

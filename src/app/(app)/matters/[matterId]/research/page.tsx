@@ -131,7 +131,7 @@ export default function MatterResearchPage({ params }: { params: { matterId: str
         <div className="flex items-center justify-between px-5 py-4 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
           <div className="flex items-center gap-2">
             <Bot className="h-4 w-4 text-vault-accent-light" />
-            <span className="text-sm font-semibold text-vault-text">AI Research Assistant</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-vault-ink font-semibold">AI Research Assistant</span>
             <Badge variant="active">Local · Private</Badge>
           </div>
           <div className="flex items-center gap-2">
