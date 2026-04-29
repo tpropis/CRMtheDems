@@ -82,7 +82,7 @@ export default function ResearchPage() {
       )}
 
       {threads.length === 0 && (
-        <div className="rounded-md border border-vault-border bg-vault-surface p-12 text-center shadow-vault">
+        <div className="section-card p-12 text-center">
           <BookOpen className="h-10 w-10 text-vault-muted mx-auto mb-3" />
           <p className="text-[13px] text-vault-text-secondary">
             No research threads yet. Open a matter and start a new thread to begin.
@@ -98,7 +98,7 @@ function ResearchCard({ t }: { t: DemoResearchThread }) {
   return (
     <Link
       href={matterId ? `/matters/m-${matterId}/research` : '#'}
-      className="group block rounded-md border border-vault-border bg-vault-surface p-5 shadow-vault hover:border-vault-border-strong hover:shadow-vault-lg transition-all"
+      className="group block section-card p-5 transition-all"
     >
       <div className="flex items-start justify-between mb-3">
         <BookOpen className="h-4 w-4 text-vault-muted mt-1" />

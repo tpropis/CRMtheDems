@@ -9,7 +9,7 @@ export default function RolesPage() {
   return (
     <div className="space-y-5 animate-fade-in">
       <PageHeader title="Roles & Permissions" description="Permission matrix for all firm roles" />
-      <div className="rounded-md border border-vault-border bg-vault-surface overflow-hidden overflow-x-auto">
+      <div className="section-card overflow-hidden overflow-x-auto">
         <table className="data-table text-xs">
           <thead>
             <tr>

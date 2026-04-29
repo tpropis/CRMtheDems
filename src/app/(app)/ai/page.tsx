@@ -46,7 +46,7 @@ export default function AIParalegalPage() {
         </div>
 
         <div className="px-4 pb-3">
-          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-vault-border bg-vault-surface shadow-vault-inset">
+          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-vault-border bg-vault-elevated shadow-vault-inset">
             <Search className="h-3 w-3 text-vault-muted" />
             <input
               type="text"
@@ -149,7 +149,7 @@ export default function AIParalegalPage() {
             {/* Composer */}
             <footer className="shrink-0 border-t border-vault-border bg-vault-surface p-4">
               <div className="max-w-3xl mx-auto">
-                <div className="rounded-md border border-vault-border bg-vault-surface shadow-vault-card focus-within:border-vault-accent/60 focus-within:ring-2 focus-within:ring-vault-accent/20 transition-all">
+                <div className="section-card focus-within:border-vault-accent/60 focus-within:ring-2 focus-within:ring-vault-accent/20 transition-all">
                   <textarea
                     placeholder={`Ask about ${
                       active.matter ?? 'this matter'
@@ -330,7 +330,7 @@ function MessageBubble({ m }: { m: DemoAIMessage }) {
   if (m.role === 'user') {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-md border border-vault-border bg-vault-surface shadow-vault-card px-4 py-3">
+        <div className="max-w-[85%] section-card px-4 py-3">
           <p className="text-[13.5px] text-vault-ink leading-relaxed whitespace-pre-wrap">
             {m.content}
           </p>
@@ -347,7 +347,7 @@ function MessageBubble({ m }: { m: DemoAIMessage }) {
       <div className="h-8 w-8 rounded-md border border-vault-gold/40 bg-vault-gold/10 flex items-center justify-center shrink-0">
         <Bot className="h-4 w-4 text-vault-gold" />
       </div>
-      <div className="flex-1 min-w-0 rounded-md border border-vault-border bg-vault-surface shadow-vault-card overflow-hidden">
+      <div className="flex-1 min-w-0 section-card overflow-hidden">
         <header className="flex items-center gap-2 px-4 py-2 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
           <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted font-semibold">
             Vault-Legal 7B

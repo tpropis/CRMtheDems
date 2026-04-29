@@ -78,7 +78,7 @@ export default function IntegrationsPage() {
       />
 
       {/* Clio Integration Card */}
-      <div className="vault-panel p-6">
+      <div className="section-card p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-4">
             <div className="rounded-xl border border-vault-border bg-vault-elevated p-3">
@@ -188,7 +188,7 @@ export default function IntegrationsPage() {
             { name: 'DocuSign', desc: 'E-signature for generated documents' },
             { name: 'QuickBooks', desc: 'Sync billing and invoice data' },
           ].map(i => (
-            <div key={i.name} className="vault-panel p-4 opacity-60">
+            <div key={i.name} className="section-card p-4 opacity-60">
               <p className="text-sm font-medium text-vault-text">{i.name}</p>
               <p className="text-xs text-vault-muted mt-0.5">{i.desc}</p>
               <Badge className="mt-2 text-xs bg-vault-elevated text-vault-muted border-vault-border">Coming Soon</Badge>

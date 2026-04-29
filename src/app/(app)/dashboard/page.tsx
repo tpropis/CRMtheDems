@@ -613,7 +613,7 @@ function ConflictCheck({ hits }: { hits: DemoConflictHit[] }) {
       />
 
       <div className="px-5 py-3 border-b border-vault-border/70 bg-vault-elevated/40">
-        <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-vault-border bg-vault-surface">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-vault-border bg-vault-elevated shadow-vault-inset">
           <Search className="h-3.5 w-3.5 text-vault-muted shrink-0" />
           <span className="text-[12px] text-vault-muted">
             e.g., &ldquo;Aventra Capital or any affiliate&rdquo;

@@ -67,7 +67,7 @@ export default async function MattersPage() {
       </nav>
 
       {/* Search bar */}
-      <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-vault-border bg-vault-surface shadow-vault-inset">
+      <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-vault-border bg-vault-elevated shadow-vault-inset">
         <Search className="h-3.5 w-3.5 text-vault-muted" />
         <input
           type="text"
