@@ -93,10 +93,10 @@ export default function DocumentsPage() {
       </div>
 
       {/* Document table */}
-      <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+      <section className="section-card overflow-hidden">
        <div className="overflow-x-auto">
         <div className="min-w-[900px]">
-        <div className="grid grid-cols-12 gap-3 px-5 py-3 border-b border-vault-border bg-vault-elevated/50">
+        <div className="grid grid-cols-12 gap-3 px-5 py-3 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
           <div className="col-span-5 font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">
             Document
           </div>
@@ -172,22 +172,32 @@ function DocStat({
       ? 'text-vault-accent border-vault-accent/25 bg-vault-accent/8'
       : 'text-vault-accent border-vault-accent/20 bg-vault-accent/8'
 
+  const stripe =
+    accent === 'gold'
+      ? 'from-vault-gold to-vault-gold/40'
+      : accent === 'warn'
+      ? 'from-vault-warning to-vault-warning/40'
+      : accent === 'accent'
+      ? 'from-vault-accent to-vault-accent/40'
+      : 'from-vault-border-strong to-vault-border-strong/30'
+
   return (
-    <div className="rounded-md border border-vault-border bg-vault-surface p-4 shadow-vault">
-      <div className="flex items-start justify-between">
-        <div>
+    <div className="stat-card overflow-hidden">
+      <div className={`h-[3px] w-full bg-gradient-to-r ${stripe}`} />
+      <div className="p-4">
+        <div className="flex items-start justify-between">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">
             {label}
           </p>
-          <p className={`mt-2 font-display text-2xl font-semibold tabular-nums ${valCls}`}>
-            {value.toLocaleString()}
-          </p>
+          <div className={`flex h-7 w-7 items-center justify-center rounded border shrink-0 ${tileIcon}`}>
+            <Icon className={`h-3.5 w-3.5 ${spinning ? 'animate-spin' : ''}`} />
+          </div>
         </div>
-        <div className={`flex h-7 w-7 items-center justify-center rounded border ${tileIcon}`}>
-          <Icon className={`h-3.5 w-3.5 ${spinning ? 'animate-spin' : ''}`} />
-        </div>
+        <p className={`mt-2 font-display text-[1.85rem] font-bold tabular-nums leading-none ${valCls}`}>
+          {value.toLocaleString()}
+        </p>
+        <p className="mt-2 text-[11px] text-vault-text-secondary">{sub}</p>
       </div>
-      <p className="mt-2 text-[11px] text-vault-text-secondary">{sub}</p>
     </div>
   )
 }
@@ -196,14 +206,14 @@ function DocRow({ d }: { d: DemoGlobalDocument }) {
   return (
     <Link
       href={`/matters/${deriveMatterId(d.matterNumber)}/documents`}
-      className="grid grid-cols-12 gap-3 items-center px-5 py-3 hover:bg-vault-elevated/50 transition-colors"
+      className="group grid grid-cols-12 gap-3 items-center px-5 py-3 hover:bg-vault-elevated/50 transition-colors"
     >
       <div className="col-span-5 flex items-center gap-3 min-w-0">
-        <div className="h-8 w-8 rounded border border-vault-border bg-vault-elevated flex items-center justify-center shrink-0">
+        <div className="h-8 w-8 rounded border border-vault-border bg-gradient-to-b from-vault-elevated to-vault-elevated/60 flex items-center justify-center shrink-0 group-hover:border-vault-accent/30 transition-colors">
           <FileText className="h-3.5 w-3.5 text-vault-muted" />
         </div>
         <div className="min-w-0">
-          <p className="text-[13px] font-medium text-vault-ink truncate">{d.name}</p>
+          <p className="text-[13px] font-medium text-vault-ink truncate group-hover:text-vault-accent transition-colors">{d.name}</p>
           <p className="font-mono text-[10px] text-vault-faint truncate">
             {d.pages.toLocaleString()} pp. · {d.size}
             {d.author && ` · ${d.author}`}

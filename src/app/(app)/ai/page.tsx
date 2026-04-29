@@ -149,7 +149,7 @@ export default function AIParalegalPage() {
             {/* Composer */}
             <footer className="shrink-0 border-t border-vault-border bg-vault-surface p-4">
               <div className="max-w-3xl mx-auto">
-                <div className="rounded-md border border-vault-border bg-vault-surface shadow-vault focus-within:border-vault-accent transition-colors">
+                <div className="rounded-md border border-vault-border bg-vault-surface shadow-vault-card focus-within:border-vault-accent/60 focus-within:ring-2 focus-within:ring-vault-accent/20 transition-all">
                   <textarea
                     placeholder={`Ask about ${
                       active.matter ?? 'this matter'
@@ -209,7 +209,7 @@ export default function AIParalegalPage() {
             {citations.map((c, i) => (
               <div
                 key={i}
-                className="rounded-md border border-vault-border bg-vault-surface p-3 hover:border-vault-border-strong transition-colors cursor-pointer"
+                className="section-card p-3 cursor-pointer"
               >
                 <div className="flex items-start gap-2 mb-1.5">
                   <FileText className="h-3.5 w-3.5 text-vault-muted shrink-0 mt-0.5" />
@@ -299,8 +299,8 @@ function ThreadListItem({
       onClick={onClick}
       className={`w-full text-left px-4 py-3 border-l-2 transition-colors ${
         active
-          ? 'bg-vault-surface border-vault-accent'
-          : 'border-transparent hover:bg-vault-surface/60 hover:border-vault-border-strong'
+          ? 'bg-vault-accent/[0.06] border-vault-accent shadow-[inset_0_0_0_1px_rgba(45,89,69,0.04)]'
+          : 'border-transparent hover:bg-vault-surface/70 hover:border-vault-border-strong'
       }`}
     >
       {thread.matterNumber && (
@@ -330,7 +330,7 @@ function MessageBubble({ m }: { m: DemoAIMessage }) {
   if (m.role === 'user') {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-md border border-vault-border bg-vault-surface shadow-vault px-4 py-3">
+        <div className="max-w-[85%] rounded-md border border-vault-border bg-vault-surface shadow-vault-card px-4 py-3">
           <p className="text-[13.5px] text-vault-ink leading-relaxed whitespace-pre-wrap">
             {m.content}
           </p>
@@ -347,8 +347,8 @@ function MessageBubble({ m }: { m: DemoAIMessage }) {
       <div className="h-8 w-8 rounded-md border border-vault-gold/40 bg-vault-gold/10 flex items-center justify-center shrink-0">
         <Bot className="h-4 w-4 text-vault-gold" />
       </div>
-      <div className="flex-1 min-w-0 rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
-        <header className="flex items-center gap-2 px-4 py-2 border-b border-vault-border bg-vault-elevated/40">
+      <div className="flex-1 min-w-0 rounded-md border border-vault-border bg-vault-surface shadow-vault-card overflow-hidden">
+        <header className="flex items-center gap-2 px-4 py-2 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
           <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted font-semibold">
             Vault-Legal 7B
           </span>

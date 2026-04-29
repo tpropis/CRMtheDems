@@ -5,6 +5,7 @@ import {
   Plus, Database, Shield, AlertCircle, Filter, ArrowRight,
   CheckCircle2, Flame, Search,
 } from 'lucide-react'
+import { Progress } from '@/components/ui/progress'
 
 export const dynamic = 'force-dynamic'
 
@@ -127,22 +128,32 @@ function DiscoveryStat({
       ? 'text-vault-danger border-vault-danger/30 bg-vault-danger/8'
       : 'text-vault-accent border-vault-accent/20 bg-vault-accent/8'
 
+  const stripe =
+    accent === 'success'
+      ? 'from-vault-success to-vault-success/40'
+      : accent === 'gold'
+      ? 'from-vault-gold to-vault-gold/40'
+      : accent === 'danger'
+      ? 'from-vault-danger to-vault-danger/40'
+      : 'from-vault-border-strong to-vault-border-strong/30'
+
   return (
-    <div className="rounded-md border border-vault-border bg-vault-surface p-4 shadow-vault">
-      <div className="flex items-start justify-between">
-        <div>
+    <div className="stat-card overflow-hidden">
+      <div className={`h-[3px] w-full bg-gradient-to-r ${stripe}`} />
+      <div className="p-4">
+        <div className="flex items-start justify-between">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">
             {label}
           </p>
-          <p className={`mt-2 font-display text-2xl font-semibold tabular-nums ${valCls}`}>
-            {value}
-          </p>
+          <div className={`flex h-7 w-7 items-center justify-center rounded border shrink-0 ${iconCls}`}>
+            <Icon className="h-3.5 w-3.5" />
+          </div>
         </div>
-        <div className={`flex h-7 w-7 items-center justify-center rounded border ${iconCls}`}>
-          <Icon className="h-3.5 w-3.5" />
-        </div>
+        <p className={`mt-2 font-display text-[1.85rem] font-bold tabular-nums leading-none ${valCls}`}>
+          {value}
+        </p>
+        <p className="mt-2 text-[11px] text-vault-text-secondary">{sub}</p>
       </div>
-      <p className="mt-2 text-[11px] text-vault-text-secondary">{sub}</p>
     </div>
   )
 }
@@ -160,7 +171,7 @@ function CollectionCard({ c }: { c: DemoDiscoveryCollection }) {
   return (
     <Link
       href={matterId ? `/matters/m-${matterId}/discovery` : '#'}
-      className="group block rounded-md border border-vault-border bg-vault-surface p-5 shadow-vault hover:border-vault-border-strong hover:shadow-vault-lg transition-all"
+      className="section-card group block p-5"
     >
       <div className="flex items-start justify-between mb-3 gap-3">
         <div className="min-w-0 flex-1">
@@ -189,20 +200,15 @@ function CollectionCard({ c }: { c: DemoDiscoveryCollection }) {
       {/* Progress bar */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-vault-muted">
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-muted">
             Review progress
           </span>
-          <span className="font-mono text-[11px] text-vault-ink tabular-nums font-medium">
+          <span className="font-mono text-[11px] text-vault-ink tabular-nums font-semibold">
             {pct}%
           </span>
         </div>
-        <div className="h-1.5 rounded-full bg-vault-elevated overflow-hidden">
-          <div
-            className="h-full rounded-full bg-vault-accent transition-all"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-        <p className="mt-1 font-mono text-[9.5px] text-vault-faint tabular-nums">
+        <Progress value={pct} color="accent" />
+        <p className="mt-1.5 font-mono text-[9.5px] text-vault-faint tabular-nums">
           {c.reviewedDocs.toLocaleString()} / {c.totalDocs.toLocaleString()} reviewed
         </p>
       </div>
