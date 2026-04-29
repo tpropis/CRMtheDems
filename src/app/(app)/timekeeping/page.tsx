@@ -5,7 +5,8 @@ import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
 import { StatCard } from '@/components/ui/stat-card'
 import { StatusBadge } from '@/components/ui/status-badge'
-import { Plus, Clock, TrendingUp, DollarSign } from 'lucide-react'
+import { Plus, Clock, TrendingUp, DollarSign, Timer } from 'lucide-react'
+import { EmptyState } from '@/components/ui/empty-state'
 
 export default async function TimekeepingPage() {
   const session = await auth()
@@ -38,8 +39,8 @@ export default async function TimekeepingPage() {
         title="Timekeeping"
         description="Your time entries and billing"
         actions={
-          <Button size="sm">
-            <Plus className="h-4 w-4" />
+          <Button size="sm" className="gap-1.5">
+            <Plus className="h-3.5 w-3.5" />
             Log Time
           </Button>
         }
@@ -51,52 +52,52 @@ export default async function TimekeepingPage() {
         <StatCard label="Entries" value={myEntries.length} icon={TrendingUp} color="default" />
       </div>
 
-      <div className="rounded-md border border-vault-border bg-vault-surface overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Matter</th>
-                <th>Description</th>
-                <th>Hours</th>
-                <th>Rate</th>
-                <th>Amount</th>
-                <th>Billable</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {myEntries.length === 0 ? (
+      <div className="section-card">
+        {myEntries.length === 0 ? (
+          <EmptyState
+            icon={Timer}
+            title="No time entries yet"
+            description="Start logging your time against matters to track billable hours."
+          />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="data-table">
+              <thead>
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-vault-text-secondary">
-                    No time entries yet. Start logging your time.
-                  </td>
+                  <th>Date</th>
+                  <th>Matter</th>
+                  <th>Description</th>
+                  <th>Hours</th>
+                  <th>Rate</th>
+                  <th>Amount</th>
+                  <th>Billable</th>
+                  <th>Status</th>
                 </tr>
-              ) : (
-                myEntries.map((entry) => (
+              </thead>
+              <tbody>
+                {myEntries.map((entry) => (
                   <tr key={entry.id}>
-                    <td className="text-xs text-vault-muted whitespace-nowrap">{formatDate(entry.billingDate)}</td>
+                    <td className="font-mono text-[11px] text-vault-muted whitespace-nowrap">{formatDate(entry.billingDate)}</td>
                     <td>
-                      <p className="text-sm text-vault-text">{entry.matter.name}</p>
-                      <p className="text-xs font-mono text-vault-muted">{entry.matter.matterNumber}</p>
+                      <p className="font-medium text-vault-ink">{entry.matter.name}</p>
+                      <p className="font-mono text-[11px] text-vault-muted">{entry.matter.matterNumber}</p>
                     </td>
                     <td className="max-w-xs">
-                      <p className="text-sm text-vault-text-secondary truncate">{entry.description}</p>
+                      <p className="text-[13px] text-vault-text-secondary truncate">{entry.description}</p>
                     </td>
-                    <td className="tabular-nums text-vault-text font-medium">{formatHours(Number(entry.hoursWorked))}</td>
-                    <td className="tabular-nums text-vault-text-secondary text-sm">${Number(entry.ratePerHour).toFixed(0)}/hr</td>
-                    <td className="tabular-nums font-medium text-vault-text">{formatCurrency(Number(entry.amount))}</td>
+                    <td className="font-mono tabular-nums font-semibold text-vault-ink">{formatHours(Number(entry.hoursWorked))}</td>
+                    <td className="font-mono tabular-nums text-[12px] text-vault-text-secondary">${Number(entry.ratePerHour).toFixed(0)}/hr</td>
+                    <td className="font-mono tabular-nums font-semibold text-vault-ink">{formatCurrency(Number(entry.amount))}</td>
                     <td>
-                      <div className={`h-2 w-2 rounded-full ${entry.isBillable ? 'bg-vault-success' : 'bg-vault-muted'}`} />
+                      <div className={`h-2 w-2 rounded-full ${entry.isBillable ? 'bg-vault-success shadow-[0_0_4px_rgba(45,89,69,0.4)]' : 'bg-vault-muted'}`} />
                     </td>
                     <td><StatusBadge status={entry.status} /></td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )

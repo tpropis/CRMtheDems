@@ -4,6 +4,7 @@ import { formatCurrency } from '@/lib/utils'
 import { PageHeader } from '@/components/ui/page-header'
 import { StatCard } from '@/components/ui/stat-card'
 import { BarChart3, Briefcase, Clock, Bot, Users } from 'lucide-react'
+import { Progress } from '@/components/ui/progress'
 
 export default async function ReportsPage() {
   const session = await auth()
@@ -29,35 +30,31 @@ export default async function ReportsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="rounded-md border border-vault-border bg-vault-surface p-5">
-          <h3 className="text-sm font-semibold text-vault-text mb-4">Matters by Status</h3>
-          <div className="space-y-3">
+        <div className="section-card p-5">
+          <h3 className="display-serif text-[14px] font-semibold text-vault-ink tracking-[-0.01em] mb-5">Matters by Status</h3>
+          <div className="space-y-4">
             {mattersByStatus.map((row) => (
-              <div key={row.status} className="flex items-center justify-between">
-                <span className="text-sm text-vault-text-secondary">{row.status.replace(/_/g, ' ')}</span>
-                <div className="flex items-center gap-3">
-                  <div className="w-24 bg-vault-elevated rounded-full h-1.5">
-                    <div className="h-full bg-vault-accent rounded-full" style={{ width: `${Math.min((row._count / 10) * 100, 100)}%` }} />
-                  </div>
-                  <span className="text-sm font-semibold text-vault-text tabular-nums w-4">{row._count}</span>
+              <div key={row.status}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[13px] text-vault-text-secondary capitalize">{row.status.replace(/_/g, ' ').toLowerCase()}</span>
+                  <span className="font-mono text-[12px] font-semibold text-vault-ink tabular-nums">{row._count}</span>
                 </div>
+                <Progress value={Math.min((row._count / 10) * 100, 100)} color="accent" />
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-md border border-vault-border bg-vault-surface p-5">
-          <h3 className="text-sm font-semibold text-vault-text mb-4">Matters by Practice Area</h3>
-          <div className="space-y-3">
+        <div className="section-card p-5">
+          <h3 className="display-serif text-[14px] font-semibold text-vault-ink tracking-[-0.01em] mb-5">Matters by Practice Area</h3>
+          <div className="space-y-4">
             {mattersByType.slice(0, 8).map((row) => (
-              <div key={row.type} className="flex items-center justify-between">
-                <span className="text-sm text-vault-text-secondary">{row.type.replace(/_/g, ' ')}</span>
-                <div className="flex items-center gap-3">
-                  <div className="w-24 bg-vault-elevated rounded-full h-1.5">
-                    <div className="h-full bg-vault-accent rounded-full" style={{ width: `${Math.min((row._count / 5) * 100, 100)}%` }} />
-                  </div>
-                  <span className="text-sm font-semibold text-vault-text tabular-nums w-4">{row._count}</span>
+              <div key={row.type}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[13px] text-vault-text-secondary capitalize">{row.type.replace(/_/g, ' ').toLowerCase()}</span>
+                  <span className="font-mono text-[12px] font-semibold text-vault-ink tabular-nums">{row._count}</span>
                 </div>
+                <Progress value={Math.min((row._count / 5) * 100, 100)} color="gold" />
               </div>
             ))}
           </div>

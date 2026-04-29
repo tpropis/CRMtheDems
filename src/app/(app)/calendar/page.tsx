@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Calendar, AlertTriangle, Clock } from 'lucide-react'
+import { EmptyState } from '@/components/ui/empty-state'
 import Link from 'next/link'
 
 export default async function CalendarPage() {
@@ -63,8 +64,8 @@ export default async function CalendarPage() {
         title="Calendar"
         description="Events, hearings, deadlines — next 30 days"
         actions={
-          <Button size="sm">
-            <Plus className="h-4 w-4" />
+          <Button size="sm" className="gap-1.5">
+            <Plus className="h-3.5 w-3.5" />
             Add Event
           </Button>
         }
@@ -74,9 +75,8 @@ export default async function CalendarPage() {
         {/* Timeline view */}
         <div className="lg:col-span-2 space-y-4">
           {sortedDates.length === 0 ? (
-            <div className="rounded-md border border-vault-border bg-vault-surface p-12 text-center">
-              <Calendar className="h-8 w-8 text-vault-muted mx-auto mb-3" />
-              <p className="text-sm text-vault-text-secondary">No events in the next 30 days.</p>
+            <div className="section-card">
+              <EmptyState icon={Calendar} title="No events in the next 30 days" description="Add events, hearings, and deadlines to keep your schedule on track." />
             </div>
           ) : (
             sortedDates.map((date) => {
@@ -86,11 +86,11 @@ export default async function CalendarPage() {
               return (
                 <div key={date}>
                   <div className="flex items-center gap-3 mb-2">
-                    <div className={`text-sm font-semibold ${isToday ? 'text-vault-accent-light' : 'text-vault-text'}`}>
+                    <div className={`display-serif text-[14px] font-semibold ${isToday ? 'text-vault-accent' : 'text-vault-ink'}`}>
                       {formatDate(dateObj, 'EEEE, MMMM d')}
                     </div>
                     {isToday && <Badge variant="accent">Today</Badge>}
-                    <div className="flex-1 h-px bg-vault-border" />
+                    <div className="flex-1 h-px bg-gradient-to-r from-vault-border to-transparent" />
                   </div>
                   <div className="space-y-2 ml-2">
                     {items.map((item: any) => {
@@ -134,20 +134,20 @@ export default async function CalendarPage() {
 
         {/* Stats sidebar */}
         <div className="space-y-4">
-          <div className="rounded-md border border-vault-border bg-vault-surface p-5">
-            <h3 className="text-sm font-semibold text-vault-text mb-4">Next 30 Days</h3>
+          <div className="section-card p-5">
+            <h3 className="display-serif text-[14px] font-semibold text-vault-ink tracking-[-0.01em] mb-4">Next 30 Days</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-vault-text-secondary">Total Events</span>
-                <span className="text-sm font-semibold text-vault-text">{events.length}</span>
+                <span className="text-[13px] text-vault-text-secondary">Total Events</span>
+                <span className="font-mono text-[13px] font-semibold text-vault-ink tabular-nums">{events.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-vault-text-secondary">Deadlines</span>
-                <span className="text-sm font-semibold text-vault-warning">{deadlines.length}</span>
+                <span className="text-[13px] text-vault-text-secondary">Deadlines</span>
+                <span className="font-mono text-[13px] font-semibold text-vault-warning tabular-nums">{deadlines.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-vault-text-secondary">Hearings/Trials</span>
-                <span className="text-sm font-semibold text-vault-accent-light">
+                <span className="text-[13px] text-vault-text-secondary">Hearings/Trials</span>
+                <span className="font-mono text-[13px] font-semibold text-vault-accent tabular-nums">
                   {events.filter((e) => ['HEARING', 'TRIAL', 'STATUS_CONFERENCE'].includes(e.eventType)).length}
                 </span>
               </div>

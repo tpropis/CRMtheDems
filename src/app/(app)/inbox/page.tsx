@@ -6,6 +6,7 @@ import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Bell, AlertTriangle, Info, CheckCircle2 } from 'lucide-react'
+import { EmptyState } from '@/components/ui/empty-state'
 
 export default async function InboxPage() {
   const session = await auth()
@@ -38,20 +39,21 @@ export default async function InboxPage() {
         description={`${notifications.filter(n => !n.isRead).length} unread`}
         actions={<Button variant="outline" size="sm">Mark all read</Button>}
       />
-      <div className="rounded-md border border-vault-border bg-vault-surface divide-y divide-vault-border/50">
+      <div className="section-card divide-y divide-vault-border/50">
         {notifications.length === 0 ? (
-          <div className="py-12 text-center"><Bell className="h-8 w-8 text-vault-muted mx-auto mb-3" /><p className="text-sm text-vault-text-secondary">Your inbox is clear.</p></div>
+          <EmptyState icon={Bell} title="Inbox is clear" description="Notifications and action items will appear here." />
         ) : notifications.map((n) => {
           const Icon = ICONS[n.type] || Bell
           return (
-            <div key={n.id} className={`flex items-start gap-4 px-5 py-4 ${!n.isRead ? 'bg-vault-elevated/40' : ''}`}>
+            <div key={n.id} className={`relative flex items-start gap-4 px-5 py-4 transition-colors ${!n.isRead ? 'bg-vault-elevated/40 hover:bg-vault-elevated/60' : 'hover:bg-vault-elevated/20'}`}>
+              {!n.isRead && <span className="absolute left-0 top-1/2 h-[55%] w-[2px] -translate-y-1/2 rounded-r bg-vault-accent" />}
               <Icon className={`h-4 w-4 mt-0.5 shrink-0 ${COLORS[n.type] || 'text-vault-muted'}`} />
               <div className="min-w-0 flex-1">
-                <p className={`text-sm font-medium ${!n.isRead ? 'text-vault-text' : 'text-vault-text-secondary'}`}>{n.title}</p>
-                <p className="text-sm text-vault-text-secondary mt-0.5">{n.body}</p>
-                <p className="text-xs text-vault-muted mt-1">{formatDate(n.createdAt)}</p>
+                <p className={`text-[13.5px] font-medium ${!n.isRead ? 'text-vault-ink' : 'text-vault-text-secondary'}`}>{n.title}</p>
+                <p className="text-[13px] text-vault-text-secondary mt-0.5 leading-relaxed">{n.body}</p>
+                <p className="font-mono text-[11px] text-vault-muted mt-1.5">{formatDate(n.createdAt)}</p>
               </div>
-              {!n.isRead && <div className="h-2 w-2 rounded-full bg-vault-accent shrink-0 mt-1.5" />}
+              {!n.isRead && <div className="h-2 w-2 rounded-full bg-vault-accent shadow-[0_0_4px_rgba(45,89,69,0.35)] shrink-0 mt-1.5" />}
             </div>
           )
         })}
