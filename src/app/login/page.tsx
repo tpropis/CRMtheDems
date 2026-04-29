@@ -8,18 +8,33 @@ export default function LoginPage() {
     <div className="relative min-h-screen bg-vault-bg flex">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-vault-gold/60 to-transparent" />
 
+      {/* Subtle grid backdrop on left side */}
+      <div
+        className="absolute inset-0 lg:right-[420px] opacity-[0.18] pointer-events-none"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(201,190,159,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(201,190,159,0.5) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
+          maskImage: 'radial-gradient(ellipse 70% 60% at 50% 50%, black 0%, transparent 80%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 50%, black 0%, transparent 80%)',
+        }}
+      />
+
       {/* Left — form */}
-      <div className="flex flex-1 flex-col items-center justify-center px-8 py-12">
+      <div className="relative flex flex-1 flex-col items-center justify-center px-8 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-10">
             <Logo variant="dark" size="md" />
           </div>
           <div className="mb-8">
-            <p className="eyebrow text-vault-gold mb-3">§ Secure Access</p>
-            <h1 className="display-serif text-3xl font-medium text-vault-ink tracking-tight">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="h-px w-4 bg-vault-gold/60" />
+              <p className="eyebrow text-vault-gold tracking-[0.2em]">Secure Access</p>
+            </div>
+            <h1 className="display-serif text-[2rem] font-semibold text-vault-ink tracking-[-0.025em] leading-tight">
               Welcome back.
             </h1>
-            <p className="mt-2 text-sm text-vault-text-secondary leading-relaxed">
+            <p className="mt-2.5 text-[13px] text-vault-text-secondary leading-relaxed">
               Sign in to your firm&apos;s private workspace. Every action here is sealed, signed, and audited.
             </p>
           </div>
@@ -31,6 +46,7 @@ export default function LoginPage() {
 
       {/* Right — editorial panel */}
       <div className="relative hidden lg:flex w-[420px] flex-col justify-between border-l border-vault-border bg-vault-elevated p-10 overflow-hidden">
+        <div className="absolute inset-y-8 -left-px w-px bg-gradient-to-b from-transparent via-vault-gold/50 to-transparent" />
         <div
           className="absolute inset-0 opacity-40 pointer-events-none"
           style={{
