@@ -81,7 +81,7 @@ export default function BrandPage() {
         <div className="col-span-2 space-y-5">
 
           {/* Logo */}
-          <div className="vault-panel p-5 space-y-4">
+          <div className="section-card p-5 space-y-4">
             <div className="flex items-center gap-2 mb-1">
               <Upload className="h-4 w-4 text-vault-muted" />
               <h2 className="section-label">Firm Logo</h2>
@@ -102,7 +102,7 @@ export default function BrandPage() {
           </div>
 
           {/* Firm Info */}
-          <div className="vault-panel p-5 space-y-4">
+          <div className="section-card p-5 space-y-4">
             <div className="flex items-center gap-2 mb-1">
               <Building2 className="h-4 w-4 text-vault-muted" />
               <h2 className="section-label">Firm Information</h2>
@@ -123,7 +123,7 @@ export default function BrandPage() {
           </div>
 
           {/* Letterhead Style */}
-          <div className="vault-panel p-5 space-y-4">
+          <div className="section-card p-5 space-y-4">
             <div className="flex items-center gap-2 mb-1">
               <Layout className="h-4 w-4 text-vault-muted" />
               <h2 className="section-label">Letterhead Style</h2>
@@ -154,7 +154,7 @@ export default function BrandPage() {
           </div>
 
           {/* Colors */}
-          <div className="vault-panel p-5 space-y-4">
+          <div className="section-card p-5 space-y-4">
             <div className="flex items-center gap-2 mb-1">
               <Palette className="h-4 w-4 text-vault-muted" />
               <h2 className="section-label">Brand Colors</h2>
@@ -184,7 +184,7 @@ export default function BrandPage() {
             <Eye className="h-4 w-4 text-vault-muted" />
             <h2 className="section-label">Live Preview</h2>
           </div>
-          <div className="vault-panel p-4 sticky top-4">
+          <div className="section-card p-4 sticky top-4">
             {/* Letterhead preview */}
             <div className="bg-white rounded shadow-sm overflow-hidden" style={{ aspectRatio: '8.5/11', fontSize: '7px' }}>
               {/* Header */}

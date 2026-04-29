@@ -6,7 +6,8 @@ import { formatDate } from '@/lib/utils'
 import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Filter, Building, User } from 'lucide-react'
+import { Plus, Filter, Building, User, Users } from 'lucide-react'
+import { EmptyState } from '@/components/ui/empty-state'
 
 export default async function ClientsPage() {
   const session = await auth()
@@ -20,7 +21,7 @@ export default async function ClientsPage() {
       _count: { select: { matters: true, contacts: true } },
     },
     take: 100,
-  })
+  }).catch(() => [] as any[])
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -29,48 +30,48 @@ export default async function ClientsPage() {
         description={`${clients.length} client${clients.length !== 1 ? 's' : ''}`}
         actions={
           <>
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4" />
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Filter className="h-3.5 w-3.5" />
               Filter
             </Button>
-            <Button size="sm">
-              <Plus className="h-4 w-4" />
+            <Button size="sm" className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" />
               New Client
             </Button>
           </>
         }
       />
 
-      <div className="rounded-md border border-vault-border bg-vault-surface overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Client</th>
-                <th>Type</th>
-                <th>Active Matters</th>
-                <th>Total Matters</th>
-                <th>Contacts</th>
-                <th>Status</th>
-                <th>Since</th>
-              </tr>
-            </thead>
-            <tbody>
-              {clients.length === 0 ? (
+      <div className="section-card">
+        {clients.length === 0 ? (
+          <EmptyState
+            icon={Users}
+            title="No clients yet"
+            description="Add your first client from intake to get started."
+          />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="data-table">
+              <thead>
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-vault-text-secondary">
-                    No clients yet. Add your first client from intake.
-                  </td>
+                  <th>Client</th>
+                  <th>Type</th>
+                  <th>Active Matters</th>
+                  <th>Total Matters</th>
+                  <th>Contacts</th>
+                  <th>Status</th>
+                  <th>Since</th>
                 </tr>
-              ) : (
-                clients.map((client) => {
-                  const activeMatters = client.matters.filter((m) => m.status === 'ACTIVE').length
+              </thead>
+              <tbody>
+                {clients.map((client: any) => {
+                  const activeMatters = client.matters.filter((m: any) => m.status === 'ACTIVE').length
                   return (
                     <tr key={client.id}>
                       <td>
-                        <Link href={`/app/clients/${client.id}`} className="hover:text-vault-accent-light block">
-                          <p className="font-medium text-vault-text">{client.name}</p>
-                          <p className="text-xs font-mono text-vault-muted">{client.clientNumber}</p>
+                        <Link href={`/clients/${client.id}`} className="block hover:text-vault-accent">
+                          <p className="font-medium text-vault-ink">{client.name}</p>
+                          <p className="font-mono text-[11px] text-vault-muted">{client.clientNumber}</p>
                         </Link>
                       </td>
                       <td>
@@ -80,29 +81,29 @@ export default async function ClientsPage() {
                           ) : (
                             <User className="h-3.5 w-3.5 text-vault-muted" />
                           )}
-                          <span className="text-sm text-vault-text-secondary capitalize">{client.type.toLowerCase()}</span>
+                          <span className="text-[13px] text-vault-text-secondary capitalize">{client.type.toLowerCase()}</span>
                         </div>
                       </td>
                       <td>
-                        <span className={`text-sm font-medium ${activeMatters > 0 ? 'text-vault-accent-light' : 'text-vault-muted'}`}>
+                        <span className={`font-mono text-[13px] font-semibold tabular-nums ${activeMatters > 0 ? 'text-vault-accent' : 'text-vault-muted'}`}>
                           {activeMatters}
                         </span>
                       </td>
-                      <td className="text-vault-text-secondary">{client._count.matters}</td>
-                      <td className="text-vault-text-secondary">{client._count.contacts}</td>
+                      <td className="font-mono text-[13px] tabular-nums text-vault-text-secondary">{client._count.matters}</td>
+                      <td className="font-mono text-[13px] tabular-nums text-vault-text-secondary">{client._count.contacts}</td>
                       <td>
                         <Badge variant={client.isActive ? 'active' : 'inactive'}>
                           {client.isActive ? 'Active' : 'Inactive'}
                         </Badge>
                       </td>
-                      <td className="text-xs text-vault-muted">{formatDate(client.createdAt)}</td>
+                      <td className="font-mono text-[11px] text-vault-muted">{formatDate(client.createdAt)}</td>
                     </tr>
                   )
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )

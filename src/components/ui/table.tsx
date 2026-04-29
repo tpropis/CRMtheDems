@@ -11,7 +11,13 @@ const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableE
 Table.displayName = 'Table'
 
 const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
-  ({ className, ...props }, ref) => <thead ref={ref} className={cn('[&_tr]:border-b border-vault-border', className)} {...props} />
+  ({ className, ...props }, ref) => (
+    <thead
+      ref={ref}
+      className={cn('bg-gradient-to-r from-vault-elevated/80 to-vault-elevated/40 [&_tr]:border-b border-vault-border', className)}
+      {...props}
+    />
+  )
 )
 TableHeader.displayName = 'TableHeader'
 
@@ -22,21 +28,36 @@ TableBody.displayName = 'TableBody'
 
 const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
   ({ className, ...props }, ref) => (
-    <tr ref={ref} className={cn('border-b border-vault-border/50 hover:bg-vault-elevated/60 transition-colors', className)} {...props} />
+    <tr
+      ref={ref}
+      className={cn(
+        'group border-b border-vault-border/40 transition-colors',
+        'hover:bg-vault-elevated/50',
+        className
+      )}
+      {...props}
+    />
   )
 )
 TableRow.displayName = 'TableRow'
 
 const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTMLTableCellElement>>(
   ({ className, ...props }, ref) => (
-    <th ref={ref} className={cn('h-10 px-4 text-left align-middle text-xs font-semibold text-vault-muted uppercase tracking-wider', className)} {...props} />
+    <th
+      ref={ref}
+      className={cn(
+        'h-10 px-4 text-left align-middle font-mono text-[10px] font-semibold text-vault-muted uppercase tracking-[0.14em] whitespace-nowrap',
+        className
+      )}
+      {...props}
+    />
   )
 )
 TableHead.displayName = 'TableHead'
 
 const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<HTMLTableCellElement>>(
   ({ className, ...props }, ref) => (
-    <td ref={ref} className={cn('px-4 py-3 align-middle text-vault-text', className)} {...props} />
+    <td ref={ref} className={cn('px-4 py-3 align-middle text-[13px] text-vault-text', className)} {...props} />
   )
 )
 TableCell.displayName = 'TableCell'

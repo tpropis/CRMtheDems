@@ -13,9 +13,9 @@ export default function ContactPage() {
         </div>
       </nav>
       <div className="max-w-2xl mx-auto px-6 py-20">
-        <h1 className="text-4xl font-bold text-vault-text tracking-tight mb-4">Contact Us</h1>
+        <h1 className="display-serif text-[2.4rem] font-semibold text-vault-ink tracking-tight mb-4">Contact Us</h1>
         <p className="text-vault-text-secondary mb-8">For enterprise inquiries, deployment questions, or security reviews, reach our team directly.</p>
-        <div className="rounded-md border border-vault-border bg-vault-surface p-6">
+        <div className="section-card p-6">
           <p className="text-sm text-vault-text-secondary">Enterprise Sales & Deployments</p>
           <p className="text-sm font-medium text-vault-accent-light mt-1">enterprise@privilegevault.ai</p>
           <p className="text-xs text-vault-muted mt-4">We respond within one business day. All communications are confidential.</p>
