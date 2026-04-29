@@ -1,425 +1,726 @@
-'use client'
 export const dynamic = 'force-dynamic'
-
-import React, { useState } from 'react'
 import Link from 'next/link'
+import { auth } from '@/lib/auth'
+import { formatCurrency } from '@/lib/utils'
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from 'recharts'
-import { Briefcase, Clock, CalendarDays, ArrowRight } from 'lucide-react'
+  demoMatters,
+  demoDeadlines,
+  demoAIQueries,
+  demoPrivilegeEntries,
+  demoFeedItems,
+  demoConflictHits,
+  demoStats,
+  type DemoMatter,
+  type DemoDeadline,
+  type DemoAIQuery,
+  type DemoPrivilegeEntry,
+  type DemoFeedItem,
+  type DemoConflictHit,
+} from '@/lib/demo-data'
+import {
+  Briefcase, AlertTriangle, Receipt, Bot, FileText,
+  ArrowRight, Plus, Calendar, Sparkles, Shield, Radio,
+  Scale, Search, FileSearch, CheckCircle2, Clock,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
-// ── Mock data ─────────────────────────────────────────────────────────────────
+export default async function DashboardPage() {
+  const session = await auth()
+  const userName = session?.user?.name?.split(' ')[0] ?? 'Counsel'
+  const now = new Date()
+  const hour = now.getHours()
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
 
-const REVENUE_DATA = [
-  { month: 'Nov', invoiced: 142000, collected: 118000 },
-  { month: 'Dec', invoiced: 168000, collected: 145000 },
-  { month: 'Jan', invoiced: 155000, collected: 132000 },
-  { month: 'Feb', invoiced: 189000, collected: 167000 },
-  { month: 'Mar', invoiced: 204000, collected: 178000 },
-  { month: 'Apr', invoiced: 221000, collected: 198000 },
-]
+  // Pull demo fixtures (Phase 3 uses these unconditionally so the dashboard
+  // tells a complete story even without DB). Live DB wiring comes later.
+  const matters = demoMatters
+  const deadlines = demoDeadlines
+  const aiQueries = demoAIQueries
+  const privilege = demoPrivilegeEntries
+  const feed = demoFeedItems
+  const conflicts = demoConflictHits
+  const stats = demoStats
 
-const RECENT_MATTERS = [
-  { id: '1', name: 'Okafor v. Meridian Health Systems',  client: 'James Okafor',     type: 'Personal Injury',  status: 'URGENT',  lastActivity: '2h ago',    hours: 124.5 },
-  { id: '2', name: 'Chen Family Trust Restructuring',    client: 'Linda Chen',        type: 'Estate Planning',  status: 'ACTIVE',  lastActivity: '4h ago',    hours: 38.0  },
-  { id: '3', name: 'Morrison Realty Acquisition',        client: 'Morrison Group',    type: 'Real Estate',      status: 'ACTIVE',  lastActivity: 'Yesterday', hours: 67.5  },
-  { id: '4', name: 'State v. Williams (Criminal)',        client: 'D. Williams',       type: 'Criminal Defense', status: 'PENDING', lastActivity: 'Yesterday', hours: 89.0  },
-  { id: '5', name: 'Nguyen Divorce Proceedings',         client: 'M. Nguyen',         type: 'Family Law',       status: 'ACTIVE',  lastActivity: '2d ago',    hours: 45.5  },
-  { id: '6', name: 'TechVentures IP Portfolio',          client: 'TechVentures Inc.', type: 'IP/Patent',        status: 'ACTIVE',  lastActivity: '2d ago',    hours: 156.0 },
-  { id: '7', name: 'Alvarez Slip & Fall v. Retail Co.',  client: 'Rosa Alvarez',      type: 'Personal Injury',  status: 'ACTIVE',  lastActivity: '3d ago',    hours: 52.0  },
-  { id: '8', name: 'H-1B Renewal — Park',                client: 'Jin-Su Park',       type: 'Immigration',      status: 'PENDING', lastActivity: '3d ago',    hours: 12.0  },
-]
-
-const TICKER_ITEMS = [
-  { matter: 'Okafor v. Meridian',    label: 'MSJ Filing',            countdown: '2h 15m',  urgency: 'red'   },
-  { matter: 'Alvarez v. Retail Co.', label: 'Discovery Response',    countdown: '18h 30m', urgency: 'red'   },
-  { matter: 'Chen Estate',           label: 'SOL Deadline',          countdown: '2d 4h',   urgency: 'amber' },
-  { matter: 'Nguyen Divorce',        label: 'Client Follow-Up',      countdown: '3d',      urgency: 'amber' },
-  { matter: 'TechVentures IP',       label: 'Deposition Notice',     countdown: '5d',      urgency: 'amber' },
-  { matter: 'Torres Immigration',    label: 'Visa Renewal',          countdown: '47d 2h',  urgency: 'green' },
-  { matter: 'Morrison Realty',       label: 'Closing Date',          countdown: '12d',     urgency: 'amber' },
-  { matter: 'Washington v. City',    label: 'Pretrial Conference',   countdown: '8d 6h',   urgency: 'amber' },
-]
-
-const urgencyDot: Record<string, string> = {
-  red:   '#E05252',
-  amber: '#D4A017',
-  green: '#2EAD6E',
-}
-
-const AI_FEED = [
-  { initials: 'SM', name: 'Sarah M.',  action: 'ran Discovery analysis',        matter: 'Okafor v. Meridian',    time: '4 min ago',  color: '#3B8FD4' },
-  { initials: 'JR', name: 'James R.',  action: 'generated Demand Letter',       matter: 'Alvarez v. Retail Co.', time: '12 min ago', color: '#2EAD6E' },
-  { initials: 'AK', name: 'Amy K.',    action: 'ran case law research',         matter: 'State v. Williams',     time: '28 min ago', color: '#C9A84C' },
-  { initials: 'TM', name: 'Thomas M.', action: 'reviewed privilege log',        matter: 'TechVentures IP',       time: '41 min ago', color: '#3B8FD4' },
-  { initials: 'SM', name: 'Sarah M.',  action: 'drafted motion to dismiss',     matter: 'Morrison Realty',       time: '1h ago',     color: '#3B8FD4' },
-  { initials: 'JR', name: 'James R.',  action: 'analyzed deposition transcript',matter: 'Nguyen Divorce',        time: '2h ago',     color: '#2EAD6E' },
-  { initials: 'AK', name: 'Amy K.',    action: 'ran conflict check',            matter: 'New Intake #22',        time: '3h ago',     color: '#C9A84C' },
-]
-
-const UNBILLED = [
-  { matter: 'TechVentures IP Portfolio',   hours: 12.5, amount: 5625 },
-  { matter: 'Okafor v. Meridian Health',   hours: 8.0,  amount: 3600 },
-  { matter: 'Morrison Realty Acquisition', hours: 6.5,  amount: 2925 },
-]
-
-const UPCOMING_EVENTS = [
-  { id: '1', name: 'Status Hearing',             matter: 'Okafor v. Meridian',    datetime: 'Apr 15 · 9:00 AM'  },
-  { id: '2', name: 'Deposition — Dr. Reynolds',  matter: 'Alvarez v. Retail Co.', datetime: 'Apr 16 · 10:30 AM' },
-  { id: '3', name: 'Client Strategy Call',        matter: 'TechVentures IP',       datetime: 'Apr 17 · 2:00 PM'  },
-  { id: '4', name: 'Summary Judgment Filing',     matter: 'State v. Williams',     datetime: 'Apr 18 · 5:00 PM'  },
-  { id: '5', name: 'Pretrial Conference',         matter: 'Morrison Realty',       datetime: 'Apr 22 · 11:00 AM' },
-]
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function fmtDollars(n: number) { return `$${(n / 1000).toFixed(0)}k` }
-
-function fmtDollarsFull(n: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
-}
-
-function StatusPill({ status }: { status: string }) {
-  const styles: Record<string, { bg: string; color: string; border: string }> = {
-    URGENT:  { bg: 'rgba(224,82,82,0.1)',   color: '#E05252', border: 'rgba(224,82,82,0.3)'   },
-    ACTIVE:  { bg: 'rgba(59,143,212,0.1)',  color: '#3B8FD4', border: 'rgba(59,143,212,0.3)'  },
-    PENDING: { bg: 'rgba(212,160,23,0.1)',  color: '#D4A017', border: 'rgba(212,160,23,0.3)'  },
-    CLOSED:  { bg: 'rgba(78,100,128,0.15)', color: '#4E6480', border: 'rgba(78,100,128,0.25)' },
-  }
-  const s = styles[status] ?? styles.CLOSED
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center',
-      padding: '2px 8px', borderRadius: 20,
-      fontSize: 10, fontWeight: 700,
-      letterSpacing: '0.04em', textTransform: 'uppercase',
-      background: s.bg, color: s.color,
-      border: `1px solid ${s.border}`,
-      whiteSpace: 'nowrap',
-    }}>
+    <div className="space-y-8 animate-fade-in pb-12">
+      {/* ── Editorial greeting header ─────────────────────────── */}
+      <header className="relative">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="h-px w-4 bg-vault-gold/60" />
+              <p className="eyebrow text-vault-gold tracking-[0.2em]">Command Center</p>
+            </div>
+            <h1 className="display-serif text-[2rem] font-semibold text-vault-ink tracking-[-0.025em] md:text-[2.5rem] leading-tight">
+              {greeting}, {userName}.
+            </h1>
+            <p className="mt-2.5 max-w-xl text-[13px] text-vault-text-secondary leading-relaxed">
+              <span className="font-semibold text-vault-ink">{stats.activeMatters}</span> active matters
+              {' · '}
+              <span className="font-semibold text-vault-danger">{stats.urgentDeadlines}</span> imminent deadlines
+              {' · '}
+              <span className="font-semibold text-vault-gold">{stats.aiActionsToday}</span> AI actions signed today
+              {' · '}
+              {stats.docsIngestedToday.toLocaleString()} documents ingested
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Link href="/intake/new">
+              <Button size="sm" className="gap-1.5">
+                <Plus className="h-3.5 w-3.5" />
+                New Intake
+              </Button>
+            </Link>
+            <Link href="/conflicts/run">
+              <Button variant="outline" size="sm" className="gap-1.5">
+                <Scale className="h-3.5 w-3.5" />
+                Run Conflict Check
+              </Button>
+            </Link>
+          </div>
+        </div>
+        <div className="vault-divider mt-7" />
+      </header>
+
+      {/* ── Stat strip ────────────────────────────────────────── */}
+      <section className="grid grid-cols-2 gap-4 md:grid-cols-5">
+        <StatTile
+          icon={Briefcase}
+          label="Active Matters"
+          value={stats.activeMatters.toString()}
+          sub="8 partner-led"
+        />
+        <StatTile
+          icon={AlertTriangle}
+          label="Urgent Deadlines"
+          value={stats.urgentDeadlines.toString()}
+          sub="Next 48 hours"
+          accent="danger"
+        />
+        <StatTile
+          icon={FileText}
+          label="Intake Queue"
+          value={stats.newIntake.toString()}
+          sub="Awaiting screening"
+        />
+        <StatTile
+          icon={Receipt}
+          label="Unbilled WIP"
+          value={formatCurrency(stats.unbilledWip).replace('.00', '')}
+          sub="Draft · ready to bill"
+        />
+        <StatTile
+          icon={Sparkles}
+          label="AI Actions · 24h"
+          value={stats.aiActionsToday.toString()}
+          sub="Signed · immutable"
+          accent="gold"
+        />
+      </section>
+
+      {/* ── Main two-column grid ──────────────────────────────── */}
+      <div className="grid grid-cols-1 gap-7 xl:grid-cols-3">
+        {/* Left column (primary, 2/3) */}
+        <div className="space-y-6 xl:col-span-2">
+          <MatterCommandCenter matters={matters} />
+          <DeadlineEngine deadlines={deadlines} />
+          <PrivilegeLog entries={privilege} />
+        </div>
+
+        {/* Right column (secondary, 1/3) */}
+        <div className="space-y-6">
+          <PrivateAIParalegal queries={aiQueries} />
+          <IntelligenceFeed items={feed} />
+          <ConflictCheck hits={conflicts} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STAT TILE
+═══════════════════════════════════════════════════════════════ */
+function StatTile({
+  icon: Icon,
+  label,
+  value,
+  sub,
+  accent = 'default',
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  value: string
+  sub: string
+  accent?: 'default' | 'danger' | 'gold'
+}) {
+  const accentClass =
+    accent === 'danger' ? 'text-vault-danger' : accent === 'gold' ? 'text-vault-gold' : 'text-vault-ink'
+  const iconTint =
+    accent === 'danger'
+      ? 'text-vault-danger bg-vault-danger/8 border-vault-danger/25'
+      : accent === 'gold'
+      ? 'text-vault-gold bg-vault-gold/10 border-vault-gold/30'
+      : 'text-vault-accent bg-vault-accent/8 border-vault-accent/20'
+  const stripeCls =
+    accent === 'danger' ? 'stripe-danger' : accent === 'gold' ? 'stripe-gold' : 'stripe-accent'
+
+  return (
+    <div className="stat-card">
+      <div className={`h-[3px] w-full ${stripeCls}`} />
+      <div className="p-5">
+        <div className="flex items-start justify-between">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">{label}</p>
+          <div className={`flex h-7 w-7 items-center justify-center rounded border ${iconTint} shrink-0`}>
+            <Icon className="h-3.5 w-3.5" />
+          </div>
+        </div>
+        <p className={`mt-3 font-display text-[1.85rem] font-bold tabular-nums leading-none tracking-tight ${accentClass}`}>
+          {value}
+        </p>
+        <p className="mt-2.5 text-[11px] text-vault-text-secondary">{sub}</p>
+      </div>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⑴ MATTER COMMAND CENTER
+═══════════════════════════════════════════════════════════════ */
+function MatterCommandCenter({ matters }: { matters: DemoMatter[] }) {
+  return (
+    <section className="section-card">
+      <SectionHead
+        num="I"
+        title="Matter Command Center"
+        subtitle="Every matter, live state at a glance"
+        action={
+          <Link href="/matters">
+            <Button variant="ghost" size="sm" className="text-xs gap-1">
+              View all · {matters.length}
+              <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        }
+      />
+
+      <div className="divide-y divide-vault-border/70">
+        {matters.map((m) => (
+          <Link
+            key={m.id}
+            href={`/matters/${m.id}`}
+            className="group relative grid grid-cols-12 items-center gap-3 px-5 py-3 hover:bg-vault-elevated/60 transition-colors before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[2px] before:bg-vault-accent before:rounded-r-full before:opacity-0 hover:before:opacity-100 before:transition-opacity"
+          >
+            <div className="col-span-5 min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="font-mono text-[10px] text-vault-muted tabular-nums">{m.number}</span>
+                <RiskBadge risk={m.risk} />
+              </div>
+              <p className="text-[13px] font-medium text-vault-ink truncate">{m.name}</p>
+              <p className="text-[11px] text-vault-text-secondary truncate">
+                {m.client} · {m.attorney}
+              </p>
+            </div>
+
+            <div className="col-span-2 text-center">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-vault-muted">Practice</p>
+              <p className="text-[12px] text-vault-text-secondary">{m.practice}</p>
+            </div>
+
+            <div className="col-span-3 flex items-center justify-center gap-3">
+              <MatterPulse icon={Calendar} value={m.deadlineCount} label="due" tone={m.deadlineCount > 2 ? 'warn' : 'default'} />
+              <MatterPulse icon={FileSearch} value={m.unreadFilings} label="new" tone={m.unreadFilings > 0 ? 'accent' : 'default'} />
+              <MatterPulse icon={Sparkles} value={m.aiFlags} label="AI" tone={m.aiFlags > 2 ? 'gold' : 'default'} />
+            </div>
+
+            <div className="col-span-2 text-right">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-vault-muted">Active</p>
+              <p className="text-[11px] text-vault-text-secondary">{m.lastActivity}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function RiskBadge({ risk }: { risk: DemoMatter['risk'] }) {
+  const styles =
+    risk === 'CRITICAL'
+      ? 'bg-vault-danger/10 text-vault-danger border-vault-danger/30'
+      : risk === 'HIGH'
+      ? 'bg-vault-warning/10 text-vault-warning border-vault-warning/30'
+      : risk === 'MEDIUM'
+      ? 'bg-vault-gold/10 text-vault-gold border-vault-gold/30'
+      : 'bg-vault-success/10 text-vault-success border-vault-success/30'
+  return (
+    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase tracking-widest border ${styles}`}>
+      {risk}
+    </span>
+  )
+}
+
+function MatterPulse({
+  icon: Icon,
+  value,
+  label,
+  tone,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  value: number
+  label: string
+  tone: 'default' | 'warn' | 'accent' | 'gold'
+}) {
+  const cls =
+    tone === 'warn'
+      ? 'text-vault-warning'
+      : tone === 'accent'
+      ? 'text-vault-accent'
+      : tone === 'gold'
+      ? 'text-vault-gold'
+      : 'text-vault-muted'
+  return (
+    <div className={`flex items-center gap-1 ${cls}`}>
+      <Icon className="h-3 w-3" />
+      <span className="font-mono text-[11px] tabular-nums font-medium">{value}</span>
+      <span className="font-mono text-[9px] uppercase tracking-wider text-vault-faint">{label}</span>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⑶ DEADLINE ENGINE
+═══════════════════════════════════════════════════════════════ */
+function DeadlineEngine({ deadlines }: { deadlines: DemoDeadline[] }) {
+  return (
+    <section className="section-card">
+      <SectionHead
+        num="III"
+        title="Deadline Engine"
+        subtitle="Rule-based cascades · auto-computed from court & contract events"
+        action={
+          <Link href="/calendar">
+            <Button variant="ghost" size="sm" className="text-xs gap-1">
+              Full calendar
+              <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        }
+      />
+
+      <div className="divide-y divide-vault-border/70">
+        {deadlines.map((d) => (
+          <div key={d.id} className="grid grid-cols-12 items-center gap-3 px-5 py-3 hover:bg-vault-elevated/40 transition-colors">
+            <div className="col-span-5 min-w-0">
+              <p className="text-[13px] font-medium text-vault-ink truncate">{d.title}</p>
+              <p className="text-[11px] text-vault-text-secondary truncate">{d.matter}</p>
+            </div>
+
+            <div className="col-span-3">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-vault-muted">{d.jurisdiction}</p>
+              <p className="text-[11px] text-vault-text-secondary truncate">
+                {d.source} <span className="text-vault-faint">·</span> {d.rule}
+              </p>
+            </div>
+
+            <div className="col-span-2">
+              {d.computed ? (
+                <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-vault-accent/25 bg-vault-accent/[0.06]">
+                  <Radio className="h-2.5 w-2.5 text-vault-accent" />
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-vault-accent">
+                    Computed
+                  </span>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-vault-border bg-vault-elevated">
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-vault-muted">
+                    Manual
+                  </span>
+                </div>
+              )}
+              {d.cascadeOf && (
+                <p className="mt-1 text-[10px] text-vault-faint truncate">↳ {d.cascadeOf}</p>
+              )}
+            </div>
+
+            <div className="col-span-2 text-right">
+              <p
+                className={`font-mono text-[11px] uppercase tracking-wider tabular-nums ${
+                  d.urgency === 'imminent'
+                    ? 'text-vault-danger'
+                    : d.urgency === 'overdue'
+                    ? 'text-vault-danger'
+                    : d.urgency === 'soon'
+                    ? 'text-vault-warning'
+                    : 'text-vault-text-secondary'
+                }`}
+              >
+                {d.due}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⑷ PRIVILEGE LOG (auto-tagged)
+═══════════════════════════════════════════════════════════════ */
+function PrivilegeLog({ entries }: { entries: DemoPrivilegeEntry[] }) {
+  return (
+    <section className="section-card">
+      <SectionHead
+        num="IV"
+        title="Privilege Log"
+        subtitle="Automatic classification at ingest · defensible, one-click export"
+        action={
+          <Link href="/documents?view=privilege">
+            <Button variant="ghost" size="sm" className="text-xs gap-1">
+              Full log
+              <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        }
+      />
+
+      <div className="divide-y divide-vault-border/70">
+        {entries.map((e) => (
+          <div key={e.id} className="px-5 py-3 hover:bg-vault-elevated/40 transition-colors">
+            <div className="flex items-start justify-between gap-3 mb-1">
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-medium text-vault-ink truncate">{e.doc}</p>
+                <p className="text-[11px] text-vault-text-secondary truncate">{e.matter}</p>
+              </div>
+              <ClassificationBadge kind={e.classification} confidence={e.confidence} />
+            </div>
+            <p className="text-[11px] text-vault-text-secondary leading-relaxed">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-vault-faint mr-1.5">
+                Basis
+              </span>
+              {e.basis}
+            </p>
+            <p className="mt-1 font-mono text-[10px] text-vault-faint">
+              {e.pages} pp. · ingested {e.ingestedAt}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ClassificationBadge({
+  kind,
+  confidence,
+}: {
+  kind: DemoPrivilegeEntry['classification']
+  confidence: number
+}) {
+  const style =
+    kind === 'Attorney-Client'
+      ? 'bg-vault-accent/10 text-vault-accent border-vault-accent/30'
+      : kind === 'Work Product'
+      ? 'bg-vault-gold/10 text-vault-gold border-vault-gold/30'
+      : kind === 'Common Interest'
+      ? 'bg-vault-accent-soft text-vault-accent-light border-vault-accent/20'
+      : kind === 'Needs Review'
+      ? 'bg-vault-warning/10 text-vault-warning border-vault-warning/30'
+      : 'bg-vault-elevated text-vault-muted border-vault-border'
+  return (
+    <div
+      className={`shrink-0 inline-flex items-center gap-1.5 px-2 py-0.5 rounded border ${style}`}
+      title={`${confidence}% confidence`}
+    >
+      <span className="font-mono text-[9px] uppercase tracking-wider font-semibold">{kind}</span>
+      <span className="font-mono text-[9px] tabular-nums opacity-70">{confidence}%</span>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⑵ PRIVATE AI PARALEGAL
+═══════════════════════════════════════════════════════════════ */
+function PrivateAIParalegal({ queries }: { queries: DemoAIQuery[] }) {
+  return (
+    <section className="section-card">
+      <SectionHead
+        num="II"
+        title="Private AI Paralegal"
+        subtitle="Matter-scoped · cited · signed"
+        icon={Bot}
+        action={
+          <Link href="/ai">
+            <Button variant="ghost" size="sm" className="text-xs gap-1">
+              Open
+              <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        }
+      />
+
+      <div className="divide-y divide-vault-border/70">
+        {queries.map((q) => (
+          <article key={q.id} className="px-5 py-4 hover:bg-vault-elevated/40 transition-colors">
+            <div className="flex items-start gap-2 mb-2">
+              <div className="h-5 w-5 rounded-full border border-vault-accent/30 bg-vault-accent/10 flex items-center justify-center shrink-0 mt-0.5">
+                <Search className="h-2.5 w-2.5 text-vault-accent" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] font-medium text-vault-ink leading-snug">{q.question}</p>
+                <p className="font-mono text-[10px] text-vault-faint mt-0.5 truncate">
+                  {q.matterNumber} · {q.askedBy} · {q.askedAt}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-[11.5px] text-vault-text-secondary leading-relaxed pl-7 line-clamp-3">
+              {q.answer}
+            </p>
+
+            <div className="pl-7 mt-2 flex flex-wrap items-center gap-1.5">
+              {q.citations.slice(0, 3).map((c, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-vault-border bg-vault-elevated text-[10px] text-vault-text-secondary"
+                >
+                  <FileText className="h-2.5 w-2.5 text-vault-muted" />
+                  <span className="truncate max-w-[140px]">{c.doc}</span>
+                  <span className="text-vault-faint">·</span>
+                  <span className="font-mono text-vault-faint">{c.page}</span>
+                </span>
+              ))}
+            </div>
+
+            <div className="pl-7 mt-2 flex items-center gap-2">
+              <StatusPill status={q.status} reviewer={q.reviewer} />
+              <span className="font-mono text-[9px] text-vault-faint truncate">{q.model}</span>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function StatusPill({ status, reviewer }: { status: DemoAIQuery['status']; reviewer?: string }) {
+  if (status === 'signed') {
+    return (
+      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-vault-success/30 bg-vault-success/8 text-[9px] font-mono uppercase tracking-wider text-vault-success">
+        <CheckCircle2 className="h-2.5 w-2.5" />
+        Signed · {reviewer}
+      </span>
+    )
+  }
+  if (status === 'pending_review') {
+    return (
+      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-vault-warning/30 bg-vault-warning/8 text-[9px] font-mono uppercase tracking-wider text-vault-warning">
+        <Clock className="h-2.5 w-2.5" />
+        Pending review
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-vault-border bg-vault-elevated text-[9px] font-mono uppercase tracking-wider text-vault-muted">
+      Draft
+    </span>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⑸ INTELLIGENCE FEED
+═══════════════════════════════════════════════════════════════ */
+function IntelligenceFeed({ items }: { items: DemoFeedItem[] }) {
+  return (
+    <section className="section-card">
+      <SectionHead
+        num="V"
+        title="Intelligence Feed"
+        subtitle="What changed on your matters · right now"
+        icon={Radio}
+        action={
+          <span className="flex items-center gap-1.5 px-2 py-1 rounded border border-vault-success/30 bg-vault-success/5">
+            <span className="live-dot" />
+            <span className="font-mono text-[9px] uppercase tracking-wider text-vault-success">Live</span>
+          </span>
+        }
+      />
+
+      <ol className="divide-y divide-vault-border/70">
+        {items.map((f) => (
+          <li key={f.id} className="px-5 py-2.5 flex items-start gap-3 hover:bg-vault-elevated/40 transition-colors">
+            <FeedDot severity={f.severity} />
+            <div className="flex-1 min-w-0">
+              <p className="text-[12px] text-vault-ink leading-snug">{f.headline}</p>
+              <p className="font-mono text-[10px] text-vault-faint mt-0.5 truncate">
+                {f.matterNumber === '—' ? 'Firm-wide' : f.matterNumber} · {f.at}
+              </p>
+            </div>
+            <FeedKindTag kind={f.kind} />
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+function FeedDot({ severity }: { severity: DemoFeedItem['severity'] }) {
+  const style =
+    severity === 'urgent'
+      ? 'bg-vault-danger shadow-[0_0_0_3px_rgba(122,45,42,0.12)]'
+      : severity === 'notable'
+      ? 'bg-vault-gold shadow-[0_0_0_3px_rgba(182,138,62,0.15)]'
+      : 'bg-vault-muted/50'
+  return <span className={`mt-1.5 h-2 w-2 rounded-full shrink-0 ${style}`} />
+}
+
+function FeedKindTag({ kind }: { kind: DemoFeedItem['kind'] }) {
+  const map: Record<DemoFeedItem['kind'], string> = {
+    filing: 'Filing',
+    opposing: 'Opposing',
+    docket: 'Docket',
+    regulatory: 'Reg.',
+    deadline: 'Deadline',
+    ai: 'AI',
+  }
+  return (
+    <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-vault-muted">
+      {map[kind]}
+    </span>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⑹ CONFLICT CHECK
+═══════════════════════════════════════════════════════════════ */
+function ConflictCheck({ hits }: { hits: DemoConflictHit[] }) {
+  return (
+    <section className="section-card">
+      <SectionHead
+        num="VI"
+        title="Conflict Check"
+        subtitle="Natural-language search · 3-second scan across all historical matters"
+        icon={Scale}
+        action={
+          <Link href="/conflicts">
+            <Button variant="ghost" size="sm" className="text-xs gap-1">
+              History
+              <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        }
+      />
+
+      <div className="px-5 py-3 border-b border-vault-border/70 bg-vault-elevated/40">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-vault-border bg-vault-elevated shadow-vault-inset">
+          <Search className="h-3.5 w-3.5 text-vault-muted shrink-0" />
+          <span className="text-[12px] text-vault-muted">
+            e.g., &ldquo;Aventra Capital or any affiliate&rdquo;
+          </span>
+          <span className="ml-auto flex items-center gap-0.5">
+            <span className="kbd">⏎</span>
+          </span>
+        </div>
+        <p className="mt-2 font-mono text-[10px] text-vault-faint">
+          Recent hits · confidence-scored across parties, counsel, related entities, witnesses
+        </p>
+      </div>
+
+      <div className="divide-y divide-vault-border/70">
+        {hits.map((h) => (
+          <div key={h.id} className="px-5 py-3 hover:bg-vault-elevated/40 transition-colors">
+            <div className="flex items-start justify-between gap-2 mb-1">
+              <div className="min-w-0 flex-1">
+                <p className="text-[12.5px] font-medium text-vault-ink truncate">{h.entity}</p>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-vault-muted mt-0.5">
+                  {h.type} · {h.role}
+                </p>
+              </div>
+              <ConfidenceMeter value={h.confidence} />
+            </div>
+            <p className="text-[11px] text-vault-text-secondary truncate">{h.historicalMatter}</p>
+            <div className="mt-1.5 flex items-center gap-2">
+              <ResolutionBadge status={h.resolution} />
+              <span className="font-mono text-[9px] text-vault-faint">{h.flaggedAt}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ConfidenceMeter({ value }: { value: number }) {
+  const tone =
+    value >= 90 ? 'text-vault-danger' : value >= 75 ? 'text-vault-warning' : 'text-vault-text-secondary'
+  return (
+    <div className="shrink-0 text-right">
+      <p className={`font-mono text-[11px] font-semibold tabular-nums ${tone}`}>{value}%</p>
+      <p className="font-mono text-[9px] uppercase tracking-wider text-vault-faint">Match</p>
+    </div>
+  )
+}
+
+function ResolutionBadge({ status }: { status: DemoConflictHit['resolution'] }) {
+  const styles: Record<DemoConflictHit['resolution'], string> = {
+    cleared:
+      'border-vault-success/30 bg-vault-success/8 text-vault-success',
+    waived:
+      'border-vault-gold/30 bg-vault-gold/8 text-vault-gold',
+    screened:
+      'border-vault-accent/30 bg-vault-accent/8 text-vault-accent',
+    pending:
+      'border-vault-warning/30 bg-vault-warning/8 text-vault-warning',
+  }
+  return (
+    <span
+      className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-mono uppercase tracking-wider font-semibold ${styles[status]}`}
+    >
       {status}
     </span>
   )
 }
 
-function CustomTooltip({ active, payload, label }: any) {
-  if (!active || !payload?.length) return null
-  return (
-    <div style={{
-      background: 'var(--bg-card)', border: '1px solid var(--border)',
-      borderRadius: 8, padding: '10px 14px', fontSize: 12,
-      boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-    }}>
-      <p style={{ color: 'var(--text-2)', fontWeight: 600, marginBottom: 6 }}>{label}</p>
-      {payload.map((p: any) => (
-        <p key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '3px 0' }}>
-          <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: p.fill }} />
-          <span style={{ color: 'var(--text-3)', textTransform: 'capitalize' }}>{p.name}:</span>
-          <span style={{ color: 'var(--text-1)', fontWeight: 500 }}>{fmtDollarsFull(p.value)}</span>
-        </p>
-      ))}
-    </div>
-  )
-}
-
-// ── Deadline Ticker ───────────────────────────────────────────────────────────
-
-function DeadlineTicker() {
-  const items = [...TICKER_ITEMS, ...TICKER_ITEMS] // duplicate for seamless loop
-
-  return (
-    <div className="ticker-wrap">
-      <div className="ticker-track">
-        {items.map((item, i) => (
-          <span
-            key={i}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '0 28px',
-              borderRight: '1px solid var(--border)',
-              cursor: 'pointer',
-            }}
-          >
-            <span style={{
-              width: 7, height: 7, borderRadius: '50%',
-              background: urgencyDot[item.urgency],
-              flexShrink: 0,
-              boxShadow: `0 0 6px ${urgencyDot[item.urgency]}`,
-            }} />
-            <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
-              {item.matter}
-            </span>
-            <span style={{ fontSize: 11, color: 'var(--text-3)' }}>—</span>
-            <span style={{ fontSize: 12, color: 'var(--text-2)' }}>{item.label}:</span>
-            <span style={{
-              fontFamily: 'JetBrains Mono, Courier New, monospace',
-              fontSize: 12, fontWeight: 700,
-              color: urgencyDot[item.urgency],
-            }}>
-              {item.countdown}
-            </span>
-            <span style={{ fontSize: 11, color: 'var(--text-3)', marginLeft: 4 }}>remaining</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ── Stat card component ───────────────────────────────────────────────────────
-
-function StatCard({
-  label, value, sub, accentClass, children,
+/* ═══════════════════════════════════════════════════════════════
+   SECTION HEAD — shared
+═══════════════════════════════════════════════════════════════ */
+function SectionHead({
+  num,
+  title,
+  subtitle,
+  icon: Icon,
+  action,
 }: {
-  label: string
-  value?: string
-  sub?: React.ReactNode
-  accentClass?: string
-  children?: React.ReactNode
+  num: string
+  title: string
+  subtitle: string
+  icon?: React.ComponentType<{ className?: string }>
+  action?: React.ReactNode
 }) {
   return (
-    <div className={`stat-card ${accentClass ?? ''}`}>
-      <p className="stat-label">{label}</p>
-      {value && <p className="stat-value">{value}</p>}
-      {children}
-      {sub && <div style={{ marginTop: 6, fontSize: 12, color: 'var(--text-3)' }}>{sub}</div>}
-    </div>
-  )
-}
-
-// ── Page ──────────────────────────────────────────────────────────────────────
-
-export default function DashboardPage() {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, animation: 'fade-slide-up 0.25s ease forwards' }}>
-
-      {/* Page header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 24, fontWeight: 'normal', color: 'var(--text-1)', margin: 0 }}>
-            Dashboard
-          </h1>
-          <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 3 }}>
-            Good morning, Sarah — Morrison &amp; Chen LLP
+    <header className="flex items-center justify-between gap-3 px-5 py-4 border-b border-vault-border bg-gradient-to-r from-vault-elevated/80 via-vault-elevated/40 to-vault-surface">
+      <div className="flex items-center gap-3 min-w-0">
+        <div
+          className="flex h-7 w-7 items-center justify-center rounded border border-vault-gold/40 bg-gradient-to-b from-vault-gold/10 to-vault-gold/5 shrink-0"
+          style={{ boxShadow: '0 0 0 1px rgba(182,138,62,0.14), 0 1px 3px rgba(182,138,62,0.06)' }}
+        >
+          {Icon ? (
+            <Icon className="h-3.5 w-3.5 text-vault-gold" />
+          ) : (
+            <span className="font-mono text-[10px] font-bold text-vault-gold">{num}</span>
+          )}
+        </div>
+        <div className="min-w-0">
+          <h2 className="display-serif text-[15px] font-semibold text-vault-ink leading-none tracking-[-0.01em]">
+            {title}
+          </h2>
+          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-muted/80 truncate">
+            {subtitle}
           </p>
         </div>
       </div>
-
-      {/* Stat cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
-        <StatCard label="Active Matters" value="47" accentClass="accent-gold"
-          sub={<span style={{ color: 'var(--success)' }}>↑ 12% this month</span>} />
-
-        <StatCard label="Hours This Week" accentClass="">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
-            {/* Mini ring */}
-            <svg width={44} height={44} style={{ transform: 'rotate(-90deg)', flexShrink: 0 }}>
-              <circle cx={22} cy={22} r={18} fill="none" stroke="var(--bg-elevated)" strokeWidth={4} />
-              <circle cx={22} cy={22} r={18} fill="none" stroke="var(--gold)" strokeWidth={4}
-                strokeDasharray={`${(38.5 / 40) * 2 * Math.PI * 18} ${2 * Math.PI * 18}`}
-                strokeLinecap="round" />
-            </svg>
-            <div>
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: 30, color: 'var(--text-1)', margin: 0, lineHeight: 1 }}>38.5</p>
-              <p style={{ fontSize: 11, color: 'var(--text-3)', margin: '3px 0 0' }}>of 40h target</p>
-            </div>
-          </div>
-        </StatCard>
-
-        <StatCard label="Outstanding" accentClass="accent-warning"
-          sub="Awaiting payment">
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: 30, color: 'var(--gold)', margin: '6px 0 0', lineHeight: 1 }}>
-            $84,200
-          </p>
-        </StatCard>
-
-        <StatCard label="AI Queries Today" value="156" accentClass="accent-success"
-          sub="Across firm" />
-      </div>
-
-      {/* Deadline Ticker */}
-      <DeadlineTicker />
-
-      {/* Main grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 20 }}>
-
-        {/* Recent Matters table */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '14px 20px', borderBottom: '1px solid var(--border)',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Briefcase style={{ width: 15, height: 15, color: 'var(--text-3)' }} />
-              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-1)' }}>Recent Matters</span>
-            </div>
-            <Link href="/matters" style={{
-              display: 'flex', alignItems: 'center', gap: 4,
-              fontSize: 12, color: 'var(--accent)', textDecoration: 'none',
-              transition: 'color 0.15s ease',
-            }}>
-              View All <ArrowRight style={{ width: 12, height: 12 }} />
-            </Link>
-          </div>
-          <div style={{ overflowX: 'auto' }}>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Matter</th>
-                  <th>Client</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Last Activity</th>
-                  <th style={{ textAlign: 'right' }}>Hours</th>
-                </tr>
-              </thead>
-              <tbody>
-                {RECENT_MATTERS.map(m => (
-                  <tr key={m.id}>
-                    <td>
-                      <span style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-1)' }}>{m.name}</span>
-                    </td>
-                    <td style={{ color: 'var(--text-2)', fontSize: 13 }}>{m.client}</td>
-                    <td style={{ color: 'var(--text-3)', fontSize: 11 }}>{m.type}</td>
-                    <td><StatusPill status={m.status} /></td>
-                    <td style={{ color: 'var(--text-3)', fontSize: 12 }}>{m.lastActivity}</td>
-                    <td style={{ textAlign: 'right', fontFamily: 'monospace', fontSize: 13, color: 'var(--text-2)' }}>
-                      {m.hours.toFixed(1)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Right column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-          {/* AI Activity */}
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 10, padding: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-1)' }}>AI Activity</span>
-              <span style={{
-                fontSize: 9, fontWeight: 700, letterSpacing: '0.08em',
-                background: 'var(--gold-dim)', color: 'var(--gold)',
-                border: '1px solid var(--gold-border)',
-                borderRadius: 20, padding: '2px 8px',
-              }}>LIVE</span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 220, overflowY: 'auto' }}>
-              {AI_FEED.map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                  <div style={{
-                    width: 26, height: 26, borderRadius: '50%',
-                    background: item.color,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 10, fontWeight: 700, color: 'white', flexShrink: 0,
-                  }}>
-                    {item.initials}
-                  </div>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <p style={{ fontSize: 12, color: 'var(--text-1)', margin: 0, lineHeight: 1.4 }}>
-                      <span style={{ fontWeight: 600 }}>{item.name}</span>{' '}
-                      <span style={{ color: 'var(--text-2)' }}>{item.action}</span>{' '}
-                      <span style={{ color: 'var(--accent)' }}>— {item.matter}</span>
-                    </p>
-                    <p style={{ fontSize: 10, color: 'var(--text-3)', margin: '2px 0 0' }}>{item.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Unbilled Time */}
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 10, padding: 16 }}>
-            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-1)', display: 'block', marginBottom: 12 }}>
-              Unbilled Time
-            </span>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {UNBILLED.map(row => (
-                <div key={row.matter} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-1)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {row.matter}
-                    </p>
-                    <p style={{ fontSize: 11, color: 'var(--text-3)', margin: '2px 0 0' }}>
-                      {row.hours}h · {fmtDollarsFull(row.amount)}
-                    </p>
-                  </div>
-                  <button style={{
-                    flexShrink: 0, fontSize: 11, fontWeight: 600,
-                    background: 'var(--gold-dim)', color: 'var(--gold)',
-                    border: '1px solid var(--gold-border)',
-                    borderRadius: 6, padding: '4px 10px', cursor: 'pointer',
-                    transition: 'background 0.15s ease',
-                  }}>
-                    Invoice
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom row */}
-      <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 20 }}>
-
-        {/* Revenue chart */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 10, padding: 20 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-1)', display: 'block', marginBottom: 16 }}>
-            Revenue — Last 6 Months
-          </span>
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={REVENUE_DATA} barSize={14} barGap={4}>
-              <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.06)" strokeDasharray="3 3" />
-              <XAxis dataKey="month" tick={{ fill: 'var(--text-3)', fontSize: 12 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: 'var(--text-3)', fontSize: 11 }} axisLine={false} tickLine={false}
-                tickFormatter={fmtDollars} width={48} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.04)' }} />
-              <Bar dataKey="invoiced"  name="invoiced"  fill="#C9A84C" radius={[3,3,0,0]} />
-              <Bar dataKey="collected" name="collected" fill="#3B8FD4" radius={[3,3,0,0]} />
-            </BarChart>
-          </ResponsiveContainer>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 8, justifyContent: 'center' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-3)' }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#C9A84C', display: 'inline-block' }} />
-              Invoiced
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-3)' }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#3B8FD4', display: 'inline-block' }} />
-              Collected
-            </span>
-          </div>
-        </div>
-
-        {/* Upcoming Events */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 10, padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <CalendarDays style={{ width: 15, height: 15, color: 'var(--text-3)' }} />
-            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-1)' }}>Upcoming Events</span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {UPCOMING_EVENTS.map(ev => (
-              <div key={ev.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                <div style={{
-                  width: 28, height: 28, borderRadius: 6, flexShrink: 0,
-                  background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <CalendarDays style={{ width: 14, height: 14, color: 'var(--accent)' }} />
-                </div>
-                <div style={{ minWidth: 0 }}>
-                  <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-1)', margin: 0, lineHeight: 1.3 }}>{ev.name}</p>
-                  <p style={{ fontSize: 11, color: 'var(--text-3)', margin: '2px 0 0' }}>{ev.matter}</p>
-                  <p style={{ fontSize: 11, color: 'var(--accent)', margin: '2px 0 0' }}>{ev.datetime}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
+      {action && <div className="shrink-0">{action}</div>}
+    </header>
   )
 }

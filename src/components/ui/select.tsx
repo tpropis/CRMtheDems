@@ -15,11 +15,14 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      'flex h-9 w-full items-center justify-between rounded-md border border-vault-border bg-vault-elevated px-3 py-2 text-sm text-vault-text',
-      'placeholder:text-vault-muted',
-      'focus:outline-none focus:ring-1 focus:ring-vault-accent focus:border-vault-accent',
-      'disabled:cursor-not-allowed disabled:opacity-50',
-      'transition-colors',
+      'flex h-10 w-full items-center justify-between rounded-md border border-vault-border bg-vault-surface px-3 py-2 text-sm text-vault-text',
+      'shadow-[inset_0_1px_2px_rgba(20,18,14,0.04)]',
+      'placeholder:text-vault-muted/80',
+      'hover:border-vault-border-strong',
+      'focus:outline-none focus:ring-2 focus:ring-vault-accent/30 focus:border-vault-accent',
+      'data-[state=open]:border-vault-accent data-[state=open]:ring-2 data-[state=open]:ring-vault-accent/30',
+      'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-vault-elevated',
+      'transition-all duration-150',
       '[&>span]:line-clamp-1',
       className
     )}
@@ -27,7 +30,7 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
+      <ChevronDown className="h-4 w-4 text-vault-muted opacity-70" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))
@@ -41,7 +44,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        'relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-vault-border bg-vault-elevated shadow-vault-lg animate-fade-in',
+        'relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-vault-border bg-vault-surface shadow-vault-xl animate-fade-in',
         position === 'popper' && 'translate-y-1',
         className
       )}
@@ -68,9 +71,11 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm text-vault-text',
-      'hover:bg-vault-surface focus:bg-vault-surface outline-none',
+      'relative flex w-full cursor-pointer select-none items-center rounded-[4px] py-2 pl-8 pr-2 text-sm text-vault-text',
+      'hover:bg-vault-elevated focus:bg-vault-elevated outline-none',
+      'data-[state=checked]:bg-vault-accent/[0.08] data-[state=checked]:text-vault-accent data-[state=checked]:font-medium',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'transition-colors duration-100',
       className
     )}
     {...props}
@@ -91,7 +96,7 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn('py-1.5 pl-8 pr-2 text-xs font-semibold text-vault-muted', className)}
+    className={cn('py-1.5 pl-8 pr-2 font-mono text-[10px] font-semibold text-vault-muted uppercase tracking-[0.15em]', className)}
     {...props}
   />
 ))

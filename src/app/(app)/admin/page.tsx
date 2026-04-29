@@ -17,14 +17,16 @@ export default function AdminPage() {
       <PageHeader title="Administration" description="Firm configuration, users, security, and compliance" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {ADMIN_SECTIONS.map((s) => (
-          <Link key={s.href} href={s.href} className="rounded-md border border-vault-border bg-vault-surface p-6 hover:border-vault-border-strong transition-colors block">
+          <Link key={s.href} href={s.href} className="section-card block p-6 group">
             <div className="flex items-start gap-4">
-              <div className="rounded-md border border-vault-border bg-vault-elevated p-2">
-                <s.icon className="h-5 w-5 text-vault-accent-light" />
+              <div className="rounded-md border border-vault-accent/20 bg-gradient-to-b from-vault-accent/10 to-vault-accent/5 p-2.5 shadow-[0_1px_3px_rgba(45,89,69,0.08)] shrink-0 transition-colors group-hover:border-vault-accent/35">
+                <s.icon className="h-5 w-5 text-vault-accent" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-vault-text mb-1">{s.title}</h3>
-                <p className="text-sm text-vault-text-secondary">{s.desc}</p>
+                <h3 className="display-serif text-[14px] font-semibold text-vault-ink tracking-[-0.01em] mb-1.5 group-hover:text-vault-accent transition-colors">
+                  {s.title}
+                </h3>
+                <p className="text-[13px] leading-relaxed text-vault-text-secondary">{s.desc}</p>
               </div>
             </div>
           </Link>

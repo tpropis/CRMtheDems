@@ -1,130 +1,112 @@
 'use client'
-
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { initials, roleLabel } from '@/lib/utils'
+import { Logo } from '@/components/brand/Logo'
 import {
-  LayoutDashboard, Briefcase, Brain, FileEdit, Shield,
-  Clock, FolderOpen, CalendarDays, Users, BarChart3,
-  Settings, Bell, Plus, ChevronLeft, ChevronRight,
+  LayoutDashboard, Inbox, ClipboardList, Users, Briefcase,
+  Calendar, FileText, Search, Database, Clock, Receipt,
+  BarChart3, Settings, Shield, UserCheck, AlertTriangle,
+  Bot, FolderOpen, LogOut, Wand2, Link2, Sparkles,
 } from 'lucide-react'
+import { signOut } from 'next-auth/react'
 import type { Session } from 'next-auth'
+import { roleLabel, initials } from '@/lib/utils'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
-/* ── Pillar Logo SVG ─────────────────────────────────────────────────────── */
-function PillarLogo({ size = 34 }: { size?: number }) {
-  return (
-    <svg viewBox="0 0 48 52" width={size} height={Math.round(size * 52 / 48)}
-      xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
-      <rect x="4"  y="2"  width="40" height="5"  rx="1"   fill="currentColor" />
-      <rect x="10" y="7"  width="28" height="3"  rx="0.5" fill="currentColor" opacity="0.7" />
-      <rect x="10" y="10" width="8"  height="32" rx="1"   fill="currentColor" />
-      <rect x="30" y="10" width="8"  height="32" rx="1"   fill="currentColor" />
-      <rect x="11" y="13" width="6"  height="2"  rx="0.5" fill="#1A2942" />
-      <rect x="11" y="17" width="6"  height="2"  rx="0.5" fill="#1A2942" />
-      <rect x="11" y="13" width="2"  height="6"  rx="0.5" fill="#1A2942" />
-      <polygon points="18,10 30,10 26,42 22,42" fill="currentColor" opacity="0.5" />
-      <rect x="8"  y="42" width="32" height="4"  rx="1"   fill="currentColor" />
-      <rect x="4"  y="46" width="40" height="4"  rx="1"   fill="currentColor" />
-    </svg>
-  )
+interface NavSection {
+  label?: string
+  items: NavItem[]
 }
-
-/* ── Nav items config ────────────────────────────────────────────────────── */
 interface NavItem {
   label: string
   href: string
-  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>
-  badge?: string | number
+  icon: React.ComponentType<{ className?: string }>
+  badge?: number
   exact?: boolean
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard',      href: '/dashboard',         icon: LayoutDashboard, exact: true },
-  { label: 'Matters',        href: '/matters',            icon: Briefcase,       badge: '47' },
-  { label: 'AI Research',    href: '/research',           icon: Brain },
-  { label: 'AI Drafting',    href: '/documents/generate', icon: FileEdit },
-  { label: 'Discovery',      href: '/discovery',          icon: Shield },
-  { label: 'Time & Billing', href: '/timekeeping',        icon: Clock },
-  { label: 'Documents',      href: '/documents',          icon: FolderOpen },
-  { label: 'Calendar',       href: '/calendar',           icon: CalendarDays },
-  { label: 'Clients',        href: '/clients',            icon: Users },
-  { label: 'Reports',        href: '/reports',            icon: BarChart3 },
-  { label: 'Settings',       href: '/admin',              icon: Settings },
+const NAV: NavSection[] = [
+  {
+    items: [
+      { label: 'Dashboard',    href: '/dashboard',   icon: LayoutDashboard, exact: true },
+      { label: 'Inbox',        href: '/inbox',       icon: Inbox },
+    ],
+  },
+  {
+    label: 'Clients & Matters',
+    items: [
+      { label: 'Intake',       href: '/intake',      icon: ClipboardList },
+      { label: 'Conflicts',    href: '/conflicts',   icon: AlertTriangle },
+      { label: 'Clients',      href: '/clients',     icon: Users },
+      { label: 'Contacts',     href: '/contacts',    icon: UserCheck },
+      { label: 'Matters',      href: '/matters',     icon: Briefcase },
+    ],
+  },
+  {
+    label: 'Work Product',
+    items: [
+      { label: 'Calendar',     href: '/calendar',    icon: Calendar },
+      { label: 'Documents',    href: '/documents',   icon: FileText },
+      { label: 'Templates',    href: '/templates',   icon: FolderOpen },
+      { label: 'Generate Doc', href: '/documents/generate', icon: Wand2 },
+    ],
+  },
+  {
+    label: 'AI Tools',
+    items: [
+      { label: 'AI Paralegal', href: '/ai',          icon: Sparkles },
+      { label: 'Research',     href: '/research',    icon: Search },
+      { label: 'Discovery',    href: '/discovery',   icon: Database },
+    ],
+  },
+  {
+    label: 'Finance',
+    items: [
+      { label: 'Timekeeping',  href: '/timekeeping', icon: Clock },
+      { label: 'Billing',      href: '/billing',     icon: Receipt },
+      { label: 'Reports',      href: '/reports',     icon: BarChart3 },
+    ],
+  },
+  {
+    label: 'Administration',
+    items: [
+      { label: 'Admin',        href: '/admin',       icon: Settings },
+      { label: 'Brand',        href: '/admin/brand', icon: BarChart3 },
+      { label: 'Integrations', href: '/admin/integrations', icon: Link2 },
+      { label: 'Audit',        href: '/admin/audit', icon: Shield },
+    ],
+  },
 ]
 
-/* ── NavLink ─────────────────────────────────────────────────────────────── */
-function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
+function NavItem({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
   const pathname = usePathname()
   const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href)
 
   return (
     <Link
       href={item.href}
-      title={collapsed ? item.label : undefined}
-      className={cn('group flex items-center gap-2.5 transition-colors', isActive && 'pointer-events-none')}
-      style={{
-        height: 38,
-        padding: collapsed ? '0 8px' : '0 12px 0 13px',
-        borderRadius: 7,
-        margin: '1px 8px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        fontSize: 13,
-        fontWeight: isActive ? 600 : 500,
-        color: isActive ? 'var(--gold)' : 'var(--text-2)',
-        textDecoration: 'none',
-        position: 'relative',
-        justifyContent: collapsed ? 'center' : undefined,
-        background: isActive ? 'var(--gold-dim)' : 'transparent',
-        borderLeft: isActive && !collapsed ? '3px solid var(--gold)' : '3px solid transparent',
-        paddingLeft: isActive && !collapsed ? 13 : undefined,
-      }}
-      onMouseEnter={(e) => {
-        if (!isActive) {
-          (e.currentTarget as HTMLElement).style.background = 'var(--bg-elevated)'
-          ;(e.currentTarget as HTMLElement).style.color = 'var(--text-1)'
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isActive) {
-          (e.currentTarget as HTMLElement).style.background = 'transparent'
-          ;(e.currentTarget as HTMLElement).style.color = 'var(--text-2)'
-        }
-      }}
-    >
-      <item.icon
-        className="shrink-0 h-[15px] w-[15px]"
-        style={{ color: isActive ? 'var(--gold)' : 'var(--text-3)' }}
-      />
-      {!collapsed && (
-        <>
-          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {item.label}
-          </span>
-          {item.badge !== undefined && (
-            <span style={{
-              background: 'var(--accent-dim)', color: 'var(--accent)',
-              fontSize: 10, fontWeight: 600,
-              borderRadius: 20, padding: '2px 7px',
-              border: '1px solid var(--accent-border)',
-              lineHeight: 1,
-            }}>
-              {item.badge}
-            </span>
-          )}
-        </>
+      onClick={onNavigate}
+      className={cn(
+        'group relative flex items-center gap-2.5 px-3 py-[7px] rounded-[5px] text-[12.5px] transition-all duration-150 w-full',
+        isActive
+          ? 'bg-vault-accent/[0.10] text-vault-accent font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]'
+          : 'text-vault-text-secondary hover:bg-vault-sidebar-hov hover:text-vault-ink'
       )}
-      {collapsed && item.badge !== undefined && (
-        <span style={{
-          position: 'absolute', top: 2, right: 2,
-          width: 14, height: 14,
-          background: 'var(--accent)', color: 'white',
-          borderRadius: '50%', fontSize: 8, fontWeight: 700,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
+    >
+      {isActive && (
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[65%] w-[3px] rounded-r-full bg-vault-accent shadow-[0_0_6px_rgba(31,74,61,0.35)]" />
+      )}
+      <item.icon
+        className={cn(
+          'h-[15px] w-[15px] shrink-0 transition-colors',
+          isActive ? 'text-vault-accent' : 'text-vault-muted group-hover:text-vault-text-secondary'
+        )}
+      />
+      <span className="flex-1 truncate tracking-[-0.01em]">{item.label}</span>
+      {item.badge !== undefined && (
+        <span className="text-[9.5px] bg-vault-gold/20 text-vault-gold rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center font-mono font-semibold">
           {item.badge}
         </span>
       )}
@@ -132,289 +114,75 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
   )
 }
 
-/* ── Sidebar inner content (shared desktop + mobile) ─────────────────────── */
-function SidebarInner({
-  collapsed,
-  setCollapsed,
-  userInitials,
-  user,
-  showToggle,
-}: {
-  collapsed: boolean
-  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>
-  userInitials: string
-  user: any
-  showToggle: boolean
-}) {
+export function Sidebar({ session, onNavigate }: { session: Session; onNavigate?: () => void }) {
+  const user = session.user
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-
-      {/* Toggle button */}
-      {showToggle && (
-        <button
-          onClick={() => setCollapsed(c => !c)}
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          style={{
-            position: 'absolute', right: -12, top: 22, zIndex: 10,
-            width: 24, height: 24, borderRadius: '50%',
-            border: '1px solid var(--border-mid)',
-            background: 'var(--bg-elevated)',
-            color: 'var(--text-3)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
-            transition: 'color 0.15s ease',
-          }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-1)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-3)')}
-        >
-          {collapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
-        </button>
-      )}
-
-      {/* Logo */}
-      <div style={{
-        display: 'flex', alignItems: 'center',
-        gap: collapsed ? 0 : 10,
-        padding: collapsed ? '20px 0 16px' : '20px 16px 16px',
-        justifyContent: collapsed ? 'center' : undefined,
-        borderBottom: '1px solid var(--border)',
-        flexShrink: 0,
-      }}>
-        <div style={{ color: 'var(--gold)' }}>
-          <PillarLogo size={collapsed ? 26 : 34} />
-        </div>
-        {!collapsed && (
-          <div>
-            <div style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: 13, fontWeight: 700,
-              letterSpacing: '0.15em',
-              color: 'var(--text-1)', lineHeight: 1.1,
-            }}>PRIVILEGE VAULT</div>
-            <div style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 11, fontWeight: 700,
-              letterSpacing: '0.2em',
-              color: 'var(--accent)', marginTop: 1,
-            }}>AI</div>
-          </div>
-        )}
+    <aside className="relative flex h-full w-60 flex-col border-r border-vault-border bg-vault-sidebar" style={{ backgroundImage: 'linear-gradient(180deg, #F0E8D6 0%, #EDE6D3 40%, #E8DFC8 100%)' }}>
+      {/* Logo header */}
+      <div className="relative flex h-14 items-center border-b border-vault-border/70 px-4 bg-vault-sidebar">
+        <Link href="/dashboard" className="flex items-center">
+          <Logo variant="dark" size="sm" />
+        </Link>
+        <div className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-vault-gold/60 to-transparent" />
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
-        {NAV_ITEMS.map(item => (
-          <NavLink key={item.href} item={item} collapsed={collapsed} />
+      <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-4">
+        {NAV.map((section, si) => (
+          <div key={si} className="space-y-0.5">
+            {section.label ? (
+              <div className="flex items-center gap-2 px-3 mb-2">
+                <span className="h-px flex-1 bg-vault-border/60" />
+                <p className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.2em] text-vault-muted/80 whitespace-nowrap">
+                  {section.label}
+                </p>
+                <span className="h-px flex-1 bg-vault-border/60" />
+              </div>
+            ) : si > 0 && (
+              <div className="h-px mx-3 bg-vault-border/40 mb-2" />
+            )}
+            {section.items.map((item) => (
+              <NavItem key={item.href} item={item} onNavigate={onNavigate} />
+            ))}
+          </div>
         ))}
       </nav>
 
-      {/* AI Engine section */}
-      <div style={{
-        borderTop: '1px solid var(--border)',
-        padding: '12px 16px',
-        flexShrink: 0,
-      }}>
-        {!collapsed && (
-          <div style={{
-            fontSize: 10, fontWeight: 600, letterSpacing: '0.12em',
-            color: 'var(--text-3)', textTransform: 'uppercase',
-            marginBottom: 8,
-          }}>AI Engine</div>
-        )}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 8,
-          justifyContent: collapsed ? 'center' : undefined,
-        }}>
-          <div className="pulse-dot" />
-          {!collapsed && (
-            <span style={{ fontSize: 12, color: 'var(--success)', fontWeight: 500 }}>
-              Local · Private
-            </span>
-          )}
+      {/* Private AI indicator */}
+      <div className="px-3 pt-1 pb-2">
+        <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-md border border-vault-gold/35 bg-vault-gold/[0.07] shadow-vault-seal-sm">
+          <Bot className="h-3.5 w-3.5 text-vault-gold shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="font-mono text-[9px] text-vault-gold/60 uppercase tracking-[0.2em]">AI Engine</p>
+            <p className="text-[11px] text-vault-ink font-semibold truncate">Private · Sealed</p>
+          </div>
+          <span className="live-dot" />
         </div>
-        {!collapsed && (
-          <p style={{ fontSize: 10, color: 'var(--text-3)', margin: '4px 0 0' }}>
-            ZDR-protected · Audit logged
-          </p>
-        )}
       </div>
 
-      {/* New Matter CTA */}
-      <div style={{
-        borderTop: '1px solid var(--border)',
-        padding: collapsed ? '10px 0' : '10px 12px',
-        display: 'flex', justifyContent: 'center',
-        flexShrink: 0,
-      }}>
-        {!collapsed ? (
-          <button className="btn-gold" style={{ width: '100%', justifyContent: 'center' }}>
-            <Plus className="h-4 w-4" />
-            New Matter
-          </button>
-        ) : (
-          <button
-            title="New Matter"
-            style={{
-              width: 32, height: 32, borderRadius: '50%',
-              background: 'var(--gold)', color: 'var(--bg-base)',
-              border: 'none', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 0 0 1px rgba(201,168,76,0.5), 0 0 16px rgba(201,168,76,0.2)',
-            }}
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        )}
-      </div>
-
-      {/* User row */}
-      <div style={{
-        borderTop: '1px solid var(--border)',
-        padding: collapsed ? '12px 0' : '12px 16px',
-        display: 'flex', alignItems: 'center',
-        gap: 10, flexShrink: 0,
-        justifyContent: collapsed ? 'center' : undefined,
-        flexDirection: collapsed ? 'column' : 'row',
-      }}>
-        <div style={{
-          width: 32, height: 32, borderRadius: '50%',
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-mid)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 12, fontWeight: 700, color: 'var(--text-1)',
-          flexShrink: 0, userSelect: 'none',
-        }}>
-          {userInitials}
-        </div>
-        {!collapsed && (
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{
-              fontSize: 13, fontWeight: 500, color: 'var(--text-1)',
-              margin: 0, lineHeight: 1.2,
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            }}>
-              {user.name}
-            </p>
-            <p style={{
-              fontSize: 11, color: 'var(--text-3)', margin: 0,
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            }}>
-              {roleLabel((user as any).role || '')}
+      {/* User footer */}
+      <div className="border-t border-vault-border/70 p-3 bg-vault-sidebar-hov/50">
+        <div className="flex items-center gap-2.5">
+          <Avatar className="h-7 w-7 border border-vault-border-strong/60 shrink-0">
+            <AvatarFallback className="text-[10px] bg-vault-accent/15 text-vault-accent font-bold">
+              {initials(user.name || user.email)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1">
+            <p className="text-[12px] font-semibold text-vault-ink truncate leading-tight">{user.name}</p>
+            <p className="font-mono text-[9px] text-vault-muted truncate uppercase tracking-wider mt-0.5">
+              {roleLabel((user as any).role)}
             </p>
           </div>
-        )}
-        {!collapsed && (
           <button
-            title="Notifications"
-            style={{
-              position: 'relative', flexShrink: 0,
-              background: 'none', border: 'none',
-              padding: 4, borderRadius: 6, cursor: 'pointer',
-              color: 'var(--text-3)', transition: 'color 0.15s ease',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-1)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-3)')}
+            onClick={() => signOut({ callbackUrl: '/login' })}
+            className="shrink-0 rounded-md p-1.5 text-vault-muted hover:bg-vault-surface hover:text-vault-danger transition-colors"
+            title="Sign out"
           >
-            <Bell className="h-4 w-4" />
-            <span style={{
-              position: 'absolute', top: 0, right: 0,
-              width: 14, height: 14,
-              background: 'var(--danger)', color: 'white',
-              borderRadius: '50%', fontSize: 9, fontWeight: 700,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>3</span>
+            <LogOut className="h-3.5 w-3.5" />
           </button>
-        )}
+        </div>
       </div>
-    </div>
-  )
-}
-
-/* ── Sidebar exported component ──────────────────────────────────────────── */
-export function Sidebar({
-  session,
-  mobileOpen,
-  onMobileClose,
-}: {
-  session: Session
-  mobileOpen?: boolean
-  onMobileClose?: () => void
-}) {
-  const user = session.user
-  const userInitials = initials((user.name || user.email || 'U').toString())
-
-  const [collapsed, setCollapsed] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('sidebar-collapsed') === 'true'
-    }
-    return false
-  })
-
-  useEffect(() => {
-    localStorage.setItem('sidebar-collapsed', String(collapsed))
-  }, [collapsed])
-
-  return (
-    <>
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div
-          onClick={onMobileClose}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 39,
-            background: 'rgba(0,0,0,0.6)',
-            backdropFilter: 'blur(2px)',
-          }}
-        />
-      )}
-
-      {/* Mobile sidebar (slide in from left) */}
-      <aside
-        className="pv-sidebar md:hidden"
-        style={{
-          position: 'fixed', left: 0, top: 0,
-          width: 280, height: '100vh',
-          background: 'var(--bg-sidebar)',
-          borderRight: '1px solid var(--border)',
-          display: 'flex', flexDirection: 'column',
-          transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.3s ease',
-          zIndex: 40,
-          overflow: 'hidden',
-        }}
-      >
-        <SidebarInner
-          collapsed={false}
-          setCollapsed={setCollapsed}
-          userInitials={userInitials}
-          user={user}
-          showToggle={false}
-        />
-      </aside>
-
-      {/* Desktop sidebar */}
-      <aside
-        className="pv-sidebar sidebar-desktop hidden md:flex flex-col"
-        style={{
-          background: 'var(--bg-sidebar)',
-          borderRight: '1px solid var(--border)',
-          width: collapsed ? 64 : 240,
-          height: '100vh',
-          flexShrink: 0,
-          position: 'relative',
-          transition: 'width 0.2s ease',
-          overflowX: 'hidden',
-        }}
-      >
-        <SidebarInner
-          collapsed={collapsed}
-          setCollapsed={setCollapsed}
-          userInitials={userInitials}
-          user={user}
-          showToggle
-        />
-      </aside>
-    </>
+    </aside>
   )
 }

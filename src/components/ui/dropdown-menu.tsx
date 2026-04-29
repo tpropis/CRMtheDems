@@ -54,7 +54,7 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        'z-50 min-w-[10rem] overflow-hidden rounded-md border border-vault-border bg-vault-elevated p-1 text-vault-text shadow-vault-lg',
+        'z-50 min-w-[11rem] overflow-hidden rounded-md border border-vault-border bg-vault-surface p-1 text-vault-text shadow-vault-xl',
         'data-[state=open]:animate-fade-in',
         className
       )}
@@ -71,9 +71,9 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors',
-      'hover:bg-vault-surface focus:bg-vault-surface',
-      destructive ? 'text-vault-danger hover:text-vault-danger' : 'text-vault-text',
+      'relative flex cursor-pointer select-none items-center gap-2 rounded-[4px] px-2.5 py-2 text-[13px] outline-none transition-colors duration-100',
+      'hover:bg-vault-elevated focus:bg-vault-elevated',
+      destructive ? 'text-vault-danger hover:bg-vault-danger/8 hover:text-vault-danger' : 'text-vault-text hover:text-vault-ink',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       inset && 'pl-8',
       className
@@ -101,7 +101,7 @@ const DropdownMenuLabel = React.forwardRef<
 >(({ className, inset, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
     ref={ref}
-    className={cn('px-2 py-1.5 text-xs font-semibold text-vault-muted', inset && 'pl-8', className)}
+    className={cn('px-2.5 py-1.5 font-mono text-[9.5px] font-semibold uppercase tracking-[0.15em] text-vault-muted', inset && 'pl-8', className)}
     {...props}
   />
 ))

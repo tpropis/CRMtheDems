@@ -11,17 +11,17 @@ export default function SettingsPage() {
     <div className="space-y-5 animate-fade-in max-w-3xl">
       <PageHeader title="Firm Settings" description="Platform configuration and integrations" />
 
-      <div className="rounded-md border border-vault-border bg-vault-surface">
-        <div className="px-5 py-4 border-b border-vault-border">
-          <h2 className="text-sm font-semibold text-vault-text flex items-center gap-2">
+      <div className="section-card">
+        <div className="px-5 py-3.5 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
+          <h2 className="display-serif text-[14px] font-semibold text-vault-ink tracking-[-0.01em] flex items-center gap-2">
             <Bot className="h-4 w-4 text-vault-muted" />AI Model Provider
           </h2>
         </div>
         <div className="p-5 space-y-4">
-          <div className="flex items-center justify-between p-4 rounded-md border border-vault-border bg-vault-elevated">
+          <div className="flex items-center justify-between p-4 rounded-md border border-vault-border bg-gradient-to-b from-vault-elevated to-vault-elevated/60">
             <div>
-              <p className="text-sm font-medium text-vault-text capitalize">{aiProvider === 'ollama' ? 'Ollama (Local Inference)' : aiProvider}</p>
-              <p className="text-xs text-vault-text-secondary mt-0.5">
+              <p className="font-medium text-vault-ink capitalize">{aiProvider === 'ollama' ? 'Ollama (Local Inference)' : aiProvider}</p>
+              <p className="text-[13px] text-vault-text-secondary mt-0.5">
                 {aiProvider === 'ollama' ? 'All inference runs locally. Zero external API calls.' : 'External provider configured.'}
               </p>
             </div>
@@ -35,26 +35,26 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="rounded-md border border-vault-border bg-vault-surface">
-        <div className="px-5 py-4 border-b border-vault-border">
-          <h2 className="text-sm font-semibold text-vault-text flex items-center gap-2">
+      <div className="section-card">
+        <div className="px-5 py-3.5 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
+          <h2 className="display-serif text-[14px] font-semibold text-vault-ink tracking-[-0.01em] flex items-center gap-2">
             <Database className="h-4 w-4 text-vault-muted" />File Storage
           </h2>
         </div>
         <div className="p-5">
-          <div className="flex items-center justify-between p-4 rounded-md border border-vault-border bg-vault-elevated">
+          <div className="flex items-center justify-between p-4 rounded-md border border-vault-border bg-gradient-to-b from-vault-elevated to-vault-elevated/60">
             <div>
-              <p className="text-sm font-medium text-vault-text capitalize">{storageProvider === 'local' ? 'Local Filesystem' : 'S3-Compatible'}</p>
-              <p className="text-xs text-vault-text-secondary mt-0.5">{storageProvider === 'local' ? 'Files stored on server disk.' : 'Cloud storage configured.'}</p>
+              <p className="font-medium text-vault-ink capitalize">{storageProvider === 'local' ? 'Local Filesystem' : 'S3-Compatible'}</p>
+              <p className="text-[13px] text-vault-text-secondary mt-0.5">{storageProvider === 'local' ? 'Files stored on server disk.' : 'Cloud storage configured.'}</p>
             </div>
             <Badge variant={storageProvider === 'local' ? 'default' : 'accent'}>{storageProvider}</Badge>
           </div>
         </div>
       </div>
 
-      <div className="rounded-md border border-vault-border bg-vault-surface">
-        <div className="px-5 py-4 border-b border-vault-border">
-          <h2 className="text-sm font-semibold text-vault-text flex items-center gap-2">
+      <div className="section-card">
+        <div className="px-5 py-3.5 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
+          <h2 className="display-serif text-[14px] font-semibold text-vault-ink tracking-[-0.01em] flex items-center gap-2">
             <Shield className="h-4 w-4 text-vault-muted" />Security Posture
           </h2>
         </div>
@@ -71,7 +71,7 @@ export default function SettingsPage() {
               <span className="text-sm text-vault-text-secondary">{label}</span>
               <div className="flex items-center gap-2">
                 {note && <span className="text-xs text-vault-muted">{note}</span>}
-                <div className={`h-2 w-2 rounded-full ${status ? 'bg-vault-success' : 'bg-vault-muted'}`} />
+                <div className={`h-2 w-2 rounded-full ${status ? 'bg-vault-success shadow-[0_0_4px_rgba(45,89,69,0.4)]' : 'bg-vault-muted'}`} />
               </div>
             </div>
           ))}

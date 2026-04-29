@@ -87,14 +87,14 @@ export default function NewIntakePage() {
   if (success) {
     return (
       <div className="max-w-2xl mx-auto py-10 space-y-6 animate-fade-in">
-        <div className="vault-panel p-8 text-center space-y-4">
+        <div className="section-card p-8 text-center space-y-4">
           <div className="flex justify-center">
             <div className="rounded-full bg-vault-success/10 border border-vault-success/20 p-4">
               <CheckCircle2 className="h-8 w-8 text-vault-success" />
             </div>
           </div>
-          <h2 className="text-xl font-semibold text-vault-text">Lead Created</h2>
-          <p className="text-vault-text-secondary text-sm">
+          <h2 className="display-serif text-[22px] font-semibold text-vault-ink tracking-tight">Lead Created</h2>
+          <p className="text-[13px] text-vault-text-secondary">
             The intake lead has been created and a conflict check has been initiated.
           </p>
 
@@ -138,17 +138,17 @@ export default function NewIntakePage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-xl font-semibold text-vault-text">New Intake Lead</h1>
-          <p className="text-sm text-vault-text-secondary">A conflict check will run automatically on submission.</p>
+          <h1 className="display-serif text-[22px] font-semibold text-vault-ink tracking-tight">New Intake Lead</h1>
+          <p className="text-[13px] text-vault-text-secondary mt-0.5">A conflict check will run automatically on submission.</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Prospect Info */}
-        <div className="vault-panel p-5 space-y-4">
+        <div className="section-card p-5 space-y-4">
           <div className="flex items-center gap-2 mb-1">
             <User className="h-4 w-4 text-vault-muted" />
-            <h2 className="text-sm font-semibold text-vault-text uppercase tracking-wider section-label">Prospect Information</h2>
+            <h2 className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-vault-muted">Prospect Information</h2>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -176,8 +176,8 @@ export default function NewIntakePage() {
         </div>
 
         {/* Matter Details */}
-        <div className="vault-panel p-5 space-y-4">
-          <h2 className="text-sm font-semibold text-vault-text uppercase tracking-wider section-label">Matter Details</h2>
+        <div className="section-card p-5 space-y-4">
+          <h2 className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-vault-muted">Matter Details</h2>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
@@ -238,9 +238,9 @@ export default function NewIntakePage() {
         </div>
 
         {/* Conflict check notice */}
-        <div className="flex items-start gap-3 rounded-md border border-yellow-500/20 bg-yellow-500/5 px-4 py-3">
-          <AlertTriangle className="h-4 w-4 text-yellow-500 shrink-0 mt-0.5" />
-          <p className="text-xs text-vault-text-secondary">
+        <div className="flex items-start gap-3 rounded-md border border-vault-warning/30 bg-vault-warning/8 px-4 py-3">
+          <AlertTriangle className="h-4 w-4 text-vault-warning shrink-0 mt-0.5" />
+          <p className="text-[13px] text-vault-text-secondary">
             Submitting this form will automatically run a conflict check against all existing clients, contacts, and matters. Results will appear immediately.
           </p>
         </div>

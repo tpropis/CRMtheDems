@@ -10,149 +10,156 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // ── New design token colours ───────────────────────
-        pv: {
-          base:         '#070E1A',
-          sidebar:      '#0A1628',
-          card:         '#0F2040',
-          elevated:     '#162B52',
-          hover:        '#1E3A6B',
-          gold:         '#C9A84C',
-          'gold-light': '#E2C97E',
-          accent:       '#3B8FD4',
-          't1':         '#F2F5F9',
-          't2':         '#94A8C0',
-          't3':         '#4E6480',
-          success:      '#2EAD6E',
-          danger:       '#E05252',
-          warning:      '#D4A017',
-        },
-        // ── Legacy vault tokens (keep for backward compat) ──
+        // Privilege Vault — Law Library palette
+        // Warm parchment + deep forest + antique brass
         vault: {
-          bg:              '#070E1A',
-          surface:         '#0F2040',
-          elevated:        '#162B52',
-          border:          'rgba(255,255,255,0.06)',
-          'border-strong': 'rgba(255,255,255,0.11)',
-          text:            '#F2F5F9',
-          'text-secondary':'#94A8C0',
-          muted:           '#4E6480',
-          accent:          '#3B8FD4',
-          'accent-light':  '#5BAAEC',
-          'accent-dim':    '#1A5A99',
-          success:         '#2EAD6E',
-          warning:         '#D4A017',
-          danger:          '#E05252',
-          'danger-dim':    '#8B1A1A',
-          gold:            '#C9A84C',
-          'gold-dim':      'rgba(201,168,76,0.12)',
-          'gold-light':    '#E2C97E',
-          silver:          '#94A3B8',
+          ink:       '#14120E',   // deepest text / headings (soft black with warm bias)
+          bg:        '#F7F2E7',   // page canvas — warm parchment
+          surface:   '#FFFFFF',   // cards / panels — pure paper
+          elevated:  '#FBF6EA',   // elevated card / cream
+          raised:    '#F2ECDA',   // modal / floating
+          sidebar:   '#EDE6D3',   // sidebar rail — darker warm parchment
+          'sidebar-hov': '#E5DCCA', // sidebar item hover
+          border:    '#E2DAC2',   // default hairline
+          'border-strong': '#C9BE9F',
+          text:      '#14120E',   // primary ink
+          'text-secondary': '#52504A',
+          muted:     '#8B8676',
+          faint:     '#B5AE9C',
+          accent:    '#1F4A3D',   // deep forest / library green
+          'accent-light': '#2B6653',
+          'accent-dim': '#15382D',
+          'accent-soft': 'rgba(31,74,61,0.08)',
+          success:   '#487A3A',   // muted olive
+          warning:   '#B68A3E',   // brass — doubles as warning
+          danger:    '#7A2D2A',   // oxblood
+          'danger-dim': '#5A1F1D',
+          gold:      '#B68A3E',   // antique brass — heritage accent
+          'gold-dim': '#8A6A2D',
+          'gold-light': '#D4AC5F',
+          silver:    '#8A8472',
+          sage:      '#C9D4C2',   // soft success tint
+          oxblood:   '#7A2D2A',
         },
-        // ── shadcn compatibility ───────────────────────────
-        border:     'rgba(255,255,255,0.06)',
-        input:      '#162B52',
-        ring:       '#3B8FD4',
-        background: '#070E1A',
-        foreground: '#F2F5F9',
+        // Shadcn compatibility (light mode)
+        border: '#E2DAC2',
+        input: '#E2DAC2',
+        ring: '#1F4A3D',
+        background: '#F7F2E7',
+        foreground: '#14120E',
         primary: {
-          DEFAULT:    '#3B8FD4',
-          foreground: '#F2F5F9',
+          DEFAULT: '#1F4A3D',
+          foreground: '#FBF6EA',
         },
         secondary: {
-          DEFAULT:    '#162B52',
-          foreground: '#94A8C0',
+          DEFAULT: '#F2ECDA',
+          foreground: '#14120E',
         },
         destructive: {
-          DEFAULT:    '#E05252',
-          foreground: '#F2F5F9',
+          DEFAULT: '#7A2D2A',
+          foreground: '#FBF6EA',
         },
         muted: {
-          DEFAULT:    '#0F2040',
-          foreground: '#4E6480',
+          DEFAULT: '#FBF6EA',
+          foreground: '#52504A',
         },
         accent: {
-          DEFAULT:    '#162B52',
-          foreground: '#94A8C0',
+          DEFAULT: '#F2ECDA',
+          foreground: '#14120E',
         },
         popover: {
-          DEFAULT:    '#0F2040',
-          foreground: '#F2F5F9',
+          DEFAULT: '#FFFFFF',
+          foreground: '#14120E',
         },
         card: {
-          DEFAULT:    '#0F2040',
-          foreground: '#F2F5F9',
+          DEFAULT: '#FFFFFF',
+          foreground: '#14120E',
         },
       },
       borderRadius: {
-        lg: '10px',
-        md: '8px',
-        sm: '6px',
+        lg: '0.5rem',
+        md: '0.375rem',
+        sm: '0.25rem',
       },
       fontFamily: {
-        sans:  ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
-        mono:  ['JetBrains Mono', 'Courier New', 'monospace'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Fraunces', 'Cormorant Garamond', 'Georgia', 'serif'],
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '0.875rem' }],
       },
+      letterSpacing: {
+        'widest-2': '0.18em',
+      },
       boxShadow: {
-        'vault':           '0 2px 8px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.4)',
-        'vault-lg':        '0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4)',
-        'vault-glow':      '0 0 0 1px rgba(59,143,212,0.5), 0 0 24px rgba(59,143,212,0.2)',
-        'vault-gold-glow': '0 0 0 1px rgba(201,168,76,0.5), 0 0 24px rgba(201,168,76,0.15)',
-        'panel':           '-8px 0 40px rgba(0,0,0,0.4)',
-        'float':           '0 4px 20px rgba(201,168,76,0.4)',
+        'vault':        '0 1px 2px rgba(20,18,14,0.04), 0 1px 3px rgba(20,18,14,0.06)',
+        'vault-md':     '0 2px 6px rgba(20,18,14,0.06), 0 1px 3px rgba(20,18,14,0.04)',
+        'vault-lg':     '0 4px 12px rgba(20,18,14,0.07), 0 2px 4px rgba(20,18,14,0.04)',
+        'vault-xl':     '0 10px 30px rgba(20,18,14,0.09), 0 4px 10px rgba(20,18,14,0.06)',
+        'vault-glow':   '0 0 0 1px rgba(31,74,61,0.25), 0 0 24px rgba(31,74,61,0.08)',
+        'vault-seal':   '0 0 0 1px rgba(182,138,62,0.35), 0 0 24px rgba(182,138,62,0.12)',
+        'vault-seal-sm':'0 0 0 1px rgba(182,138,62,0.22), 0 1px 4px rgba(182,138,62,0.08)',
+        'vault-hairline': 'inset 0 0 0 1px rgba(226,218,194,0.9)',
+        'vault-inset':  'inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(20,18,14,0.03)',
+        'vault-card':   '0 1px 3px rgba(20,18,14,0.05), 0 1px 2px rgba(20,18,14,0.04), inset 0 1px 0 rgba(255,255,255,0.7)',
+      },
+      backgroundImage: {
+        'vault-grid':
+          'linear-gradient(rgba(201,190,159,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(201,190,159,0.35) 1px, transparent 1px)',
+        'vault-radial':
+          'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(31,74,61,0.08), transparent 60%)',
+        'vault-radial-gold':
+          'radial-gradient(ellipse 70% 45% at 50% 0%, rgba(182,138,62,0.10), transparent 70%)',
+        'vault-paper':
+          'radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255,255,255,0.6), transparent 70%)',
+      },
+      backgroundSize: {
+        'vault-grid': '56px 56px',
       },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
-          to:   { height: 'var(--radix-accordion-content-height)' },
+          to: { height: 'var(--radix-accordion-content-height)' },
         },
         'accordion-up': {
           from: { height: 'var(--radix-accordion-content-height)' },
-          to:   { height: '0' },
+          to: { height: '0' },
         },
         'fade-in': {
           from: { opacity: '0', transform: 'translateY(4px)' },
-          to:   { opacity: '1', transform: 'translateY(0)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'rise-in': {
+          from: { opacity: '0', transform: 'translateY(12px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
         'slide-in-right': {
           from: { transform: 'translateX(100%)' },
-          to:   { transform: 'translateX(0)' },
+          to: { transform: 'translateX(0)' },
         },
         shimmer: {
-          '0%':   { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition:  '200% 0' },
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
-        'pulse-dot': {
-          '0%,100%': { opacity: '1', boxShadow: '0 0 0 0 rgba(46,173,110,0.4)' },
-          '50%':     { opacity: '0.7', boxShadow: '0 0 0 4px rgba(46,173,110,0)' },
+        'seal-pulse': {
+          '0%, 100%': { opacity: '0.9', boxShadow: '0 0 0 0 rgba(182,138,62,0.3)' },
+          '50%':      { opacity: '1',   boxShadow: '0 0 0 10px rgba(182,138,62,0)' },
         },
-        'spin-ring': {
-          from: { transform: 'rotate(0deg)' },
-          to:   { transform: 'rotate(360deg)' },
-        },
-        'ticker-scroll': {
+        'ticker': {
           '0%':   { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
-        'slide-up-panel': {
-          from: { opacity: '0', transform: 'translateY(24px)' },
-          to:   { opacity: '1', transform: 'translateY(0)' },
-        },
       },
       animation: {
-        'accordion-down':  'accordion-down 0.2s ease-out',
-        'accordion-up':    'accordion-up 0.2s ease-out',
-        'fade-in':         'fade-in 0.2s ease-out',
-        'slide-in-right':  'slide-in-right 0.3s ease-out',
-        'shimmer':         'shimmer 2s linear infinite',
-        'pulse-dot':       'pulse-dot 2s infinite',
-        'spin-ring':       'spin-ring 3s linear infinite',
-        'ticker-scroll':   'ticker-scroll 30s linear infinite',
-        'slide-up-panel':  'slide-up-panel 0.25s ease-out',
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up':   'accordion-up 0.2s ease-out',
+        'fade-in':        'fade-in 0.24s cubic-bezier(0.22,1,0.36,1)',
+        'rise-in':        'rise-in 0.4s cubic-bezier(0.22,1,0.36,1)',
+        'slide-in-right': 'slide-in-right 0.3s ease-out',
+        shimmer:          'shimmer 2s linear infinite',
+        'seal-pulse':     'seal-pulse 3.2s ease-in-out infinite',
+        ticker:           'ticker 45s linear infinite',
       },
     },
   },

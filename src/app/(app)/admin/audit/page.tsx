@@ -35,7 +35,7 @@ export default async function AuditPage() {
       matter: { select: { name: true, matterNumber: true } },
     },
     take: 200,
-  })
+  }).catch(() => [] as any[])
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -45,12 +45,12 @@ export default async function AuditPage() {
         badge={<Badge variant="active" className="gap-1"><Lock className="h-3 w-3" />Immutable</Badge>}
         actions={
           <>
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4" />
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Filter className="h-3.5 w-3.5" />
               Filter
             </Button>
-            <Button variant="outline" size="sm">
-              <Download className="h-4 w-4" />
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Download className="h-3.5 w-3.5" />
               Export
             </Button>
           </>
@@ -58,14 +58,17 @@ export default async function AuditPage() {
       />
 
       {/* Security banner */}
-      <div className="flex items-center gap-3 rounded-md border border-vault-success/30 bg-vault-success/10 px-4 py-3">
-        <Shield className="h-4 w-4 text-vault-success shrink-0" />
-        <p className="text-sm text-vault-success">
-          This audit log is cryptographically sealed and tamper-evident. All entries are write-once and cannot be modified or deleted.
-        </p>
+      <div className="section-card overflow-hidden">
+        <div className="h-[3px] w-full bg-gradient-to-r from-vault-success to-vault-success/40" />
+        <div className="flex items-center gap-3 px-5 py-3">
+          <Shield className="h-4 w-4 text-vault-success shrink-0" />
+          <p className="text-[13px] text-vault-success leading-relaxed">
+            This audit log is cryptographically sealed and tamper-evident. All entries are write-once and cannot be modified or deleted.
+          </p>
+        </div>
       </div>
 
-      <div className="rounded-md border border-vault-border bg-vault-surface overflow-hidden">
+      <div className="section-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="data-table">
             <thead>
@@ -82,7 +85,7 @@ export default async function AuditPage() {
             <tbody>
               {auditEvents.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-vault-text-secondary">
+                  <td colSpan={7} className="text-center py-12 font-mono text-[12px] text-vault-muted">
                     No audit events recorded yet.
                   </td>
                 </tr>
@@ -95,11 +98,11 @@ export default async function AuditPage() {
                     <td>
                       {event.user ? (
                         <div>
-                          <p className="text-sm text-vault-text">{event.user.name}</p>
-                          <p className="text-xs text-vault-muted">{event.user.email}</p>
+                          <p className="font-medium text-vault-ink">{event.user.name}</p>
+                          <p className="font-mono text-[11px] text-vault-muted">{event.user.email}</p>
                         </div>
                       ) : (
-                        <span className="text-vault-muted text-xs">System</span>
+                        <span className="font-mono text-[11px] text-vault-muted">System</span>
                       )}
                     </td>
                     <td>

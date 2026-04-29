@@ -1,100 +1,16 @@
 'use client'
-
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import type { Session } from 'next-auth'
 import { Sidebar } from './Sidebar'
 import { TopBar } from './TopBar'
-import { AIAssistant } from '@/components/ui/AIAssistant'
-import { CommandPalette } from '@/components/ui/CommandPalette'
-import { AuditLogPanel } from '@/components/ui/AuditLogPanel'
-import { usePathname, useRouter } from 'next/navigation'
-import {
-  LayoutDashboard, Briefcase, CalendarDays, Sparkles, MoreHorizontal,
-} from 'lucide-react'
-import type { Session } from 'next-auth'
 
-/* ── Mobile bottom nav ────────────────────────────────────────────────────── */
-function MobileBottomNav({ onAIOpen }: { onAIOpen: () => void }) {
-  const pathname = usePathname()
-  const router = useRouter()
-
-  const tabs = [
-    { label: 'Dashboard', href: '/dashboard',  icon: LayoutDashboard },
-    { label: 'Matters',   href: '/matters',     icon: Briefcase },
-    { label: 'AI',        href: null,           icon: Sparkles, center: true },
-    { label: 'Calendar',  href: '/calendar',    icon: CalendarDays },
-    { label: 'More',      href: null,           icon: MoreHorizontal },
-  ]
-
-  return (
-    <nav
-      className="mobile-bottom-nav"
-      style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0,
-        height: 64,
-        background: 'var(--bg-sidebar)',
-        borderTop: '1px solid var(--border)',
-        paddingBottom: 'env(safe-area-inset-bottom)',
-        zIndex: 30,
-        alignItems: 'stretch',
-        display: 'none', // shown by CSS media query
-      }}
-    >
-      {tabs.map(tab => {
-        const isActive = tab.href ? pathname.startsWith(tab.href) : false
-        const Icon = tab.icon
-
-        if (tab.center) {
-          return (
-            <button
-              key="ai"
-              onClick={onAIOpen}
-              style={{
-                flex: 1,
-                display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center',
-                background: 'none', border: 'none', cursor: 'pointer',
-              }}
-            >
-              <div style={{
-                width: 48, height: 48,
-                borderRadius: '50%',
-                background: 'var(--gold)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 0 20px rgba(201,168,76,0.4)',
-                marginBottom: -6,
-              }}>
-                <Icon style={{ width: 22, height: 22, color: 'var(--bg-base)' }} />
-              </div>
-            </button>
-          )
-        }
-
-        return (
-          <button
-            key={tab.label}
-            onClick={() => tab.href && router.push(tab.href)}
-            style={{
-              flex: 1,
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center',
-              gap: 3,
-              background: 'none', border: 'none', cursor: 'pointer',
-              color: isActive ? 'var(--gold)' : 'var(--text-3)',
-              transition: 'color 0.15s ease',
-            }}
-          >
-            <Icon style={{ width: 20, height: 20 }} />
-            {isActive && (
-              <span style={{ fontSize: 10, fontWeight: 600 }}>{tab.label}</span>
-            )}
-          </button>
-        )
-      })}
-    </nav>
-  )
-}
-
-/* ── AppShell ─────────────────────────────────────────────────────────────── */
+/**
+ * Client-side wrapper that owns the mobile drawer state.
+ * - lg+ : sidebar is static in the flow (240px)
+ * - <lg : sidebar is a fixed drawer, hidden by default,
+ *         slides in via transform on menu-button click.
+ */
 export function AppShell({
   session,
   children,
@@ -102,59 +18,52 @@ export function AppShell({
   session: Session
   children: React.ReactNode
 }) {
-  const [mobileOpen, setMobileOpen]       = useState(false)
-  const [paletteOpen, setPaletteOpen]     = useState(false)
-  const [auditOpen, setAuditOpen]         = useState(false)
-  const [aiOpen, setAiOpen]               = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const pathname = usePathname()
 
-  // Global Cmd+K shortcut
+  // Auto-close drawer on navigation
   useEffect(() => {
-    function handler(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault()
-        setPaletteOpen(o => !o)
-      }
-      if (e.key === 'Escape') {
-        setPaletteOpen(false)
-        setAuditOpen(false)
-      }
+    setDrawerOpen(false)
+  }, [pathname])
+
+  // Lock body scroll when drawer open (mobile only)
+  useEffect(() => {
+    if (drawerOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
     }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [])
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [drawerOpen])
 
   return (
-    <div style={{
-      display: 'flex', height: '100vh', overflow: 'hidden',
-      background: 'var(--bg-base)',
-    }}>
-      <Sidebar
-        session={session}
-        mobileOpen={mobileOpen}
-        onMobileClose={() => setMobileOpen(false)}
-      />
-
-      <div style={{ display: 'flex', flex: 1, flexDirection: 'column', overflow: 'hidden' }}>
-        <TopBar
-          onMenuOpen={() => setMobileOpen(true)}
-          onSearchOpen={() => setPaletteOpen(true)}
-          onAuditOpen={() => setAuditOpen(o => !o)}
+    <div className="flex h-screen overflow-hidden bg-vault-bg">
+      {/* Backdrop (mobile only) */}
+      {drawerOpen && (
+        <button
+          aria-label="Close navigation"
+          onClick={() => setDrawerOpen(false)}
+          className="fixed inset-0 z-40 bg-vault-ink/40 backdrop-blur-sm lg:hidden"
         />
-        <main style={{
-          flex: 1, overflowY: 'auto',
-          padding: 24,
-        }}>
-          {children}
-        </main>
+      )}
+
+      {/* Sidebar — static on lg+, drawer below */}
+      <div
+        className={`
+          fixed inset-y-0 left-0 z-50 w-60 transform transition-transform duration-200 ease-out
+          lg:static lg:translate-x-0 lg:z-auto
+          ${drawerOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+      >
+        <Sidebar session={session} onNavigate={() => setDrawerOpen(false)} />
       </div>
 
-      {/* WOW features */}
-      <AIAssistant />
-      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
-      <AuditLogPanel open={auditOpen} onClose={() => setAuditOpen(false)} />
-
-      {/* Mobile bottom nav */}
-      <MobileBottomNav onAIOpen={() => setAiOpen(o => !o)} />
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <TopBar onMenuClick={() => setDrawerOpen(true)} />
+        <main className="flex-1 overflow-y-auto p-5 md:p-8">{children}</main>
+      </div>
     </div>
   )
 }

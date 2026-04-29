@@ -1,346 +1,413 @@
 'use client'
-export const dynamic = 'force-dynamic'
 import { useState } from 'react'
-import { PageHeader } from '@/components/ui/page-header'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
 import {
-  Wand2, Clock, FileText, BarChart3, Scale, Loader2,
-  ChevronRight, Copy, CheckCircle2, AlertCircle, Sparkles,
-  Calendar, DollarSign, Shield,
+  demoAIThreads,
+  type DemoAIThread,
+  type DemoAIMessage,
+} from '@/lib/demo-data'
+import { Button } from '@/components/ui/button'
+import {
+  Bot, Send, FileText, Shield, Search, Plus,
+  CheckCircle2, Clock, ArrowRight, Bookmark, MoreHorizontal,
+  Pin, Copy,
 } from 'lucide-react'
 
-type Tool = 'deadlines' | 'billing' | 'privilege' | 'status'
-
-interface DeadlineResult {
-  event: string
-  rule: string
-  deadline: string
-  daysRemaining: number
-  isUrgent: boolean
-}
-
 export default function AIParalegalPage() {
-  const [activeTool, setActiveTool] = useState<Tool>('billing')
+  const [threads] = useState<DemoAIThread[]>(demoAIThreads)
+  const [activeId, setActiveId] = useState<string>(threads[0]?.id ?? '')
+  const active = threads.find((t) => t.id === activeId) ?? threads[0]
 
-  // Billing narrative rewriter
-  const [billingEntries, setBillingEntries] = useState('')
-  const [billingResult, setBillingResult] = useState<string | null>(null)
-  const [billingLoading, setBillingLoading] = useState(false)
-  const [billingCopied, setBillingCopied] = useState(false)
-
-  // Deadline calculator
-  const [triggerEvent, setTriggerEvent] = useState('')
-  const [triggerDate, setTriggerDate] = useState('')
-  const [jurisdiction, setJurisdiction] = useState('Federal')
-  const [deadlineResults, setDeadlineResults] = useState<DeadlineResult[] | null>(null)
-  const [deadlineLoading, setDeadlineLoading] = useState(false)
-
-  // Privilege log
-  const [privilegeDocList, setPrivilegeDocList] = useState('')
-  const [privilegeResult, setPrivilegeResult] = useState<string | null>(null)
-  const [privilegeLoading, setPrivilegeLoading] = useState(false)
-
-  // Status report
-  const [statusMatterId, setStatusMatterId] = useState('')
-  const [statusContext, setStatusContext] = useState('')
-  const [statusResult, setStatusResult] = useState<string | null>(null)
-  const [statusLoading, setStatusLoading] = useState(false)
-
-  async function handleBillingRewrite() {
-    if (!billingEntries.trim()) return
-    setBillingLoading(true); setBillingResult(null)
-    try {
-      const res = await fetch('/api/ai/paralegal/billing', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ entries: billingEntries }),
-      })
-      const data = await res.json()
-      setBillingResult(data.content)
-    } catch { setBillingResult('Generation failed. Please try again.') }
-    finally { setBillingLoading(false) }
-  }
-
-  async function handleDeadlines() {
-    if (!triggerEvent.trim() || !triggerDate) return
-    setDeadlineLoading(true); setDeadlineResults(null)
-    try {
-      const res = await fetch('/api/ai/paralegal/deadlines', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ triggerEvent, triggerDate, jurisdiction }),
-      })
-      const data = await res.json()
-      setDeadlineResults(data.deadlines)
-    } catch { setDeadlineResults([]) }
-    finally { setDeadlineLoading(false) }
-  }
-
-  async function handlePrivilegeLog() {
-    if (!privilegeDocList.trim()) return
-    setPrivilegeLoading(true); setPrivilegeResult(null)
-    try {
-      const res = await fetch('/api/ai/paralegal/privilege', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ documents: privilegeDocList }),
-      })
-      const data = await res.json()
-      setPrivilegeResult(data.content)
-    } catch { setPrivilegeResult('Generation failed.') }
-    finally { setPrivilegeLoading(false) }
-  }
-
-  async function handleStatusReport() {
-    setStatusLoading(true); setStatusResult(null)
-    try {
-      const res = await fetch('/api/ai/paralegal/status', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ matterId: statusMatterId, context: statusContext }),
-      })
-      const data = await res.json()
-      setStatusResult(data.content)
-    } catch { setStatusResult('Generation failed.') }
-    finally { setStatusLoading(false) }
-  }
-
-  function copyToClipboard(text: string, setter: (v: boolean) => void) {
-    navigator.clipboard.writeText(text)
-    setter(true)
-    setTimeout(() => setter(false), 2000)
-  }
-
-  const TOOLS = [
-    { id: 'billing' as Tool, label: 'Billing Narrative', icon: DollarSign, desc: 'Rewrite vague time entries into billable narratives' },
-    { id: 'deadlines' as Tool, label: 'Deadline Calculator', icon: Calendar, desc: 'FRCP & local rules deadline chain from any trigger event' },
-    { id: 'privilege' as Tool, label: 'Privilege Log', icon: Shield, desc: 'Generate formatted privilege log from document list' },
-    { id: 'status' as Tool, label: 'Status Report', icon: BarChart3, desc: 'AI-drafted client status report from matter data' },
-  ]
+  // Collect unique citations across the active thread for the right rail
+  const citations = active
+    ? active.messages
+        .flatMap((m) => m.citations ?? [])
+        .filter((c, i, arr) => arr.findIndex((x) => x.doc === c.doc && x.page === c.page) === i)
+    : []
 
   return (
-    <div className="space-y-5 animate-fade-in">
-      <PageHeader
-        title="AI Paralegal"
-        description="Automate paralegal-level work — billing narratives, deadlines, privilege logs, and status reports"
-      />
+    <div className="-mx-4 md:-mx-6 -mt-4 md:-mt-6 h-[calc(100vh-56px)] flex animate-fade-in">
+      {/* ────── Left rail: thread list ────── */}
+      <aside className="hidden md:flex w-72 shrink-0 border-r border-vault-border bg-vault-elevated/40 flex-col">
+        <div className="px-4 pt-5 pb-3">
+          <p className="eyebrow text-vault-gold">§ AI Paralegal</p>
+          <h1 className="display-serif mt-1.5 text-[20px] font-medium text-vault-ink tracking-tight">
+            Conversations
+          </h1>
+          <p className="mt-1 text-[11px] text-vault-text-secondary leading-relaxed">
+            Every answer matter-scoped · cited · signed
+          </p>
+        </div>
 
-      {/* Tool selector */}
-      <div className="grid grid-cols-4 gap-3">
-        {TOOLS.map(t => (
-          <button key={t.id} onClick={() => setActiveTool(t.id)}
-            className={`vault-panel p-4 text-left transition-colors ${activeTool === t.id ? 'border-vault-accent/50 bg-vault-accent/5' : 'hover:border-vault-border/80'}`}>
-            <t.icon className={`h-5 w-5 mb-2 ${activeTool === t.id ? 'text-vault-accent' : 'text-vault-muted'}`} />
-            <p className={`text-sm font-medium ${activeTool === t.id ? 'text-vault-accent-light' : 'text-vault-text'}`}>{t.label}</p>
-            <p className="text-xs text-vault-muted mt-0.5 leading-snug">{t.desc}</p>
-          </button>
-        ))}
-      </div>
+        <div className="px-4 pb-3">
+          <Button size="sm" className="w-full gap-1.5">
+            <Plus className="h-3.5 w-3.5" />
+            New conversation
+          </Button>
+        </div>
 
-      {/* ── Billing Narrative Rewriter ──────────────────────── */}
-      {activeTool === 'billing' && (
-        <div className="grid grid-cols-2 gap-5">
-          <div className="vault-panel p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-vault-muted" />
-              <h3 className="section-label">Time Entry Narratives</h3>
-            </div>
-            <p className="text-xs text-vault-text-secondary">Paste raw time entries (one per line or CSV). AI will rewrite them as professional, specific, billable narratives that pass client bill review.</p>
-            <div className="space-y-1.5">
-              <Label>Raw Time Entries</Label>
-              <textarea
-                className="w-full min-h-[200px] rounded-md border border-vault-border bg-vault-elevated px-3 py-2 text-sm text-vault-text placeholder:text-vault-muted focus:outline-none focus:ring-1 focus:ring-vault-accent resize-none font-mono"
-                placeholder={`0.4 — reviewed docs\n1.2 — call w client re case\n0.8 — research\n2.0 — drafted motion`}
-                value={billingEntries}
-                onChange={e => setBillingEntries(e.target.value)}
-              />
-            </div>
-            <Button onClick={handleBillingRewrite} disabled={billingLoading || !billingEntries.trim()} className="w-full">
-              {billingLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-              {billingLoading ? 'Rewriting...' : 'Rewrite Narratives'}
-            </Button>
-          </div>
-          <div className="vault-panel p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-vault-muted" />
-                <h3 className="section-label">Professional Narratives</h3>
-              </div>
-              {billingResult && (
-                <Button variant="ghost" size="sm" className="text-vault-muted" onClick={() => copyToClipboard(billingResult, setBillingCopied)}>
-                  {billingCopied ? <CheckCircle2 className="h-4 w-4 text-vault-success" /> : <Copy className="h-4 w-4" />}
-                  {billingCopied ? 'Copied' : 'Copy'}
-                </Button>
-              )}
-            </div>
-            {billingLoading && (
-              <div className="flex items-center gap-3 text-sm text-vault-muted py-8 justify-center">
-                <Loader2 className="h-5 w-5 animate-spin" /> Rewriting narratives...
-              </div>
-            )}
-            {billingResult ? (
-              <pre className="text-sm text-vault-text whitespace-pre-wrap leading-relaxed">{billingResult}</pre>
-            ) : !billingLoading && (
-              <div className="py-8 text-center text-vault-muted text-sm">Rewritten narratives will appear here</div>
-            )}
+        <div className="px-4 pb-3">
+          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-vault-border bg-vault-elevated shadow-vault-inset">
+            <Search className="h-3 w-3 text-vault-muted" />
+            <input
+              type="text"
+              placeholder="Search threads…"
+              className="flex-1 bg-transparent text-[12px] text-vault-ink placeholder:text-vault-muted focus:outline-none"
+            />
           </div>
         </div>
-      )}
 
-      {/* ── Deadline Calculator ──────────────────────────────── */}
-      {activeTool === 'deadlines' && (
-        <div className="grid grid-cols-2 gap-5">
-          <div className="vault-panel p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-vault-muted" />
-              <h3 className="section-label">Trigger Event</h3>
+        <div className="flex-1 overflow-y-auto">
+          <ThreadSectionHeading label="Active" />
+          {threads
+            .filter((t) => t.status === 'active')
+            .map((t) => (
+              <ThreadListItem
+                key={t.id}
+                thread={t}
+                active={t.id === activeId}
+                onClick={() => setActiveId(t.id)}
+              />
+            ))}
+          <ThreadSectionHeading label="Signed" />
+          {threads.filter((t) => t.status === 'signed').length === 0 ? (
+            <p className="px-4 py-3 text-[11px] text-vault-faint italic">
+              No signed threads yet.
+            </p>
+          ) : (
+            threads
+              .filter((t) => t.status === 'signed')
+              .map((t) => (
+                <ThreadListItem
+                  key={t.id}
+                  thread={t}
+                  active={t.id === activeId}
+                  onClick={() => setActiveId(t.id)}
+                />
+              ))
+          )}
+        </div>
+
+        {/* Model pin */}
+        <div className="px-4 py-3 border-t border-vault-border">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-vault-gold/30 bg-vault-gold/5">
+            <Pin className="h-3 w-3 text-vault-gold shrink-0" />
+            <div className="min-w-0">
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-vault-muted">
+                Model · pinned
+              </p>
+              <p className="text-[11px] text-vault-ink font-medium truncate">vault-legal-7b</p>
             </div>
-            <div className="space-y-1.5">
-              <Label>Event Description</Label>
-              <Input value={triggerEvent} onChange={e => setTriggerEvent(e.target.value)}
-                placeholder="e.g. Complaint served on defendant" />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Event Date</Label>
-              <Input type="date" value={triggerDate} onChange={e => setTriggerDate(e.target.value)} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Jurisdiction</Label>
-              <select className="w-full rounded-md border border-vault-border bg-vault-elevated px-3 py-2 text-sm text-vault-text focus:outline-none focus:ring-1 focus:ring-vault-accent"
-                value={jurisdiction} onChange={e => setJurisdiction(e.target.value)}>
-                <option>Federal</option>
-                <option>California</option>
-                <option>New York</option>
-                <option>Texas</option>
-                <option>Florida</option>
-                <option>Illinois</option>
-                <option>Pennsylvania</option>
-                <option>Georgia</option>
-              </select>
-            </div>
-            <Button onClick={handleDeadlines} disabled={deadlineLoading || !triggerEvent.trim() || !triggerDate} className="w-full">
-              {deadlineLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Clock className="h-4 w-4" />}
-              {deadlineLoading ? 'Calculating...' : 'Calculate Deadlines'}
-            </Button>
           </div>
-          <div className="vault-panel p-5 space-y-3">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-vault-muted" />
-              <h3 className="section-label">Deadline Chain</h3>
-            </div>
-            {deadlineLoading && <div className="flex items-center gap-3 text-sm text-vault-muted py-8 justify-center"><Loader2 className="h-5 w-5 animate-spin" /> Calculating...</div>}
-            {deadlineResults && deadlineResults.length === 0 && <div className="text-sm text-vault-muted py-4 text-center">No deadlines returned</div>}
-            {deadlineResults && deadlineResults.length > 0 && (
-              <div className="space-y-2">
-                {deadlineResults.map((d, i) => (
-                  <div key={i} className={`p-3 rounded-md border ${d.isUrgent ? 'border-red-500/30 bg-red-500/5' : 'border-vault-border bg-vault-elevated'}`}>
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <p className="text-sm font-medium text-vault-text">{d.event}</p>
-                        <p className="text-xs text-vault-muted mt-0.5">{d.rule}</p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className={`text-sm font-semibold tabular-nums ${d.isUrgent ? 'text-red-400' : 'text-vault-text'}`}>{d.deadline}</p>
-                        <p className={`text-xs ${d.isUrgent ? 'text-red-400' : 'text-vault-muted'}`}>{d.daysRemaining}d remaining</p>
-                      </div>
-                    </div>
-                  </div>
+        </div>
+      </aside>
+
+      {/* ────── Center: conversation ────── */}
+      <main className="flex-1 min-w-0 flex flex-col bg-vault-bg">
+        {active ? (
+          <>
+            {/* Thread header */}
+            <header className="shrink-0 border-b border-vault-border bg-vault-surface px-6 py-4 flex items-center justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">
+                  {active.scope === 'matter' ? 'Matter-scoped' : active.scope}
+                  {active.matterNumber && ` · ${active.matterNumber}`}
+                </p>
+                <h2 className="display-serif mt-1 text-[17px] font-medium text-vault-ink tracking-tight truncate">
+                  {active.title}
+                </h2>
+                {active.matter && (
+                  <p className="mt-0.5 text-[11px] text-vault-text-secondary truncate">
+                    {active.matter}
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded border border-vault-gold/30 bg-vault-gold/5">
+                  <Shield className="h-3 w-3 text-vault-gold" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-gold">
+                    Sealed
+                  </span>
+                </div>
+                <Button variant="ghost" size="icon-sm">
+                  <Bookmark className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon-sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </div>
+            </header>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto px-6 py-6">
+              <div className="max-w-3xl mx-auto space-y-6">
+                {active.messages.map((m) => (
+                  <MessageBubble key={m.id} m={m} />
                 ))}
               </div>
-            )}
-            {!deadlineLoading && !deadlineResults && <div className="py-8 text-center text-vault-muted text-sm">Deadline chain will appear here</div>}
-          </div>
-        </div>
-      )}
+            </div>
 
-      {/* ── Privilege Log ────────────────────────────────────── */}
-      {activeTool === 'privilege' && (
-        <div className="grid grid-cols-2 gap-5">
-          <div className="vault-panel p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-vault-muted" />
-              <h3 className="section-label">Document List</h3>
-            </div>
-            <p className="text-xs text-vault-text-secondary">Describe the documents to be privilege-logged. Include Bates numbers, dates, authors, recipients, and type if known.</p>
-            <textarea
-              className="w-full min-h-[220px] rounded-md border border-vault-border bg-vault-elevated px-3 py-2 text-sm text-vault-text placeholder:text-vault-muted focus:outline-none focus:ring-1 focus:ring-vault-accent resize-none"
-              placeholder={`PVA0001 — Email 3/15/24 from Jane Smith (attorney) to client re litigation strategy\nPVA0002 — Draft motion prepared by associate, 4/1/24, work product\nPVA0003 — Internal memo re settlement valuation, 4/5/24, attorney-client`}
-              value={privilegeDocList}
-              onChange={e => setPrivilegeDocList(e.target.value)}
-            />
-            <Button onClick={handlePrivilegeLog} disabled={privilegeLoading || !privilegeDocList.trim()} className="w-full">
-              {privilegeLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
-              {privilegeLoading ? 'Generating...' : 'Generate Privilege Log'}
-            </Button>
-          </div>
-          <div className="vault-panel p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2"><Shield className="h-4 w-4 text-vault-muted" /><h3 className="section-label">Privilege Log</h3></div>
-              {privilegeResult && (
-                <Button variant="ghost" size="sm" className="text-vault-muted" onClick={() => navigator.clipboard.writeText(privilegeResult)}>
-                  <Copy className="h-4 w-4" />Copy
-                </Button>
-              )}
-            </div>
-            {privilegeLoading && <div className="flex items-center gap-3 text-sm text-vault-muted py-8 justify-center"><Loader2 className="h-5 w-5 animate-spin" /> Generating...</div>}
-            {privilegeResult ? (
-              <pre className="text-xs text-vault-text whitespace-pre-wrap font-mono leading-relaxed overflow-x-auto">{privilegeResult}</pre>
-            ) : !privilegeLoading && (
-              <div className="py-8 text-center text-vault-muted text-sm">Formatted privilege log will appear here</div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ── Status Report ────────────────────────────────────── */}
-      {activeTool === 'status' && (
-        <div className="grid grid-cols-2 gap-5">
-          <div className="vault-panel p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-vault-muted" />
-              <h3 className="section-label">Status Report Generator</h3>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Matter Number or Name <span className="text-vault-muted text-xs">(optional)</span></Label>
-              <Input value={statusMatterId} onChange={e => setStatusMatterId(e.target.value)} placeholder="e.g. HTY-2024-001 or Smith v. Jones" />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Recent Activity & Context</Label>
-              <textarea
-                className="w-full min-h-[180px] rounded-md border border-vault-border bg-vault-elevated px-3 py-2 text-sm text-vault-text placeholder:text-vault-muted focus:outline-none focus:ring-1 focus:ring-vault-accent resize-none"
-                placeholder={`Recent activity:\n— Filed motion for summary judgment 4/1\n— Deposition of expert witness 4/8\n— Discovery closes 5/15\n— Trial date 7/22\n\nOutstanding items: Client needs to sign supplemental interrogatory responses. Need insurance docs from client.`}
-                value={statusContext}
-                onChange={e => setStatusContext(e.target.value)}
-              />
-            </div>
-            <Button onClick={handleStatusReport} disabled={statusLoading || !statusContext.trim()} className="w-full">
-              {statusLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <BarChart3 className="h-4 w-4" />}
-              {statusLoading ? 'Drafting...' : 'Draft Status Report'}
-            </Button>
-          </div>
-          <div className="vault-panel p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2"><FileText className="h-4 w-4 text-vault-muted" /><h3 className="section-label">Draft Report</h3></div>
-              {statusResult && (
-                <Button variant="ghost" size="sm" className="text-vault-muted" onClick={() => navigator.clipboard.writeText(statusResult)}>
-                  <Copy className="h-4 w-4" />Copy
-                </Button>
-              )}
-            </div>
-            {statusLoading && <div className="flex items-center gap-3 text-sm text-vault-muted py-8 justify-center"><Loader2 className="h-5 w-5 animate-spin" /> Drafting report...</div>}
-            {statusResult ? (
-              <div className="bg-white rounded-md p-5">
-                <pre className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">{statusResult}</pre>
+            {/* Composer */}
+            <footer className="shrink-0 border-t border-vault-border bg-vault-surface p-4">
+              <div className="max-w-3xl mx-auto">
+                <div className="section-card focus-within:border-vault-accent/60 focus-within:ring-2 focus-within:ring-vault-accent/20 transition-all">
+                  <textarea
+                    placeholder={`Ask about ${
+                      active.matter ?? 'this matter'
+                    }… Responses cite the matter workspace.`}
+                    rows={3}
+                    className="w-full resize-none bg-transparent px-4 py-3 text-[13.5px] text-vault-ink placeholder:text-vault-muted focus:outline-none"
+                  />
+                  <div className="flex items-center justify-between px-3 py-2 border-t border-vault-border bg-vault-elevated/50">
+                    <div className="flex items-center gap-3 text-[10px] text-vault-muted">
+                      <span className="font-mono uppercase tracking-[0.14em]">{active.model}</span>
+                      <span className="text-vault-faint">·</span>
+                      <span>Matter context active</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="kbd">⏎</span>
+                      <Button size="sm" className="gap-1.5">
+                        <Send className="h-3.5 w-3.5" />
+                        Send
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-2 px-1 text-[10px] text-vault-faint">
+                  Outputs are drafts until signed. No data leaves your firm&apos;s perimeter.
+                </p>
               </div>
-            ) : !statusLoading && (
-              <div className="py-8 text-center text-vault-muted text-sm">Client-ready status report will appear here</div>
-            )}
+            </footer>
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center p-12">
+            <div className="text-center max-w-sm">
+              <Bot className="mx-auto h-10 w-10 text-vault-muted mb-4" />
+              <p className="text-[13px] text-vault-text-secondary">
+                Start a new conversation to draft, summarize, extract, or chronicle.
+              </p>
+            </div>
           </div>
-        </div>
+        )}
+      </main>
+
+      {/* ────── Right rail: citations & context ────── */}
+      {active && (
+        <aside className="hidden xl:flex w-80 shrink-0 border-l border-vault-border bg-vault-elevated/40 overflow-y-auto flex-col">
+          <div className="px-5 pt-5 pb-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">
+              § Citations
+            </p>
+            <h3 className="display-serif mt-1 text-[15px] font-medium text-vault-ink">
+              Sources for this thread
+            </h3>
+            <p className="mt-1 text-[11px] text-vault-text-secondary">
+              {citations.length} {citations.length === 1 ? 'source' : 'sources'} · all auditable
+            </p>
+          </div>
+
+          <div className="px-4 pb-4 space-y-2">
+            {citations.map((c, i) => (
+              <div
+                key={i}
+                className="section-card p-3 cursor-pointer"
+              >
+                <div className="flex items-start gap-2 mb-1.5">
+                  <FileText className="h-3.5 w-3.5 text-vault-muted shrink-0 mt-0.5" />
+                  <p className="flex-1 text-[12px] font-medium text-vault-ink leading-snug">
+                    {c.doc}
+                  </p>
+                </div>
+                <p className="font-mono text-[10px] text-vault-faint">
+                  {c.page}
+                  {c.bates && ` · ${c.bates}`}
+                </p>
+                {c.excerpt && (
+                  <p className="mt-2 text-[11px] text-vault-text-secondary italic border-l-2 border-vault-gold/40 pl-2.5 leading-relaxed">
+                    {c.excerpt}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Matter context */}
+          {active.matter && (
+            <div className="border-t border-vault-border px-5 py-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted mb-2">
+                § Matter Context
+              </p>
+              <a
+                href={`/matters/${active.matterNumber?.toLowerCase().replace(/m-2026-/, 'm-')}`}
+                className="block rounded-md border border-vault-accent/25 bg-vault-accent/5 p-3 hover:bg-vault-accent/8 transition-colors"
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-[10px] text-vault-muted tabular-nums">
+                    {active.matterNumber}
+                  </span>
+                  <ArrowRight className="h-3 w-3 text-vault-accent" />
+                </div>
+                <p className="text-[12.5px] font-medium text-vault-ink leading-snug">
+                  {active.matter}
+                </p>
+                <p className="mt-2 font-mono text-[9.5px] uppercase tracking-wider text-vault-faint">
+                  Open matter workspace
+                </p>
+              </a>
+            </div>
+          )}
+
+          {/* Provenance */}
+          <div className="border-t border-vault-border px-5 py-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted mb-2">
+              § Provenance
+            </p>
+            <dl className="space-y-2">
+              <ProvRow label="Started" value={active.startedAt} />
+              <ProvRow label="Last active" value={active.lastActivity} />
+              <ProvRow label="Created by" value={active.createdBy} />
+              <ProvRow label="Scope" value={active.scope} />
+              <ProvRow label="Messages" value={active.messages.length.toString()} />
+            </dl>
+          </div>
+        </aside>
       )}
+    </div>
+  )
+}
+
+/* ──────────────────────────────────────────────────────────── */
+
+function ThreadSectionHeading({ label }: { label: string }) {
+  return (
+    <p className="px-4 pt-3 pb-1 font-mono text-[9.5px] uppercase tracking-[0.18em] text-vault-muted font-semibold">
+      {label}
+    </p>
+  )
+}
+
+function ThreadListItem({
+  thread,
+  active,
+  onClick,
+}: {
+  thread: DemoAIThread
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full text-left px-4 py-3 border-l-2 transition-colors ${
+        active
+          ? 'bg-vault-accent/[0.06] border-vault-accent shadow-[inset_0_0_0_1px_rgba(45,89,69,0.04)]'
+          : 'border-transparent hover:bg-vault-surface/70 hover:border-vault-border-strong'
+      }`}
+    >
+      {thread.matterNumber && (
+        <p className="font-mono text-[9.5px] uppercase tracking-wider text-vault-muted tabular-nums">
+          {thread.matterNumber}
+        </p>
+      )}
+      <p
+        className={`mt-0.5 text-[12.5px] leading-snug line-clamp-2 ${
+          active ? 'text-vault-ink font-medium' : 'text-vault-text-secondary'
+        }`}
+      >
+        {thread.title}
+      </p>
+      <div className="mt-1.5 flex items-center gap-2">
+        <span className="font-mono text-[9.5px] text-vault-faint">{thread.lastActivity}</span>
+        <span className="font-mono text-[9.5px] text-vault-faint">·</span>
+        <span className="font-mono text-[9.5px] text-vault-faint">
+          {thread.messages.length} {thread.messages.length === 1 ? 'msg' : 'msgs'}
+        </span>
+      </div>
+    </button>
+  )
+}
+
+function MessageBubble({ m }: { m: DemoAIMessage }) {
+  if (m.role === 'user') {
+    return (
+      <div className="flex justify-end">
+        <div className="max-w-[85%] section-card px-4 py-3">
+          <p className="text-[13.5px] text-vault-ink leading-relaxed whitespace-pre-wrap">
+            {m.content}
+          </p>
+          <p className="mt-2 font-mono text-[9.5px] text-vault-faint uppercase tracking-wider">
+            You · {m.at}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex gap-3">
+      <div className="h-8 w-8 rounded-md border border-vault-gold/40 bg-vault-gold/10 flex items-center justify-center shrink-0">
+        <Bot className="h-4 w-4 text-vault-gold" />
+      </div>
+      <div className="flex-1 min-w-0 section-card overflow-hidden">
+        <header className="flex items-center gap-2 px-4 py-2 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted font-semibold">
+            Vault-Legal 7B
+          </span>
+          <span className="text-vault-faint">·</span>
+          <span className="font-mono text-[10px] text-vault-faint">{m.at}</span>
+          <div className="ml-auto flex items-center gap-1.5">
+            {m.reviewed ? (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-vault-success/30 bg-vault-success/8 text-[9.5px] font-mono uppercase tracking-wider text-vault-success">
+                <CheckCircle2 className="h-2.5 w-2.5" />
+                Signed · {m.reviewer}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-vault-warning/30 bg-vault-warning/8 text-[9.5px] font-mono uppercase tracking-wider text-vault-warning">
+                <Clock className="h-2.5 w-2.5" />
+                Pending review
+              </span>
+            )}
+            <button className="p-1 text-vault-muted hover:text-vault-ink" title="Copy">
+              <Copy className="h-3 w-3" />
+            </button>
+          </div>
+        </header>
+
+        <div className="px-4 py-3">
+          <p className="text-[13.5px] text-vault-ink leading-relaxed whitespace-pre-wrap">
+            {m.content}
+          </p>
+          {m.citations && m.citations.length > 0 && (
+            <div className="mt-4 pt-3 border-t border-vault-border/70">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted mb-2">
+                Sources · {m.citations.length}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {m.citations.map((c, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-vault-border bg-vault-elevated text-[10px]"
+                    title={c.excerpt}
+                  >
+                    <FileText className="h-2.5 w-2.5 text-vault-muted shrink-0" />
+                    <span className="text-vault-ink truncate max-w-[180px]">{c.doc}</span>
+                    <span className="text-vault-faint">·</span>
+                    <span className="font-mono text-vault-muted">{c.page}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ProvRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-3">
+      <dt className="font-mono text-[9.5px] uppercase tracking-wider text-vault-muted">{label}</dt>
+      <dd className="text-[11.5px] text-vault-ink text-right truncate">{value}</dd>
     </div>
   )
 }

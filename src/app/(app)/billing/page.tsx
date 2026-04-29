@@ -5,7 +5,8 @@ import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
 import { StatCard } from '@/components/ui/stat-card'
 import { StatusBadge } from '@/components/ui/status-badge'
-import { Plus, Receipt, Clock, TrendingUp, Filter } from 'lucide-react'
+import { Plus, Receipt, Clock, TrendingUp, Filter, FileText } from 'lucide-react'
+import { EmptyState } from '@/components/ui/empty-state'
 import Link from 'next/link'
 
 export default async function BillingPage() {
@@ -18,15 +19,15 @@ export default async function BillingPage() {
       orderBy: { createdAt: 'desc' },
       include: { matter: { select: { name: true, matterNumber: true, client: { select: { name: true } } } } },
       take: 50,
-    }),
+    }).catch(() => [] as any[]),
     db.timeEntry.aggregate({
       where: { firmId, status: { in: ['DRAFT', 'SUBMITTED', 'APPROVED'] }, isBillable: true },
       _sum: { amount: true },
-    }),
+    }).catch(() => ({ _sum: { amount: null } } as any)),
     db.payment.aggregate({
       where: { invoice: { firmId } },
       _sum: { amount: true },
-    }),
+    }).catch(() => ({ _sum: { amount: null } } as any)),
   ])
 
   const totalBilled = invoices.reduce((sum, inv) => sum + Number(inv.total), 0)
@@ -40,12 +41,12 @@ export default async function BillingPage() {
         description="Invoice queue and revenue overview"
         actions={
           <>
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4" />
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Filter className="h-3.5 w-3.5" />
               Filter
             </Button>
-            <Button size="sm">
-              <Plus className="h-4 w-4" />
+            <Button size="sm" className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" />
               Generate Invoice
             </Button>
           </>
@@ -64,53 +65,53 @@ export default async function BillingPage() {
         />
       </div>
 
-      <div className="rounded-md border border-vault-border bg-vault-surface overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-vault-border">
-          <h2 className="text-sm font-semibold text-vault-text">Invoice Queue</h2>
+      <div className="section-card">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
+          <h2 className="display-serif text-[14px] font-semibold text-vault-ink tracking-[-0.01em]">Invoice Queue</h2>
         </div>
-        <div className="overflow-x-auto">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Invoice</th>
-                <th>Matter / Client</th>
-                <th>Status</th>
-                <th>Total</th>
-                <th>Balance</th>
-                <th>Issued</th>
-                <th>Due</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoices.length === 0 ? (
+        {invoices.length === 0 ? (
+          <EmptyState
+            icon={FileText}
+            title="No invoices yet"
+            description="Approve time entries first, then generate invoices from the matter."
+          />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="data-table">
+              <thead>
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-vault-text-secondary">
-                    No invoices yet. Time entries must be approved before generating invoices.
-                  </td>
+                  <th>Invoice</th>
+                  <th>Matter / Client</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                  <th>Balance</th>
+                  <th>Issued</th>
+                  <th>Due</th>
                 </tr>
-              ) : (
-                invoices.map((inv) => (
+              </thead>
+              <tbody>
+                {invoices.map((inv) => (
                   <tr key={inv.id}>
                     <td>
-                      <span className="font-mono text-xs text-vault-text">{inv.invoiceNumber}</span>
+                      <span className="font-mono text-[11px] text-vault-text">{inv.invoiceNumber}</span>
                     </td>
                     <td>
-                      <p className="text-sm text-vault-text">{inv.matter.client.name}</p>
-                      <p className="text-xs text-vault-muted">{inv.matter.name}</p>
+                      <p className="font-medium text-vault-ink">{inv.matter.client.name}</p>
+                      <p className="font-mono text-[11px] text-vault-muted">{inv.matter.name}</p>
                     </td>
                     <td><StatusBadge status={inv.status} /></td>
-                    <td className="tabular-nums font-medium text-vault-text">{formatCurrency(Number(inv.total))}</td>
-                    <td className={`tabular-nums font-medium ${Number(inv.balance) > 0 ? 'text-vault-warning' : 'text-vault-success'}`}>
+                    <td className="font-mono tabular-nums font-semibold text-vault-ink">{formatCurrency(Number(inv.total))}</td>
+                    <td className={`font-mono tabular-nums font-semibold ${Number(inv.balance) > 0 ? 'text-vault-warning' : 'text-vault-success'}`}>
                       {formatCurrency(Number(inv.balance))}
                     </td>
-                    <td className="text-xs text-vault-muted">{formatDate(inv.issueDate)}</td>
-                    <td className="text-xs text-vault-muted">{inv.dueDate ? formatDate(inv.dueDate) : '—'}</td>
+                    <td className="font-mono text-[11px] text-vault-muted">{formatDate(inv.issueDate)}</td>
+                    <td className="font-mono text-[11px] text-vault-muted">{inv.dueDate ? formatDate(inv.dueDate) : '—'}</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )

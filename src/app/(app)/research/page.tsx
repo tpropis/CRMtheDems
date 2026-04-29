@@ -1,69 +1,150 @@
-export const dynamic = 'force-dynamic'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
 import Link from 'next/link'
-import { formatDate } from '@/lib/utils'
-import { PageHeader } from '@/components/ui/page-header'
+import { demoResearchThreads, type DemoResearchThread } from '@/lib/demo-data'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Plus, Search, BookOpen, MessageSquare } from 'lucide-react'
+import {
+  Plus, Search, BookOpen, MessageSquare, Bookmark, FileText, ArrowRight,
+} from 'lucide-react'
 
-export default async function ResearchPage() {
-  const session = await auth()
-  const firmId = (session?.user as any)?.firmId
+export const dynamic = 'force-dynamic'
 
-  const threads = await db.researchThread.findMany({
-    where: { matter: { firmId } },
-    orderBy: { updatedAt: 'desc' },
-    include: {
-      matter: { select: { name: true, matterNumber: true } },
-      user: { select: { name: true } },
-      _count: { select: { messages: true } },
-    },
-    take: 50,
-  })
+export default function ResearchPage() {
+  const threads = demoResearchThreads
+  const saved = threads.filter((t) => t.saved)
+  const open = threads.filter((t) => !t.saved)
 
   return (
-    <div className="space-y-5 animate-fade-in">
-      <PageHeader
-        title="AI Research"
-        description="Legal research threads and saved work product"
-        actions={
-          <Button size="sm">
-            <Plus className="h-4 w-4" />
-            New Research Thread
-          </Button>
-        }
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {threads.length === 0 ? (
-          <div className="col-span-3 rounded-md border border-vault-border bg-vault-surface p-12 text-center">
-            <Search className="h-8 w-8 text-vault-muted mx-auto mb-3" />
-            <p className="text-sm text-vault-text-secondary">No research threads yet. Open a matter and use the Research tab to begin.</p>
+    <div className="space-y-6 animate-fade-in pb-12">
+      {/* Header */}
+      <header>
+        <p className="eyebrow text-vault-gold">§ Research</p>
+        <div className="mt-2 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="display-serif text-3xl font-medium text-vault-ink tracking-tight md:text-4xl">
+              Saved work product.
+            </h1>
+            <p className="mt-2 max-w-xl text-sm text-vault-text-secondary leading-relaxed">
+              Every research thread cites the matter workspace — and its own sources. No vendor
+              training, no prompt leakage, no retention beyond your policy.
+            </p>
           </div>
-        ) : (
-          threads.map((thread) => (
-            <div key={thread.id} className="rounded-md border border-vault-border bg-vault-surface p-5 hover:border-vault-border-strong transition-colors">
-              <div className="flex items-start justify-between mb-3">
-                <BookOpen className="h-4 w-4 text-vault-muted mt-0.5" />
-                {thread.isSaved && <Badge variant="gold">Saved</Badge>}
-              </div>
-              <h3 className="text-sm font-semibold text-vault-text mb-1">{thread.title}</h3>
-              <p className="text-xs text-vault-text-secondary mb-3">
-                {thread.matter?.name} · {thread.user.name}
-              </p>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-xs text-vault-muted">
-                  <MessageSquare className="h-3.5 w-3.5" />
-                  {thread._count.messages} messages
-                </div>
-                <span className="text-xs text-vault-muted">{formatDate(thread.updatedAt)}</span>
-              </div>
-            </div>
-          ))
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Search className="h-3.5 w-3.5" />
+              Search
+            </Button>
+            <Button size="sm" className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" />
+              New research thread
+            </Button>
+          </div>
+        </div>
+        <div className="vault-divider mt-6" />
+      </header>
+
+      {/* Saved */}
+      {saved.length > 0 && (
+        <section>
+          <div className="flex items-center gap-3 mb-4">
+            <Bookmark className="h-4 w-4 text-vault-gold" />
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-vault-ink font-semibold">
+              Saved
+            </h2>
+            <span className="font-mono text-[10px] text-vault-muted tabular-nums">
+              {saved.length}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {saved.map((t) => (
+              <ResearchCard key={t.id} t={t} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Open */}
+      {open.length > 0 && (
+        <section>
+          <div className="flex items-center gap-3 mb-4">
+            <BookOpen className="h-4 w-4 text-vault-muted" />
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-vault-ink font-semibold">
+              In progress
+            </h2>
+            <span className="font-mono text-[10px] text-vault-muted tabular-nums">
+              {open.length}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {open.map((t) => (
+              <ResearchCard key={t.id} t={t} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {threads.length === 0 && (
+        <div className="section-card p-12 text-center">
+          <BookOpen className="h-10 w-10 text-vault-muted mx-auto mb-3" />
+          <p className="text-[13px] text-vault-text-secondary">
+            No research threads yet. Open a matter and start a new thread to begin.
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ResearchCard({ t }: { t: DemoResearchThread }) {
+  const matterId = t.matterNumber.match(/M-\d{4}-(\d{4})/i)?.[1]
+  return (
+    <Link
+      href={matterId ? `/matters/m-${matterId}/research` : '#'}
+      className="group block section-card p-5 transition-all"
+    >
+      <div className="flex items-start justify-between mb-3">
+        <BookOpen className="h-4 w-4 text-vault-muted mt-1" />
+        {t.saved && (
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-vault-gold/30 bg-vault-gold/8 font-mono text-[9px] uppercase tracking-wider text-vault-gold">
+            <Bookmark className="h-2.5 w-2.5" />
+            Saved
+          </span>
         )}
       </div>
-    </div>
+
+      <p className="font-mono text-[9.5px] uppercase tracking-wider text-vault-muted tabular-nums">
+        {t.matterNumber}
+      </p>
+      <h3 className="mt-1 display-serif text-[15px] font-medium text-vault-ink tracking-tight leading-snug group-hover:text-vault-accent transition-colors">
+        {t.title}
+      </h3>
+      <p className="mt-1 text-[11px] text-vault-text-secondary truncate">{t.matter}</p>
+
+      <div className="mt-4 flex flex-wrap gap-1.5">
+        {t.tags.map((tag) => (
+          <span
+            key={tag}
+            className="font-mono text-[9.5px] px-1.5 py-0.5 rounded border border-vault-border bg-vault-elevated text-vault-text-secondary"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      <footer className="mt-4 pt-4 border-t border-vault-border/70 flex items-center justify-between">
+        <div className="flex items-center gap-4 text-vault-muted">
+          <span className="inline-flex items-center gap-1 font-mono text-[10px] tabular-nums">
+            <MessageSquare className="h-3 w-3" />
+            {t.messageCount}
+          </span>
+          <span className="inline-flex items-center gap-1 font-mono text-[10px] tabular-nums">
+            <FileText className="h-3 w-3" />
+            {t.citations}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-[9.5px] text-vault-faint">{t.lastActivity}</span>
+          <ArrowRight className="h-3 w-3 text-vault-muted group-hover:text-vault-accent transition-colors" />
+        </div>
+      </footer>
+    </Link>
   )
 }
