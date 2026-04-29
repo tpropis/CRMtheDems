@@ -51,7 +51,7 @@ export default function MatterTasksPage({ params }: { params: { matterId: string
       </div>
 
       {matter.tasks.length === 0 ? (
-        <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault px-5 py-12 text-center">
+        <section className="section-card px-5 py-12 text-center">
           <p className="text-[13px] text-vault-text-secondary">
             No tasks on this matter yet. Create one to assign work and track status.
           </p>
@@ -65,9 +65,9 @@ export default function MatterTasksPage({ params }: { params: { matterId: string
           {STATUS_ORDER.map((s) => (
             <section
               key={s}
-              className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden flex flex-col"
+              className="section-card overflow-hidden flex flex-col"
             >
-              <header className="flex items-center justify-between px-4 py-3 border-b border-vault-border bg-vault-elevated/50">
+              <header className="flex items-center justify-between px-4 py-3 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
                 <div className="flex items-center gap-2">
                   <StatusDot status={s} />
                   <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-vault-ink font-semibold">

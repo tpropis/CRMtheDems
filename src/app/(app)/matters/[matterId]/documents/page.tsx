@@ -44,8 +44,8 @@ export default function MatterDocumentsPage({ params }: { params: { matterId: st
       </div>
 
       {/* Table */}
-      <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
-        <div className="grid grid-cols-12 gap-3 px-5 py-3 border-b border-vault-border bg-vault-elevated/50">
+      <section className="section-card overflow-hidden">
+        <div className="grid grid-cols-12 gap-3 px-5 py-3 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
           <div className="col-span-5 font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted">
             Document
           </div>
@@ -98,8 +98,8 @@ function DocStat({ label, value, tone = 'default' }: { label: string; value: num
     tone === 'gold' ? 'text-vault-gold' : tone === 'warn' ? 'text-vault-warning' : 'text-vault-ink'
   return (
     <div className="flex items-baseline gap-1.5">
-      <span className={`font-display text-[17px] font-semibold tabular-nums ${valCls}`}>{value}</span>
-      <span className="font-mono text-[10px] uppercase tracking-wider text-vault-muted">{label}</span>
+      <span className={`font-display text-[19px] font-bold tabular-nums leading-none ${valCls}`}>{value}</span>
+      <span className="font-mono text-[9.5px] uppercase tracking-[0.18em] text-vault-muted">{label}</span>
     </div>
   )
 }
@@ -108,7 +108,7 @@ function DocumentRow({ d }: { d: DemoDocument }) {
   return (
     <div className="grid grid-cols-12 gap-3 items-center px-5 py-3 hover:bg-vault-elevated/50 transition-colors cursor-pointer">
       <div className="col-span-5 flex items-center gap-3 min-w-0">
-        <div className="h-8 w-8 rounded border border-vault-border bg-vault-elevated flex items-center justify-center shrink-0">
+        <div className="h-8 w-8 rounded border border-vault-border bg-gradient-to-b from-vault-elevated to-vault-elevated/60 flex items-center justify-center shrink-0">
           <FileText className="h-3.5 w-3.5 text-vault-muted" />
         </div>
         <div className="min-w-0">

@@ -25,14 +25,14 @@ export default async function AdminUsersPage() {
         title="Users"
         description={`${users.filter((u) => u.isActive).length} active · ${users.length} total`}
         actions={
-          <Button size="sm">
-            <UserPlus className="h-4 w-4" />
+          <Button size="sm" className="gap-1.5">
+            <UserPlus className="h-3.5 w-3.5" />
             Invite User
           </Button>
         }
       />
 
-      <div className="rounded-md border border-vault-border bg-vault-surface overflow-hidden">
+      <div className="section-card overflow-hidden">
         <table className="data-table">
           <thead>
             <tr>
@@ -55,31 +55,31 @@ export default async function AdminUsersPage() {
                       <AvatarFallback className="text-2xs">{initials(user.name)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-medium text-vault-text">{user.name}</p>
-                      <p className="text-xs text-vault-muted">{user.email}</p>
+                      <p className="font-medium text-vault-ink">{user.name}</p>
+                      <p className="font-mono text-[11px] text-vault-muted">{user.email}</p>
                     </div>
                   </div>
                 </td>
                 <td>
                   <Badge variant="default">{roleLabel(user.role)}</Badge>
                 </td>
-                <td className="text-sm text-vault-text-secondary">{user.office?.name || '—'}</td>
+                <td className="text-[13px] text-vault-text-secondary">{user.office?.name || '—'}</td>
                 <td>
                   <Badge variant={user.isActive ? 'active' : 'inactive'}>
                     {user.isActive ? 'Active' : 'Inactive'}
                   </Badge>
                 </td>
-                <td className="text-xs text-vault-muted">
+                <td className="font-mono text-[11px] text-vault-muted">
                   {user.lastLoginAt ? formatDate(user.lastLoginAt) : 'Never'}
                 </td>
                 <td>
                   {user.mfaEnabled ? (
                     <div className="flex items-center gap-1 text-vault-success">
-                      <Shield className="h-3.5 w-3.5" />
-                      <span className="text-xs">Enabled</span>
+                      <Shield className="h-3 w-3" />
+                      <span className="font-mono text-[11px]">Enabled</span>
                     </div>
                   ) : (
-                    <span className="text-xs text-vault-muted">Disabled</span>
+                    <span className="font-mono text-[11px] text-vault-muted">Disabled</span>
                   )}
                 </td>
                 <td className="text-xs text-vault-muted">{formatDate(user.createdAt)}</td>

@@ -131,15 +131,15 @@ export default function GenerateDocumentPage() {
         />
         {Object.entries(grouped).map(([cat, templates]) => (
           <div key={cat} className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-widest text-vault-muted px-1">{cat}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-muted px-1">{cat}</p>
             <div className="grid grid-cols-3 gap-3">
               {templates.map(t => (
                 <button key={t.name} onClick={() => { setSelectedTemplate(t); setStep('configure') }}
-                  className="vault-panel p-4 text-left hover:border-vault-accent/40 hover:bg-vault-accent/5 transition-colors group space-y-2">
-                  <div className="rounded-md bg-vault-elevated border border-vault-border p-2 w-fit">
+                  className="section-card p-4 text-left hover:border-vault-accent/40 transition-colors group space-y-2">
+                  <div className="rounded-md bg-gradient-to-b from-vault-elevated to-vault-elevated/60 border border-vault-border p-2 w-fit">
                     <FileText className="h-4 w-4 text-vault-muted group-hover:text-vault-accent transition-colors" />
                   </div>
-                  <p className="text-sm font-medium text-vault-text group-hover:text-vault-accent transition-colors">{t.name}</p>
+                  <p className="text-[13px] font-medium text-vault-ink group-hover:text-vault-accent transition-colors">{t.name}</p>
                   {t.practiceArea && <p className="text-xs text-vault-muted">{t.practiceArea}</p>}
                 </button>
               ))}
@@ -172,7 +172,7 @@ export default function GenerateDocumentPage() {
           {/* Left: config */}
           <div className="col-span-2 space-y-4">
             {/* Matter picker */}
-            <div className="vault-panel p-5 space-y-3">
+            <div className="section-card p-5 space-y-3">
               <div className="flex items-center gap-2">
                 <Briefcase className="h-4 w-4 text-vault-muted" />
                 <h3 className="section-label">Link to Matter <span className="text-vault-muted font-normal">(optional)</span></h3>
@@ -209,7 +209,7 @@ export default function GenerateDocumentPage() {
             </div>
 
             {/* AI Instructions */}
-            <div className="vault-panel p-5 space-y-3">
+            <div className="section-card p-5 space-y-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-vault-muted" />
                 <h3 className="section-label">AI Instructions</h3>
@@ -227,7 +227,7 @@ export default function GenerateDocumentPage() {
           {/* Right: template preview */}
           <div className="space-y-3">
             <h3 className="section-label flex items-center gap-2"><Eye className="h-4 w-4 text-vault-muted" /> Template</h3>
-            <div className="vault-panel p-4 max-h-[500px] overflow-y-auto">
+            <div className="section-card p-4 max-h-[500px] overflow-y-auto">
               <pre className="text-xs text-vault-text-secondary whitespace-pre-wrap font-mono leading-relaxed">{selectedTemplate?.content.slice(0, 1200)}{(selectedTemplate?.content.length || 0) > 1200 ? '\n...' : ''}</pre>
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function GenerateDocumentPage() {
       />
 
       {generated && (
-        <div className="vault-panel p-6">
+        <div className="section-card p-6">
           {view === 'preview' ? (
             <div className="bg-white rounded-md p-8 shadow-sm max-w-3xl mx-auto">
               <pre className="font-sans text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">{generated.content}</pre>

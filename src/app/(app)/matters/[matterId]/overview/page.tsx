@@ -26,7 +26,7 @@ export default function MatterOverviewPage({ params }: { params: { matterId: str
       {/* ────── Primary column ────── */}
       <div className="space-y-6 xl:col-span-2">
         {/* Key facts */}
-        <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault">
+        <section className="section-card">
           <SectionHead title="Key Facts" subtitle="At-a-glance matter profile" />
           <div className="grid grid-cols-2 md:grid-cols-3 gap-0">
             {matter.keyFacts.map((f, i) => (
@@ -46,7 +46,7 @@ export default function MatterOverviewPage({ params }: { params: { matterId: str
         </section>
 
         {/* Deadlines */}
-        <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault">
+        <section className="section-card">
           <SectionHead
             title="Upcoming Deadlines"
             subtitle="Rule-computed cascades visible · one-click calendar sync"
@@ -109,7 +109,7 @@ export default function MatterOverviewPage({ params }: { params: { matterId: str
         </section>
 
         {/* Recent timeline */}
-        <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault">
+        <section className="section-card">
           <SectionHead
             title="Recent Activity"
             subtitle="Full event ledger · signed & immutable"
@@ -147,7 +147,7 @@ export default function MatterOverviewPage({ params }: { params: { matterId: str
         </section>
 
         {/* Documents */}
-        <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault">
+        <section className="section-card">
           <SectionHead
             title="Recent Documents"
             subtitle="Auto-classified · privilege-tagged on ingest"
@@ -167,7 +167,7 @@ export default function MatterOverviewPage({ params }: { params: { matterId: str
             <div className="divide-y divide-vault-border/70">
               {recentDocs.map((d) => (
                 <div key={d.id} className="px-5 py-3 flex items-center gap-3">
-                  <div className="h-7 w-7 rounded border border-vault-border bg-vault-elevated flex items-center justify-center shrink-0">
+                  <div className="h-7 w-7 rounded border border-vault-border bg-gradient-to-b from-vault-elevated to-vault-elevated/60 flex items-center justify-center shrink-0">
                     <FileText className="h-3.5 w-3.5 text-vault-muted" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -196,7 +196,7 @@ export default function MatterOverviewPage({ params }: { params: { matterId: str
       {/* ────── Secondary column ────── */}
       <div className="space-y-6">
         {/* AI Paralegal on this matter */}
-        <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault">
+        <section className="section-card">
           <SectionHead
             title="AI Paralegal · This Matter"
             subtitle="Model pinned to matter context"
@@ -262,7 +262,7 @@ export default function MatterOverviewPage({ params }: { params: { matterId: str
         </section>
 
         {/* Open tasks */}
-        <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault">
+        <section className="section-card">
           <SectionHead
             title="Open Tasks"
             subtitle="Assigned · due · prioritized"
@@ -299,7 +299,7 @@ export default function MatterOverviewPage({ params }: { params: { matterId: str
         </section>
 
         {/* Parties */}
-        <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault">
+        <section className="section-card">
           <SectionHead title="Parties" subtitle="Firm team · client · adverse" icon={Users} />
           <div className="divide-y divide-vault-border/70">
             {matter.parties.map((p) => (
@@ -350,7 +350,7 @@ function SectionHead({
   action?: React.ReactNode
 }) {
   return (
-    <header className="flex items-center justify-between gap-3 px-5 py-3 border-b border-vault-border bg-vault-elevated/40">
+    <header className="flex items-center justify-between gap-3 px-5 py-3 border-b border-vault-border bg-gradient-to-b from-vault-elevated/80 to-vault-elevated/40">
       <div className="flex items-center gap-3 min-w-0">
         {Icon && (
           <div className="flex h-7 w-7 items-center justify-center rounded border border-vault-gold/30 bg-vault-gold/5 shrink-0">

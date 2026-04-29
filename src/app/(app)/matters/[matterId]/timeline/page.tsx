@@ -26,7 +26,7 @@ export default function MatterTimelinePage({ params }: { params: { matterId: str
       </div>
 
       {/* Timeline ledger */}
-      <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+      <section className="section-card overflow-hidden">
         <div className="relative">
           {/* Spine */}
           <div className="absolute left-[140px] top-4 bottom-4 w-px bg-vault-border" />

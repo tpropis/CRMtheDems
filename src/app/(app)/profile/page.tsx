@@ -43,7 +43,7 @@ export default async function ProfilePage() {
       </header>
 
       {/* Identity card */}
-      <section className="rounded-md border border-vault-border bg-vault-surface shadow-vault overflow-hidden">
+      <section className="section-card overflow-hidden">
         <div className="flex items-start gap-5 p-6">
           <Avatar className="h-16 w-16 border border-vault-border-strong/50">
             <AvatarFallback className="text-lg bg-vault-accent/10 text-vault-accent font-semibold">
@@ -86,7 +86,9 @@ export default async function ProfilePage() {
       </section>
 
       {/* Security notice */}
-      <section className="rounded-md border border-vault-gold/30 bg-vault-gold/5 p-5">
+      <section className="section-card overflow-hidden">
+        <div className="h-[3px] w-full bg-gradient-to-r from-vault-gold to-vault-gold/40" />
+        <div className="p-5">
         <div className="flex items-start gap-3">
           <Shield className="h-5 w-5 text-vault-gold shrink-0 mt-0.5" />
           <div>
@@ -98,6 +100,7 @@ export default async function ProfilePage() {
               and never stores MFA secrets on vendor infrastructure.
             </p>
           </div>
+        </div>
         </div>
       </section>
     </div>
