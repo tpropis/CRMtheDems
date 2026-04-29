@@ -24,6 +24,11 @@ export function Seal({ size = 64, className }: { size?: number; className?: stri
           <stop offset="55%" stopColor="#B68A3E" />
           <stop offset="100%" stopColor="#8A6A2D" />
         </linearGradient>
+        <linearGradient id="seal-specular" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.55" />
+          <stop offset="40%" stopColor="#FFFFFF" stopOpacity="0.10" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+        </linearGradient>
       </defs>
 
       {/* Outer rings */}
@@ -32,6 +37,8 @@ export function Seal({ size = 64, className }: { size?: number; className?: stri
 
       {/* Inner disc */}
       <circle cx="32" cy="32" r="24" fill="url(#seal-inner)" />
+      {/* Specular highlight */}
+      <ellipse cx="32" cy="20" rx="18" ry="9" fill="url(#seal-specular)" />
 
       {/* Three columns inside the seal */}
       <g transform="translate(17, 20)">

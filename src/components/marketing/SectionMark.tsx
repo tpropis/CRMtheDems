@@ -11,11 +11,11 @@ export function SectionMark({
 }) {
   return (
     <div className={cn('flex items-center gap-3 mb-6', className)}>
-      <span className="font-mono text-[11px] font-medium uppercase tracking-widest text-vault-gold">
+      <span className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.2em] text-vault-gold">
         § {number}
       </span>
-      <span className="h-px w-10 bg-gradient-to-r from-vault-gold/60 to-transparent" />
-      <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-vault-muted">
+      <span className="h-px w-12 bg-gradient-to-r from-vault-gold/70 via-vault-gold/30 to-transparent" />
+      <span className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.2em] text-vault-muted">
         {label}
       </span>
     </div>
@@ -40,11 +40,10 @@ export function Eyebrow({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-2 text-[11px] font-semibold uppercase',
+        'inline-flex items-center gap-2 font-mono text-[10.5px] font-semibold uppercase tracking-[0.2em]',
         toneClass,
         className,
       )}
-      style={{ letterSpacing: '0.18em' }}
     >
       {children}
     </span>
